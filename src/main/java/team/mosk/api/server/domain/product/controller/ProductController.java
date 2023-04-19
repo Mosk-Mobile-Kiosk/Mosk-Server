@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.mosk.api.server.domain.product.dto.*;
@@ -28,19 +29,19 @@ public class ProductController {
     private final ProductReadService productReadService;
 
     @PostMapping("/products")
-    public ResponseEntity<ProductResponse> create(@RequestBody CreateProductRequest request) {
+    public ResponseEntity<ProductResponse> create(@Validated @RequestBody CreateProductRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request.toEntity(), request.getCategoryId()));
     }
 
     @PutMapping("/products")
-    public ResponseEntity<ProductResponse> update(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                                  @RequestBody UpdateProductRequest request) {
+    public ResponseEntity<ProductResponse> update(@Validated @RequestBody UpdateProductRequest request,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
         return ResponseEntity.ok(productService.update(request, userDetails.getId()));
     }
 
     @DeleteMapping("/products/{productId}")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails userDetails,
-                                       @PathVariable Long productId) {
+    public ResponseEntity<Void> delete(@PathVariable Long productId,
+                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.delete(productId, userDetails.getId());
         return ResponseEntity.noContent().build();
     }
