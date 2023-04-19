@@ -42,8 +42,8 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.update(request, userDetails.getId()));
     }
 
-    @GetMapping("/categories/{storeName}")
-    public ResponseEntity<List<CategoryResponse>> findAllByStoreName(@PathVariable String storeName) {
-        return ResponseEntity.ok(categoryReadService.findAllByStoreName(storeName));
+    @GetMapping("/categories/{storeId}")
+    public ResponseEntity<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {
+        return ResponseEntity.ok(categoryReadService.findAllByStoreId(storeId));
     }
 }

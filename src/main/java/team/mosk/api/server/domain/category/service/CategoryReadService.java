@@ -12,7 +12,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryReadService {
 
-    public List<CategoryResponse> findAllByStoreName(final String storeName) {
+    public List<CategoryResponse> findAllByStoreId(final Long storeId) {
         return null;
     }
 }
