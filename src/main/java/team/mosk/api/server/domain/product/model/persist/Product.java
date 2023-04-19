@@ -1,5 +1,6 @@
 package team.mosk.api.server.domain.product.model.persist;
 
+import lombok.*;
 import team.mosk.api.server.domain.category.model.persist.Category;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 import team.mosk.api.server.domain.store.model.persist.Store;
@@ -8,6 +9,10 @@ import team.mosk.api.server.global.common.BaseEntity;
 import javax.persistence.*;
 
 @Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Product extends BaseEntity {
 
     @Id
