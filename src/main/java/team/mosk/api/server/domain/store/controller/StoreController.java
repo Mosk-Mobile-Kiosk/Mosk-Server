@@ -1,16 +1,17 @@
 package team.mosk.api.server.domain.store.controller;
 
-import io.netty.handler.codec.http.HttpResponseStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
-import team.mosk.api.server.domain.store.dto.MemberResponse;
+import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.SignUpRequest;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
 import java.time.LocalDate;
 
@@ -22,8 +23,12 @@ public class StoreController {
     private final StoreService storeService;
 
     @PostMapping("/stores")
-    public ResponseEntity<MemberResponse> create(@Validated @RequestBody SignUpRequest request) {
+    public ResponseEntity<StoreResponse> create(@Validated @RequestBody SignUpRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(storeService.create(request.toEntity()));
+    }
+    @GetMapping("stores")
+    public ResponseEntity<StoreResponse> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.status(HttpStatus.OK).body(storeService.findById(customUserDetails.getId()));
     }
 
     @GetMapping("/stores/email-check/{email}")
@@ -49,13 +54,20 @@ public class StoreController {
     }
 
     @PutMapping("/stores")
-    public ResponseEntity<MemberResponse> update(@Validated @RequestBody StoreUpdateRequest request) {
-        // TODO: 2023/04/19  현재 사용자 정보 가져와서 처리
-        return null;
+    public ResponseEntity<StoreResponse> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+                                                @Validated @RequestBody StoreUpdateRequest request) {
+        return ResponseEntity.ok(storeService.update(customUserDetails.getId(), request));
     }
 
+    @DeleteMapping("/stores")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        storeService.delete(customUserDetails.getId());
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
 
-
-
+    @GetMapping("/stores/qrcode")
+    public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ResponseEntity.ok(storeService.getQRCode());
+    }
 
 }
