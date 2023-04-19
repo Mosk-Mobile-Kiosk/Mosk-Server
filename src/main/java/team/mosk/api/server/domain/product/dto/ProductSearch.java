@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ProductSearch {
 
-    private String storeName;
+    private Long storeId;
 
     private String categoryName;
 }

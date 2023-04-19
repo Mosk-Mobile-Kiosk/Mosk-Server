@@ -51,10 +51,10 @@ public class ProductController {
         return ResponseEntity.ok(productReadService.findByProductId(productId));
     }
 
-    @GetMapping("/products/all")
-    public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeName") String storeName,
+    @GetMapping("/products")
+    public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
                                                                    @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(productReadService.findAllWithPaging(storeName, pageable));
+        return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
     }
 
     @GetMapping("/products/category")

@@ -7,13 +7,13 @@ import team.mosk.api.server.domain.category.model.persist.Category;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
-public class SimpleCategoryResponse {
+public class CategoryResponse {
 
     private Long id;
 
     private String name;
 
-    public static SimpleCategoryResponse of(final Category category) {
-        return new SimpleCategoryResponse(category.getId(), category.getName());
+    public static CategoryResponse of(final Category category) {
+        return new CategoryResponse(category.getId(), category.getName());
     }
 }

@@ -20,7 +20,7 @@ public class ProductReadService {
         return null;
     }
 
-    public Page<ProductResponse> findAllWithPaging(final String storeName, final Pageable pageable) {
+    public Page<ProductResponse> findAllWithPaging(final Long id, final Pageable pageable) {
         return null;
     }
 
