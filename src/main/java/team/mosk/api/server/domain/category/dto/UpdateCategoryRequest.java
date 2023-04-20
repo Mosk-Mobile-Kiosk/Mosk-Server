@@ -8,5 +8,6 @@ import lombok.*;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class UpdateCategoryRequest {
 
+    private Long categoryId;
     private String name;
 }
