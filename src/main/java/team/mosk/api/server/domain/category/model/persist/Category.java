@@ -32,4 +32,8 @@ public class Category extends BaseEntity {
     public void update(final UpdateCategoryRequest request) {
         this.name = request.getName();
     }
+
+    public void initStore(final Store store) {
+        this.store = store;
+    }
 }

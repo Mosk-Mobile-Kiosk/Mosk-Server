@@ -12,11 +12,14 @@ import team.mosk.api.server.domain.product.dto.ProductImgResponse;
 import team.mosk.api.server.domain.product.dto.ProductResponse;
 import team.mosk.api.server.domain.product.dto.SellingStatusRequest;
 import team.mosk.api.server.domain.product.dto.UpdateProductRequest;
+import team.mosk.api.server.domain.product.error.BasicImgInitFailedException;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
 import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
+import team.mosk.api.server.domain.store.model.persist.Store;
+import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,16 +34,29 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ProductImgRepository productImgRepository;
 
+    private final StoreRepository storeRepository;
+
     private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
     private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
+    private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
     private static final String LOCAL_PATH = "C:\\Users\\Student\\Desktop\\study\\imgs\\";
-    private static final String BASE_IMG_PATH= "C:\\Users\\Student\\Desktop\\study\\baseImg\\";
+    private static final String BASIC_IMG_PATH = "C:\\Users\\Student\\Desktop\\study\\baseImg\\basic";
 
 
     public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {
-        // TODO: 2023-04-20 Store upstream 반영 후 작업
-        // TODO: 2023-04-20 오너 인포 검증 + 상품 기본 이미지 / 카테고리 setting + 상품 저장
-        return null;
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
+
+        Store findStore = storeRepository.findById(storeId)
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        product.initCategory(findCategory);
+        product.initStore(findStore);
+        Product savedProduct = productRepository.save(product);
+
+        initBasicImg(savedProduct);
+
+        return ProductResponse.of(savedProduct);
     }
 
     public ProductResponse update(final UpdateProductRequest request, final Long storeId) {
@@ -98,8 +114,10 @@ public class ProductService {
 
         newFile.transferTo(new File(path));
 
-        File deleteTarget = new File(oldPath);
-        deleteTarget.delete();
+        File targetFile = new File(oldPath);
+        if (targetFile.exists()) {
+            deleteTargetFile(targetFile);
+        }
 
         return ProductImgResponse.of(savedProductImg);
     }
@@ -107,6 +125,29 @@ public class ProductService {
     public void validateStoreOwner(final Long storeId, final Long targetId) {
         if (!storeId.equals(targetId)) {
             throw new OwnerInfoMisMatchException(OWNER_MISMATCHED);
+        }
+    }
+
+    public void deleteTargetFile(final File targetFile) {
+        if (!targetFile.getName().equals("basic")) {
+            targetFile.delete();
+        }
+    }
+
+    public void initBasicImg(final Product product) {
+        File target = new File(BASIC_IMG_PATH);
+
+        ProductImg basicProductImg = ProductImg.builder()
+                .name(target.getName())
+                .contentType(".jpg")
+                .path(target.getPath())
+                .product(product)
+                .build();
+
+        try {
+            productImgRepository.save(basicProductImg);
+        } catch (Exception e) {
+            throw new BasicImgInitFailedException("이미지 삽입 실패");
         }
     }
 }

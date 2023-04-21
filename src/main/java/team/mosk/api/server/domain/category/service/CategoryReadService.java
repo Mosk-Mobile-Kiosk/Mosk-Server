@@ -13,7 +13,7 @@ import java.util.List;
 public class CategoryReadService {
 
     public List<CategoryResponse> findAllByStoreId(final Long storeId) {
-        // TODO: 2023-04-20 Store upstream 반영 후 작업
+        // TODO: 2023-04-20 QueryDSL 반영 후 작업
         return null;
     }
 }

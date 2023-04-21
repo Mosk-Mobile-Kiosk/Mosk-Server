@@ -9,19 +9,27 @@ import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.error.OwnerInfoMisMatchException;
 import team.mosk.api.server.domain.category.model.persist.Category;
 import team.mosk.api.server.domain.category.model.persist.CategoryRepository;
+import team.mosk.api.server.domain.store.model.persist.Store;
+import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class CategoryService {
 
+    private final StoreRepository storeRepository;
     private final CategoryRepository categoryRepository;
     private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
     private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
 
     public CategoryResponse create(final Category category, final Long storeId) {
-        // TODO: 2023-04-20 Store upstream 반영 후 작업
-        return null;
+        Store findStore = storeRepository.findById(storeId)
+                .orElseThrow(() -> new IllegalStateException("임시 에러"));
+
+        category.initStore(findStore);
+        Category savedCategory = categoryRepository.save(category);
+
+        return CategoryResponse.of(savedCategory);
     }
 
     public void delete(final Long categoryId, final Long storeId) {

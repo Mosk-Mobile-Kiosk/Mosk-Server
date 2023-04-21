@@ -54,4 +54,12 @@ public class Product extends BaseEntity {
     public void changeSellingStatus(final Selling selling) {
         this.selling = selling;
     }
+
+    public void initCategory(final Category category) {
+        this.category = category;
+    }
+
+    public void initStore(final Store store) {
+        this.store = store;
+    }
 }
