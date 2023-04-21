@@ -8,4 +8,6 @@ public class StoreUpdateRequest {
     private String ownerName;
     private String call;
     private String address;
+
+
 }
