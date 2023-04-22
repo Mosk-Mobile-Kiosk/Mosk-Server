@@ -80,8 +80,10 @@ public class StoreController {
     @PostMapping("/stores/qrcode")
     public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         storeService.createQRCode(customUserDetails.getId());
-        // TODO: 2023/04/21  
-        return null;
+        QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(qrCodeToByte(qrCode));
     }
 
     @GetMapping(value = "/stores/qrcode")
@@ -92,10 +94,13 @@ public class StoreController {
                .body(qrCodeToByte(qrCode));
     }
 
-    private byte[] qrCodeToByte(QRCode qrCode) throws IOException {
-        return Files.readAllBytes(new File(qrCode.getPath()).toPath());
+    private byte[] qrCodeToByte(QRCode qrCode) {
+        try {
+            return Files.readAllBytes(new File(qrCode.getPath()).toPath());
+        } catch (IOException e) {
+            log.error("error={}", e);
+            throw new RuntimeException(e);
+        }
     }
-
-
 
 }
