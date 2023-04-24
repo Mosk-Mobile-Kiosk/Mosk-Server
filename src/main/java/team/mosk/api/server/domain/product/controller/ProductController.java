@@ -18,6 +18,7 @@ import team.mosk.api.server.domain.product.service.ProductReadService;
 import team.mosk.api.server.domain.product.service.ProductService;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -29,8 +30,9 @@ public class ProductController {
     private final ProductReadService productReadService;
 
     @PostMapping("/products")
-    public ResponseEntity<ProductResponse> create(@Validated @RequestBody CreateProductRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request.toEntity(), request.getCategoryId()));
+    public ResponseEntity<ProductResponse> create(@Validated @RequestBody CreateProductRequest request,
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request.toEntity(), request.getCategoryId(), userDetails.getId()));
     }
 
     @PutMapping("/products")
@@ -62,12 +64,19 @@ public class ProductController {
         return ResponseEntity.ok(productReadService.findAllByCategoryNameEachStore(productSearch));
     }
 
+    @PatchMapping
+    public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
+                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+        productService.changeSellingStatus(request, userDetails.getId());
+        return ResponseEntity.ok().build();
+    }
+
     /**
      * files
      */
 
     @GetMapping("/products/img/{productId}")
-    public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId){
+    public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId) throws IOException {
         ProductImgResponse response = productReadService.findImgByProductId(productId);
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(response.getContentType()))
@@ -77,7 +86,7 @@ public class ProductController {
     @PutMapping("/products/img")
     public ResponseEntity<byte[]> updateImg(@RequestParam(name = "newImg") MultipartFile newFile,
                                             @RequestParam(name = "productId") Long productId,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
         ProductImgResponse response = productService.updateImg(newFile, productId, userDetails.getId());
         return ResponseEntity.ok()
                 .contentType(MediaType.valueOf(response.getContentType()))

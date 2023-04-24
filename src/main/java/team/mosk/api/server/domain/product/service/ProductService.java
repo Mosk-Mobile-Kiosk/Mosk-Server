@@ -1,35 +1,156 @@
 package team.mosk.api.server.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
+import team.mosk.api.server.domain.category.error.OwnerInfoMisMatchException;
+import team.mosk.api.server.domain.category.model.persist.Category;
+import team.mosk.api.server.domain.category.model.persist.CategoryRepository;
 import team.mosk.api.server.domain.product.dto.ProductImgResponse;
 import team.mosk.api.server.domain.product.dto.ProductResponse;
+import team.mosk.api.server.domain.product.dto.SellingStatusRequest;
 import team.mosk.api.server.domain.product.dto.UpdateProductRequest;
+import team.mosk.api.server.domain.product.error.BasicImgInitFailedException;
+import team.mosk.api.server.domain.product.error.FailedDeleteImgException;
+import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
+import team.mosk.api.server.domain.product.model.persist.ProductImg;
+import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
+import team.mosk.api.server.domain.product.model.persist.ProductRepository;
+import team.mosk.api.server.domain.store.model.persist.Store;
+import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ProductService {
 
-    public ProductResponse create(final Product product, final Long categoryId) {
-        return null;
+    private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
+    private final ProductImgRepository productImgRepository;
+
+    private final StoreRepository storeRepository;
+
+    private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
+    private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
+    private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
+    private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
+    private static final String LOCAL_PATH = "C:\\Users\\Student\\Desktop\\study\\imgs\\";
+    private static final String BASIC_IMG_PATH = "C:\\Users\\Student\\Desktop\\study\\baseImg\\basic";
+
+
+    public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {
+        Category findCategory = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
+
+        Store findStore = storeRepository.findById(storeId)
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        product.initCategory(findCategory);
+        product.initStore(findStore);
+        Product savedProduct = productRepository.save(product);
+
+        initBasicImg(savedProduct);
+
+        return ProductResponse.of(savedProduct);
     }
 
     public ProductResponse update(final UpdateProductRequest request, final Long storeId) {
-        return null;
+        Product findProduct = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        validateStoreOwner(findProduct.getStore().getId(), storeId);
+
+        findProduct.update(request);
+        return ProductResponse.of(findProduct);
     }
 
     public void delete(final Long productId, final Long storeId) {
+        Product findProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        validateStoreOwner(findProduct.getStore().getId(), storeId);
+
+        productRepository.delete(findProduct);
+    }
+
+    public void changeSellingStatus(final SellingStatusRequest request, final Long storeId) {
+        Product findProduct = productRepository.findById(request.getProductId())
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        validateStoreOwner(findProduct.getStore().getId(), storeId);
+
+        if (findProduct.getSelling() != request.getSelling()) {
+            findProduct.changeSellingStatus(request.getSelling());
+        }
     }
 
     /**
      * files
      */
 
-    public ProductImgResponse updateImg(final MultipartFile newFile, final Long productId, final Long storeId) {
-        return null;
+    public ProductImgResponse updateImg(final MultipartFile newFile, final Long productId, final Long storeId) throws IOException {
+        Product findProduct = productRepository.findById(productId)
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
+
+        validateStoreOwner(findProduct.getStore().getId(), storeId);
+
+        String oldPath = findProduct.getProductImg().getPath();
+        String uuid = UUID.randomUUID().toString();
+        String path = LOCAL_PATH + uuid;
+
+        ProductImg newProductImg = ProductImg.builder()
+                .name(uuid)
+                .path(path)
+                .contentType(newFile.getContentType())
+                .product(findProduct)
+                .build();
+
+        ProductImg savedProductImg = productImgRepository.save(newProductImg);
+
+        newFile.transferTo(new File(path));
+
+        File targetFile = new File(oldPath);
+        if (!targetFile.getName().equals("basic")) {
+            deleteTargetFile(targetFile);
+        }
+
+        return ProductImgResponse.of(savedProductImg);
+    }
+
+    public void validateStoreOwner(final Long storeId, final Long targetId) {
+        if (!storeId.equals(targetId)) {
+            throw new OwnerInfoMisMatchException(OWNER_MISMATCHED);
+        }
+    }
+
+    public void deleteTargetFile(final File targetFile) {
+        if (!targetFile.delete()) {
+            throw new FailedDeleteImgException(FAILED_DELETE_IMG);
+        }
+    }
+
+    public void initBasicImg(final Product product) {
+        File target = new File(BASIC_IMG_PATH);
+
+        ProductImg basicProductImg = ProductImg.builder()
+                .name(target.getName())
+                .contentType(MediaType.IMAGE_PNG_VALUE)
+                .path(target.getPath())
+                .product(product)
+                .build();
+
+        try {
+            productImgRepository.save(basicProductImg);
+        } catch (Exception e) {
+            throw new BasicImgInitFailedException("이미지 삽입 실패");
+        }
     }
 }

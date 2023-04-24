@@ -4,7 +4,15 @@ jwt:
   accessToken-validity-in-seconds: 3600 # 1??
   refreshToken-validity-in-seconds: 18000 # 5??
 
+logging:
+  level:
+    team.mosk.api: debug
+
+server:
+  port: 9090
+
 gongGongData:
   apiKey: y3VIhvpKbdXiPhDgY5dMR8eIRvYV3Tg2zy7ySnet4Ow4rI%2BT%2FwXYfuZ3o5r9OwL9355ZQhBNTVmC54Ng%2B6PsEg%3D%3D
 
 macFilePath: /Users/hhpp1205/Documents/mosk-img
+windowsFilePath: C:\Users\bae\Desktop\study\mosk-img

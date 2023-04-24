@@ -2,6 +2,7 @@ package team.mosk.api.server.domain.product.model.persist;
 
 import lombok.*;
 import team.mosk.api.server.domain.category.model.persist.Category;
+import team.mosk.api.server.domain.product.dto.UpdateProductRequest;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
@@ -29,7 +30,7 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Selling selling;
 
-    @OneToOne(mappedBy = "productImg")
+    @OneToOne(mappedBy = "product")
     private ProductImg productImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -39,4 +40,26 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    /**
+     * methods
+     */
+
+    public void update(final UpdateProductRequest request) {
+        this.name = request.getName();
+        this.description = request.getDescription();
+        this.price = request.getPrice();
+    }
+
+    public void changeSellingStatus(final Selling selling) {
+        this.selling = selling;
+    }
+
+    public void initCategory(final Category category) {
+        this.category = category;
+    }
+
+    public void initStore(final Store store) {
+        this.store = store;
+    }
 }

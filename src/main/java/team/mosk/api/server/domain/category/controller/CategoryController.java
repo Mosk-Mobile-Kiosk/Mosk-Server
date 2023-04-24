@@ -31,14 +31,14 @@ public class CategoryController {
 
     @DeleteMapping("/categories/{categoryId}")
     public ResponseEntity<Void> delete(@PathVariable Long categoryId,
-                                       @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                       @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
         categoryService.delete(categoryId, userDetails.getId());
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/categories")
     public ResponseEntity<CategoryResponse> update(@Validated @RequestBody UpdateCategoryRequest request,
-                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
+                                                   @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
         return ResponseEntity.ok(categoryService.update(request, userDetails.getId()));
     }
 

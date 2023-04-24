@@ -26,10 +26,14 @@ public class Category extends BaseEntity {
     private Store store;
 
     /**
-     * 비즈니스 로직
+     * methods
      */
 
-    public void modified(final UpdateCategoryRequest request) {
+    public void update(final UpdateCategoryRequest request) {
         this.name = request.getName();
+    }
+
+    public void initStore(final Store store) {
+        this.store = store;
     }
 }
