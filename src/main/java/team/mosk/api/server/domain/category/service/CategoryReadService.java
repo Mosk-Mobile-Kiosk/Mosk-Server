@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
+import team.mosk.api.server.domain.category.model.persist.CategoryRepository;
 
 import java.util.List;
 
@@ -12,8 +13,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryReadService {
 
+    private final CategoryRepository categoryRepository;
+
     public List<CategoryResponse> findAllByStoreId(final Long storeId) {
-        // TODO: 2023-04-20 QueryDSL 반영 후 작업
-        return null;
+        return categoryRepository.findAllByStoreId(storeId);
     }
 }
