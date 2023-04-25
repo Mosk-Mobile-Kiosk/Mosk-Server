@@ -10,6 +10,11 @@ public class CustomUserDetails implements UserDetails {
     private Long id;
     private String email;
 
+    public CustomUserDetails(Long id, String email) {
+        this.id = id;
+        this.email = email;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

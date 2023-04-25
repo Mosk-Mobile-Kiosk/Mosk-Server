@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
@@ -25,9 +23,6 @@ public class AuthService {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder managerBuilder;
 
-    /**
-     * findUserDetailsByEmail를 QueryDsl로 처리 예정
-     */
     public TokenDto login(SignInDto request) {
         CustomUserDetails userDetails = storeRepository.findUserDetailsByEmail(request.getEmail())
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
