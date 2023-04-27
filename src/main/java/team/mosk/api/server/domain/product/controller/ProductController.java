@@ -64,7 +64,7 @@ public class ProductController {
         return ResponseEntity.ok(productReadService.findAllByCategoryNameEachStore(productSearch));
     }
 
-    @PatchMapping
+    @PatchMapping("/products/selling")
     public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.changeSellingStatus(request, userDetails.getId());

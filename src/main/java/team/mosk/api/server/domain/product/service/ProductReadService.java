@@ -37,13 +37,11 @@ public class ProductReadService {
     }
 
     public Page<ProductResponse> findAllWithPaging(final Long storeId, final Pageable pageable) {
-        // TODO: 2023-04-20 QueryDSL 추가 후 작업
-        return null;
+        return productRepository.findAllWithPaging(storeId, pageable);
     }
 
     public List<ProductResponse> findAllByCategoryNameEachStore(final ProductSearch productSearch) {
-        // TODO: 2023-04-20 QueryDSL 추가 후 작업
-        return null;
+        return productRepository.findAllByCategoryNameEachStore(productSearch);
     }
 
 
