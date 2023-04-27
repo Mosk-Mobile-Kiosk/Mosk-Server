@@ -5,10 +5,10 @@ import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
 import java.util.Optional;
 
-public interface StoreRepository extends JpaRepository<Store, Long> {
+public interface StoreRepository extends JpaRepository<Store, Long>, CustomStoreRepository {
     boolean existsByEmail(String email);
 
     boolean existsByCrn(String crn);
 
-    Optional<CustomUserDetails> findUserDetailsByEmail(String email);
+
 }

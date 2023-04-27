@@ -29,9 +29,6 @@ public class StoreController {
     private final StoreService storeService;
     private final StoreReadService storeReadService;
 
-    @Value("${macFilePath}")
-    private final String imgPath;
-
     @PostMapping("/stores")
 
     public ResponseEntity<StoreResponse> create(@Validated @RequestBody SignUpRequest request) {
