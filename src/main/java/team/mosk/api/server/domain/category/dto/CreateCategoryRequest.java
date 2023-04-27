@@ -16,4 +16,8 @@ public class CreateCategoryRequest {
                 .name(name)
                 .build();
     }
+
+    public static CreateCategoryRequest of(final Category category) {
+        return new CreateCategoryRequest(category.getName());
+    }
 }

@@ -6,6 +6,7 @@ import lombok.*;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class UpdateProductRequest {
 
     private Long productId;

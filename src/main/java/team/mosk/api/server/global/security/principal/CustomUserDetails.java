@@ -2,6 +2,7 @@ package team.mosk.api.server.global.security.principal;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import team.mosk.api.server.domain.store.model.persist.Store;
 
 import java.util.Collection;
 
@@ -52,5 +53,9 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public static CustomUserDetails of(final Store store) {
+        return new CustomUserDetails(store.getId(), store.getEmail());
     }
 }

@@ -8,6 +8,7 @@ import team.mosk.api.server.domain.product.model.vo.Selling;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class CreateProductRequest {
 
     private String name;
