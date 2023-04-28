@@ -2,6 +2,7 @@ package team.mosk.api.server.domain.auth.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,7 +32,7 @@ public class AuthController {
     public ResponseEntity<AccessToken> login(SignInDto request) {
         TokenDto tokenDto = authService.login(request);
         String refreshToken = tokenDto.getRefreshToken();
-        return ResponseEntity.ok()
+        return ResponseEntity.status(HttpStatus.CREATED)
                 .header(HttpHeaders.SET_COOKIE, getCookie(refreshToken).toString())
                 .body(new AccessToken(tokenDto.getAccessToken()));
     }
@@ -49,7 +50,7 @@ public class AuthController {
     @PostMapping("public/auth/reissue")
     public ResponseEntity<AccessToken> reissue(@RequestBody AccessToken accessToken,
                                                @CookieValue(name = "refreshToken") String refreshToken) {
-        return ResponseEntity.ok(authService.reissue(accessToken, refreshToken));
+        return ResponseEntity.status(HttpStatus.CREATED).body(authService.reissue(accessToken, refreshToken));
     }
 
     private ResponseCookie getCookie(String refreshToken) {
