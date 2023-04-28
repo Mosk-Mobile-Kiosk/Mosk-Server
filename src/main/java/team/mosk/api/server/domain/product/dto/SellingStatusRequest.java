@@ -7,6 +7,7 @@ import team.mosk.api.server.domain.product.model.vo.Selling;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class SellingStatusRequest {
     private Long productId;
 
