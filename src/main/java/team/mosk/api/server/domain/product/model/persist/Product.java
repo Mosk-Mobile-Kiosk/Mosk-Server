@@ -62,4 +62,8 @@ public class Product extends BaseEntity {
     public void initStore(final Store store) {
         this.store = store;
     }
+
+    public void initProductImg(final ProductImg productImg) {
+        this.productImg = productImg;
+    }
 }

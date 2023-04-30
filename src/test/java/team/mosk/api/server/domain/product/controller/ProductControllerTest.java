@@ -134,7 +134,7 @@ public class ProductControllerTest {
     }
 
     @Test
-    @DisplayName("카테고리 이름과 상점ID로 해당 상점의 카테고리 상품 조회")
+    @DisplayName("카테고리 이름과 상점 ID로 해당 상점의 카테고리 상품 조회")
     @Transactional(readOnly = true)
     void findAllByCategoryNameEachStore() throws Exception {
         ProductSearch request
