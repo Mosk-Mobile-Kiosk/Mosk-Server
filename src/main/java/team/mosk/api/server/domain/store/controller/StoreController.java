@@ -29,8 +29,7 @@ public class StoreController {
     private final StoreService storeService;
     private final StoreReadService storeReadService;
 
-    @PostMapping("/stores")
-
+    @PostMapping("public/stores")
     public ResponseEntity<StoreResponse> create(@Validated @RequestBody SignUpRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(storeService.create(request.toEntity()));
     }
@@ -40,7 +39,7 @@ public class StoreController {
         return ResponseEntity.ok().body(storeReadService.findById(customUserDetails.getId()));
     }
 
-    @GetMapping("/stores/email-check/{email}")
+    @GetMapping("public/stores/email-check/{email}")
     public ResponseEntity<Void> emailCheck(@PathVariable String email) {
         if (storeReadService.emailDuplicateCheck(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
@@ -49,14 +48,14 @@ public class StoreController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/stores/business-registration")
+    @GetMapping("public/stores/business-registration")
     public ResponseEntity<Void> businessRegistrationCheck(@RequestParam("crn") String crn,
                                                           @RequestParam("foundedDate") String foundedDate,
                                                           @RequestParam("ownerName") String ownerName) {
         BusinessCheckRequest request = new BusinessCheckRequest(crn, foundedDate.replaceAll("-", ""), ownerName);
 
         if (storeReadService.businessRegistrationCheck(request)) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
 
         return ResponseEntity.ok().build();

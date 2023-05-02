@@ -12,9 +12,6 @@ public class WebClientConfig {
     @Value("${gongGongData.apiKey}")
     private String gongGongApiKey;
 
-
-
-
     @Bean(name = "gongGongDataClient")
     public WebClient gongGongDataClient() {
         return WebClient.builder()

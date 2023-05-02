@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import team.mosk.api.server.global.jwt.dto.TokenDto;
+import team.mosk.api.server.global.security.principal.CustomUserDetails;
 import team.mosk.api.server.global.security.principal.CustomUserDetailsService;
 
 import java.security.Key;
@@ -47,11 +48,11 @@ public class TokenProvider implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public TokenDto createToken(Long memberId, Authentication authentication) {
+    public TokenDto createToken(String email, Authentication authentication) {
         long now = (new Date()).getTime();
 
         String accessToken = Jwts.builder()
-                .claim("id", memberId.toString())
+                .claim("email", email.toString())
                 .setExpiration(new Date(now + accessTokenValidityInMillisecond))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -72,11 +73,11 @@ public class TokenProvider implements InitializingBean {
                 .parseClaimsJws(token)
                 .getBody();
 
-        String id = String.valueOf(claims.get("id"));
+        String email = String.valueOf(claims.get("email"));
 
-        UserDetails principal = customUserDetailsService.loadUserByUsername(id);
+        CustomUserDetails principal = customUserDetailsService.loadUserByUsername(email);
 
-        return new UsernamePasswordAuthenticationToken(principal, principal.getPassword());
+        return new UsernamePasswordAuthenticationToken(principal, principal.getPassword(), principal.getAuthorities());
     }
 
     public boolean validateToken(String token) {

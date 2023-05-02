@@ -31,7 +31,7 @@ public class AuthService {
 
         Authentication authenticate = managerBuilder.getObject().authenticate(token);
 
-        return tokenProvider.createToken(userDetails.getId(), authenticate);
+        return tokenProvider.createToken(userDetails.getUsername(), authenticate);
     }
 
     public AccessToken reissue(AccessToken accessToken, String refreshToken) {
@@ -41,6 +41,6 @@ public class AuthService {
 
         Authentication authentication = tokenProvider.getAuthentication(accessToken.getAccessToken());
         CustomUserDetails principal = (CustomUserDetails) authentication.getPrincipal();
-        return AccessToken.of(tokenProvider.createToken(principal.getId(), authentication).getAccessToken());
+        return AccessToken.of(tokenProvider.createToken(principal.getUsername(), authentication).getAccessToken());
     }
 }

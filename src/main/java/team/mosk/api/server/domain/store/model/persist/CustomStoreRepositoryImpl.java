@@ -23,10 +23,24 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository{
                 queryFactory
                     .select(Projections.constructor(CustomUserDetails.class,
                             store.id,
-                            store.email))
+                            store.email,
+                            store.password))
                     .from(store)
                     .where(store.email.eq(email))
                     .fetchOne());
+    }
+
+    @Override
+    public Optional<CustomUserDetails> findUserDetailsById(Long id) {
+        return Optional.of(
+                queryFactory
+                        .select(Projections.constructor(CustomUserDetails.class,
+                                store.id,
+                                store.email,
+                                store.password))
+                        .from(store)
+                        .where(store.id.eq(id))
+                        .fetchOne());
     }
 
 

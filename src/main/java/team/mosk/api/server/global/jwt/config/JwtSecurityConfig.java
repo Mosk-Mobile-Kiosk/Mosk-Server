@@ -11,7 +11,7 @@ import team.mosk.api.server.global.jwt.TokenProvider;
 @RequiredArgsConstructor
 public class JwtSecurityConfig extends SecurityConfigurerAdapter<DefaultSecurityFilterChain, HttpSecurity> {
 
-    private TokenProvider tokenProvider;
+    private final TokenProvider tokenProvider;
 
     @Override
     public void configure(HttpSecurity builder) {
