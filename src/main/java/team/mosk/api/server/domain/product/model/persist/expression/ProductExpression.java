@@ -6,15 +6,34 @@ import org.springframework.util.StringUtils;
 import static team.mosk.api.server.domain.product.model.persist.QProduct.*;
 
 public enum ProductExpression {
-    EQ_CATEGORY_NAME {
+    EQ_CATEGORY_ID {
         @Override
-        public BooleanExpression eqProductField(String categoryName) {
-            if (!StringUtils.hasText(categoryName)) {
+        public BooleanExpression eqProductField(Long categoryId) {
+            if (categoryId == null) {
                 return null;
             }
-            return product.category.name.eq(categoryName);
+            return product.category.id.eq(categoryId);
+        }
+    },
+    EQ_STORE_ID {
+        @Override
+        public BooleanExpression eqProductField(Long storeId) {
+            if (storeId == null) {
+                return null;
+            }
+            return product.store.id.eq(storeId);
+        }
+    },
+
+    EQ_PRODUCT_ID {
+        @Override
+        public BooleanExpression eqProductField(Long productId) {
+            if (productId == null) {
+                return null;
+            }
+            return product.id.eq(productId);
         }
     };
 
-    public abstract BooleanExpression eqProductField(final String keyword);
+    public abstract BooleanExpression eqProductField(final Long targetId);
 }
