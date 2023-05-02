@@ -44,8 +44,8 @@ public class ProductService {
     private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
     private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
     private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
-    private static final String LOCAL_PATH = "C:\\Users\\bae\\Desktop\\study\\imgs\\";
-    private static final String BASIC_IMG_PATH = "C:\\Users\\bae\\Desktop\\study\\basic\\basic.jpg";
+    private static final String LOCAL_PATH = "C:\\Users\\Student\\Desktop\\study\\imgs";
+    private static final String BASIC_IMG_PATH = "C:\\Users\\Student\\Desktop\\study\\basic\\basic.jpg";
 
 
     public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {

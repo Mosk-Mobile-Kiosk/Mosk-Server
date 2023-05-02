@@ -48,9 +48,21 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<ProductResponse> findByProductId(@PathVariable Long productId) {
-        return ResponseEntity.ok(productReadService.findByProductId(productId));
+    @PatchMapping("/products/status")
+    public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
+                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
+        productService.changeSellingStatus(request, userDetails.getId());
+        return ResponseEntity.ok().build();
+    }
+
+
+    /**
+     * ReadService Methods
+     */
+
+    @GetMapping("/public/products/category")
+    public ResponseEntity<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearch productSearch) {
+        return ResponseEntity.ok(productReadService.findAllByCategoryNameEachStore(productSearch));
     }
 
     @GetMapping("/public/products")
@@ -59,23 +71,17 @@ public class ProductController {
         return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
     }
 
-    @GetMapping("/public/products/category")
-    public ResponseEntity<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearch productSearch) {
-        return ResponseEntity.ok(productReadService.findAllByCategoryNameEachStore(productSearch));
+    @GetMapping("/public/products/{productId}")
+    public ResponseEntity<ProductResponse> findByProductId(@PathVariable Long productId) {
+        return ResponseEntity.ok(productReadService.findByProductId(productId));
     }
 
-    @PatchMapping("/products/selling")
-    public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
-                                                    @AuthenticationPrincipal CustomUserDetails userDetails) {
-        productService.changeSellingStatus(request, userDetails.getId());
-        return ResponseEntity.ok().build();
-    }
 
     /**
      * files
      */
 
-    @GetMapping("/products/img/{productId}")
+    @GetMapping("/public/products/img/{productId}")
     public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId) throws IOException {
         ProductImgResponse response = productReadService.findImgByProductId(productId);
         return ResponseEntity.ok()

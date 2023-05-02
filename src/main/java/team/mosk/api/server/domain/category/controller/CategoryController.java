@@ -42,7 +42,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.update(request, userDetails.getId()));
     }
 
-    @GetMapping("/categories/{storeId}")
+    /**
+     * ReadService Methods
+     */
+
+    @GetMapping("/public/categories/{storeId}")
     public ResponseEntity<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {
         return ResponseEntity.ok(categoryReadService.findAllByStoreId(storeId));
     }
