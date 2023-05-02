@@ -6,4 +6,6 @@ import java.util.Optional;
 
 public interface CustomStoreRepository {
     Optional<CustomUserDetails> findUserDetailsByEmail(String email);
+
+    Optional<CustomUserDetails> findUserDetailsById(Long id);
 }

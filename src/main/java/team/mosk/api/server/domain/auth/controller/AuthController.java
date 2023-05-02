@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/public/auth")
-    public ResponseEntity<AccessToken> login(SignInDto request) {
+    public ResponseEntity<AccessToken> login(@RequestBody @Validated SignInDto request) {
         TokenDto tokenDto = authService.login(request);
         String refreshToken = tokenDto.getRefreshToken();
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -48,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("public/auth/reissue")
-    public ResponseEntity<AccessToken> reissue(@RequestBody AccessToken accessToken,
+    public ResponseEntity<AccessToken> reissue(@RequestBody @Validated AccessToken accessToken,
                                                @CookieValue(name = "refreshToken") String refreshToken) {
         return ResponseEntity.status(HttpStatus.CREATED).body(authService.reissue(accessToken, refreshToken));
     }

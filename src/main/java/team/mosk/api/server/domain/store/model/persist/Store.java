@@ -68,6 +68,10 @@ public class Store extends BaseEntity {
         this.qrCode = qrCode;
     }
 
+    public void setEncodePassword(String encodePassword) {
+        this.password = encodePassword;
+    }
+
     public void update(StoreUpdateRequest request) {
         this.storeName = request.getStoreName();
         this.ownerName = request.getOwnerName();

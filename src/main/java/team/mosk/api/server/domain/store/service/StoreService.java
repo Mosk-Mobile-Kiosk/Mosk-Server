@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.store.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,6 +29,9 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final QRCodeRepository qrCodeRepository;
+
+    private final PasswordEncoder encoder;
+
     private final WebClient webClient;
 
     private final String qrImgWidthHeight = "500x500";
@@ -36,9 +40,11 @@ public class StoreService {
 
     public StoreService(StoreRepository storeRepository,
                         QRCodeRepository qrCodeRepository,
+                        PasswordEncoder encoder,
                         @Qualifier("qrCodeClient") WebClient webClient) {
         this.storeRepository = storeRepository;
         this.qrCodeRepository = qrCodeRepository;
+        this.encoder = encoder;
         this.webClient = webClient;
     }
 
@@ -50,6 +56,8 @@ public class StoreService {
         if(storeRepository.existsByCrn(store.getCrn())){
             throw new DuplicateCrnException("이미 등록된 사업자등록번호 입니다.");
         }
+
+        store.setEncodePassword(encoder.encode(store.getPassword()));
 
         return StoreResponse.of(storeRepository.save(store));
     }
