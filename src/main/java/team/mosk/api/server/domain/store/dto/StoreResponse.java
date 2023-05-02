@@ -3,10 +3,12 @@ package team.mosk.api.server.domain.store.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 @Getter
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
 public class StoreResponse {
@@ -18,11 +20,12 @@ public class StoreResponse {
     private String address;
 
     public static StoreResponse of(Store store) {
-        return new StoreResponse(store.getId(),
-                            store.getEmail(),
-                            store.getStoreName(),
-                            store.getOwnerName(),
-                            store.getCall(),
-                            store.getAddress());
+        return new StoreResponse(
+                        store.getId(),
+                        store.getEmail(),
+                        store.getStoreName(),
+                        store.getOwnerName(),
+                        store.getCall(),
+                        store.getAddress());
     }
 }

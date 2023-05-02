@@ -1,6 +1,7 @@
 package team.mosk.api.server.domain.store.model.persist;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.mosk.api.server.global.common.BaseEntity;
@@ -23,6 +24,13 @@ public class QRCode extends BaseEntity {
     @JoinColumn(name = "store_id")
     private Store store;
 
+
+    @Builder
+    public QRCode(Long id, String path, Store store) {
+        this.id = id;
+        this.path = path;
+        this.store = store;
+    }
 
     public QRCode(String path, Store store) {
         this.path = path;
