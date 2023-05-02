@@ -108,6 +108,8 @@ public class ProductService {
         String uuid = UUID.randomUUID().toString();
         String path = LOCAL_PATH + uuid;
 
+        dropOldImgMetaFromDB(findProduct.getProductImg());
+
         ProductImg newProductImg = ProductImg.builder()
                 .name(uuid)
                 .path(path)
@@ -152,5 +154,9 @@ public class ProductService {
 
         ProductImg savedImg = productImgRepository.save(basicProductImg);
         product.initProductImg(savedImg);
+    }
+
+    public void dropOldImgMetaFromDB(final ProductImg productImg) {
+        productImgRepository.delete(productImg);
     }
 }

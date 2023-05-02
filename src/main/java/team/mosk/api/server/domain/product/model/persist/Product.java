@@ -30,7 +30,7 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Selling selling;
 
-    @OneToOne(mappedBy = "product")
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
     private ProductImg productImg;
 
     @ManyToOne(fetch = FetchType.LAZY)

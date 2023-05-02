@@ -26,7 +26,6 @@ public class StoreReadService {
     private final QRCodeRepository qrCodeRepository;
     private final WebClient webClient;
 
-
     public StoreReadService(StoreRepository storeRepository,
                             QRCodeRepository qrCodeRepository,
                             @Qualifier("gongGongDataClient") WebClient webClient) {
