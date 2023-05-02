@@ -1,6 +1,7 @@
 package team.mosk.api.server.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,6 +31,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class ProductService {
 
     private final CategoryRepository categoryRepository;
@@ -42,8 +44,8 @@ public class ProductService {
     private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
     private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
     private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
-    private static final String LOCAL_PATH = "C:\\Users\\Student\\Desktop\\study\\imgs\\";
-    private static final String BASIC_IMG_PATH = "C:\\Users\\Student\\Desktop\\study\\baseImg\\basic";
+    private static final String LOCAL_PATH = "C:\\Users\\bae\\Desktop\\study\\imgs\\";
+    private static final String BASIC_IMG_PATH = "C:\\Users\\bae\\Desktop\\study\\basic\\basic.jpg";
 
 
     public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {
@@ -114,11 +116,12 @@ public class ProductService {
                 .build();
 
         ProductImg savedProductImg = productImgRepository.save(newProductImg);
+        findProduct.initProductImg(savedProductImg);
 
         newFile.transferTo(new File(path));
 
         File targetFile = new File(oldPath);
-        if (!targetFile.getName().equals("basic")) {
+        if (!targetFile.getName().equals("basic.jpg")) {
             deleteTargetFile(targetFile);
         }
 
@@ -137,20 +140,17 @@ public class ProductService {
         }
     }
 
-    public void initBasicImg(final Product product) {
+    public void initBasicImg(final Product product) throws BasicImgInitFailedException{
         File target = new File(BASIC_IMG_PATH);
 
         ProductImg basicProductImg = ProductImg.builder()
                 .name(target.getName())
-                .contentType(MediaType.IMAGE_PNG_VALUE)
+                .contentType(MediaType.IMAGE_JPEG_VALUE)
                 .path(target.getPath())
                 .product(product)
                 .build();
 
-        try {
-            productImgRepository.save(basicProductImg);
-        } catch (Exception e) {
-            throw new BasicImgInitFailedException("이미지 삽입 실패");
-        }
+        ProductImg savedImg = productImgRepository.save(basicProductImg);
+        product.initProductImg(savedImg);
     }
 }
