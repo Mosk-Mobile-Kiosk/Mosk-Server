@@ -15,7 +15,7 @@ import team.mosk.api.server.domain.category.dto.CreateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
 import team.mosk.api.server.domain.category.service.CategoryReadService;
 import team.mosk.api.server.domain.category.service.CategoryService;
-import team.mosk.api.server.domain.store.WithAuthUser;
+import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import java.util.ArrayList;
 import java.util.List;

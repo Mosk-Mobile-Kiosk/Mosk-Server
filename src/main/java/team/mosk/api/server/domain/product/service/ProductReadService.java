@@ -11,7 +11,6 @@ import team.mosk.api.server.domain.product.dto.ProductSearchFromCategory;
 import team.mosk.api.server.domain.product.dto.ProductSearch;
 import team.mosk.api.server.domain.product.error.ProductImgNotFoundException;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
-import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
 import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;

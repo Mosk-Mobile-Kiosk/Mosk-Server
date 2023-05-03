@@ -1,6 +1,5 @@
 package team.mosk.api.server.domain.category.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,12 +11,12 @@ import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
 import team.mosk.api.server.domain.category.model.persist.Category;
 import team.mosk.api.server.domain.category.model.persist.CategoryRepository;
 import team.mosk.api.server.domain.category.util.GivenCategory;
-import team.mosk.api.server.domain.store.WithAuthUser;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import java.util.List;
 import java.util.Optional;
