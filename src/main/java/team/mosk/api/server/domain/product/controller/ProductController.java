@@ -66,7 +66,7 @@ public class ProductController {
 
     @GetMapping("/public/products/all")
     public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
-                                                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                                                   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
     }
 
