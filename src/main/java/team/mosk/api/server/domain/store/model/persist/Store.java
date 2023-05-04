@@ -34,6 +34,7 @@ public class Store extends BaseEntity {
 
     private String ownerName;
 
+    @Column(name = "call_number")
     private String call;
 
     private String crn; // 사업자등록 번호
