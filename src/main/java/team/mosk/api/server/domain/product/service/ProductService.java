@@ -2,6 +2,8 @@ package team.mosk.api.server.domain.product.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.common.GetPathByEnvironment;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,13 +43,11 @@ public class ProductService {
 
     private final StoreRepository storeRepository;
 
+
     private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
     private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
     private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
     private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
-    private static final String LOCAL_PATH = "C:\\Users\\bae\\Desktop\\study\\imgs";
-    private static final String BASIC_IMG_PATH = "C:\\Users\\bae\\Desktop\\study\\basic\\basic.jpg";
-
 
     public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {
         Category findCategory = categoryRepository.findById(categoryId)
@@ -105,8 +106,9 @@ public class ProductService {
         validateStoreOwner(findProduct.getStore().getId(), storeId);
 
         String oldPath = findProduct.getProductImg().getPath();
+        log.info("oldPath is [{}]", oldPath);
         String uuid = UUID.randomUUID().toString();
-        String path = LOCAL_PATH + uuid;
+        String path = GetPathByEnvironment.getPath("update") + uuid;
 
         dropOldImgMetaFromDB(findProduct.getProductImg());
 
@@ -122,9 +124,9 @@ public class ProductService {
 
         newFile.transferTo(new File(path));
 
-        File targetFile = new File(oldPath);
-        if (!targetFile.getName().equals("basic.jpg")) {
-            deleteTargetFile(targetFile);
+        boolean result = deleteTargetFile(oldPath);
+        if (!result) {
+            throw new FailedDeleteImgException(FAILED_DELETE_IMG);
         }
 
         return ProductImgResponse.of(savedProductImg);
@@ -136,14 +138,18 @@ public class ProductService {
         }
     }
 
-    public void deleteTargetFile(final File targetFile) {
-        if (!targetFile.delete()) {
-            throw new FailedDeleteImgException(FAILED_DELETE_IMG);
+    public boolean deleteTargetFile(final String oldPath) {
+
+        if (!oldPath.contains("basic.jpg")) {
+            File file = new File(oldPath);
+            return file.delete();
         }
+
+        return true;
     }
 
-    public void initBasicImg(final Product product) throws BasicImgInitFailedException{
-        File target = new File(BASIC_IMG_PATH);
+    public void initBasicImg(final Product product) throws BasicImgInitFailedException {
+        File target = new File(GetPathByEnvironment.getPath("basic"));
 
         ProductImg basicProductImg = ProductImg.builder()
                 .name(target.getName())
