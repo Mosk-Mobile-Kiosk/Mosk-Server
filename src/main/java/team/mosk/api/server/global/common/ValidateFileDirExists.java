@@ -28,12 +28,16 @@ public class ValidateFileDirExists {
         boolean firResult = createDirIfNotExist(basicPathDir);
         if (!firResult) {
             log.info("ValidateFileDirExists is throws message [{}]", ALREADY_EXIST_DIR_OR_ERROR);
+        } else {
+            log.info("ValidateFileDirExists is created new directory");
         }
 
         File filePathDir = new File(filePath);
         boolean secResult = createDirIfNotExist(filePathDir);
         if (!secResult) {
             log.info("ValidateFileDirExists is throws message [{}]", ALREADY_EXIST_DIR_OR_ERROR);
+        } else {
+            log.info("ValidateFileDirExists is created new directory");
         }
     }
 
