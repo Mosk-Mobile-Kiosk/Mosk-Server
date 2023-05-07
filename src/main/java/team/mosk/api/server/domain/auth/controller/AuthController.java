@@ -15,7 +15,6 @@ import team.mosk.api.server.global.jwt.dto.TokenDto;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
-
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
