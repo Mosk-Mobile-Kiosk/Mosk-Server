@@ -2,7 +2,6 @@ package team.mosk.api.server.domain.product.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -48,34 +47,46 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/products/{productId}")
-    public ResponseEntity<ProductResponse> findByProductId(@PathVariable Long productId) {
-        return ResponseEntity.ok(productReadService.findByProductId(productId));
-    }
-
-    @GetMapping("/public/products")
-    public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
-                                                                   @PageableDefault(sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
-    }
-
-    @GetMapping("/public/products/category")
-    public ResponseEntity<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearch productSearch) {
-        return ResponseEntity.ok(productReadService.findAllByCategoryNameEachStore(productSearch));
-    }
-
-    @PatchMapping("/products/selling")
+    @PatchMapping("/products/status")
     public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.changeSellingStatus(request, userDetails.getId());
         return ResponseEntity.ok().build();
     }
 
+
+    /**
+     * ReadService Methods
+     */
+
+    @GetMapping("/public/products/category")
+    public ResponseEntity<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearchFromCategory productSearchFromCategory) {
+        return ResponseEntity.ok(productReadService.findAllByCategoryIdEachStore(productSearchFromCategory));
+    }
+
+    @GetMapping("/public/products/all")
+    public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
+                                                                   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
+    }
+
+    @GetMapping("/public/products")
+    public ResponseEntity<ProductResponse> findByProductId(@ModelAttribute ProductSearch productSearch) {
+        return ResponseEntity.ok(productReadService.findByProductIdAndStoreId(productSearch));
+    }
+
+    @GetMapping("/public/products/keywords")
+    public ResponseEntity<List<ProductResponse>> findProductsHasKeyword(@RequestParam(name = "storeId") Long storeId,
+                                                                        @RequestParam(name = "keyword") String keyword) {
+        return ResponseEntity.ok(productReadService.findProductsHasKeyword(storeId, keyword));
+    }
+
+
     /**
      * files
      */
 
-    @GetMapping("/products/img/{productId}")
+    @GetMapping("/public/products/img/{productId}")
     public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId) throws IOException {
         ProductImgResponse response = productReadService.findImgByProductId(productId);
         return ResponseEntity.ok()

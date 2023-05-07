@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeHttpRequests()
+                .antMatchers(HttpMethod.OPTIONS).permitAll()
                 .antMatchers(PUBLIC).permitAll()
                 .anyRequest().authenticated();
 

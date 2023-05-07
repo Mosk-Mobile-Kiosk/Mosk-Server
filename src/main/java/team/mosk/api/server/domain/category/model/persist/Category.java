@@ -2,10 +2,14 @@ package team.mosk.api.server.domain.category.model.persist;
 
 import lombok.*;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
+import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @Entity
 @Getter
@@ -24,6 +28,9 @@ public class Category extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_id")
     private Store store;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    private List<Product> products = new ArrayList<>();
 
     /**
      * methods

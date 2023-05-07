@@ -9,17 +9,11 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Builder
-public class UpdateProductRequest {
+public class ProductSearchFromCategory {
 
     @NotBlank
-    private Long productId;
+    private Long storeId;
 
     @NotBlank
-    private String name;
-
-    @NotBlank
-    private String description;
-
-    @NotBlank
-    private Long price;
+    private Long categoryId;
 }

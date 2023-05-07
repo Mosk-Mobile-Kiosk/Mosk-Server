@@ -19,7 +19,7 @@ public class CustomStoreRepositoryImpl implements CustomStoreRepository{
 
     @Override
     public Optional<CustomUserDetails> findUserDetailsByEmail(String email) {
-        return Optional.of(
+        return Optional.ofNullable(
                 queryFactory
                     .select(Projections.constructor(CustomUserDetails.class,
                             store.id,

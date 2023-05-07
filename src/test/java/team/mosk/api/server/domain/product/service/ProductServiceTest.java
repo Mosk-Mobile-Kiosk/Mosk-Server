@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.product.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
@@ -23,20 +24,22 @@ import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 import team.mosk.api.server.domain.product.util.GivenProduct;
-import team.mosk.api.server.domain.store.WithAuthUser;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
+import static team.mosk.api.server.domain.product.util.TextValidator.*;
 
 @SpringBootTest
 @Transactional
@@ -61,6 +64,7 @@ public class ProductServiceTest {
 
     static Store store;
     static Category category;
+
     @BeforeEach
     void init() {
         Store newStore = Store.builder()
@@ -146,17 +150,17 @@ public class ProductServiceTest {
     @Test
     @DisplayName("상품 이미지 업데이트")
     @WithAuthUser
-    void updateProductImg() throws Exception {
+    void updateProductImg(@TempDir Path temp) throws Exception {
+
+        Path testPath = temp.resolve("image.jpg");
+        Files.write(testPath, "test".getBytes());
 
         Product product = GivenProduct.toEntity();
         ProductResponse productResponse = productService.create(product, category.getId(), store.getId());
 
-        String path = "C:\\Users\\bae\\Desktop\\study\\test_img.jpg";
-
-        File file = new File(path);
-        InputStream stream = new FileInputStream(file);
+        InputStream stream = new FileInputStream(testPath.toFile());
         MockMultipartFile multipartFile
-                = new MockMultipartFile("file", file.getName(), "image/jpeg", stream);
+                = new MockMultipartFile("file", testPath.getFileName().toString(), "image/jpeg", stream);
 
         ProductImgResponse productImgResponse = productService.updateImg(multipartFile, productResponse.getId(), store.getId());
 
@@ -184,7 +188,12 @@ public class ProductServiceTest {
         Product product = GivenProduct.toEntity();
         ProductResponse productResponse = productService.create(product, category.getId(), store.getId());
 
-        ProductResponse findProduct = productReadService.findByProductId(productResponse.getId());
+        ProductSearch search = ProductSearch.builder()
+                .productId(1L)
+                .storeId(1L)
+                .build();
+
+        ProductResponse findProduct = productReadService.findByProductIdAndStoreId(search);
 
         assertThat(productResponse.getId()).isEqualTo(findProduct.getId());
         assertThat(productResponse.getName()).isEqualTo(findProduct.getName());
@@ -216,15 +225,38 @@ public class ProductServiceTest {
         Product product = GivenProduct.toEntity();
         productService.create(product, category.getId(), store.getId());
 
-        ProductSearch search = ProductSearch.builder()
-                .categoryName(category.getName())
-                .storeId(store.getId())
+        ProductSearchFromCategory search = ProductSearchFromCategory.builder()
+                .storeId(1L)
+                .categoryId(1L)
                 .build();
 
-        List<ProductResponse> list = productReadService.findAllByCategoryNameEachStore(search);
+        List<ProductResponse> list = productReadService.findAllByCategoryIdEachStore(search);
 
         assertThat(list.size()).isEqualTo(1);
         assertThat(list.get(0).getName()).isEqualTo(product.getName());
+    }
+
+    @Test
+    @DisplayName("키워드로 상점 상품 검색")
+    void findProductsHasKeyword() {
+        Product product1 = Product.builder()
+                .name("초코우유")
+                .build();
+        productService.create(product1, category.getId(), store.getId());
+
+        Product product2 = Product.builder()
+                .name("초코라떼")
+                .build();
+        productService.create(product2, category.getId(), store.getId());
+
+        String keyword = "초코";
+
+        List<ProductResponse> products
+                = productReadService.findProductsHasKeyword(store.getId(), keyword);
+
+        assertThat(products.size()).isEqualTo(2);
+        assertThat(hasText(products.get(0).getName(), keyword)).isTrue();
+        assertThat(hasText(products.get(1).getName(), keyword)).isTrue();
     }
 
     /**

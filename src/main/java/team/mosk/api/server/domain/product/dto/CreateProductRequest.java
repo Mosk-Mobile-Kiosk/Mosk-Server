@@ -4,6 +4,9 @@ import lombok.*;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -11,10 +14,16 @@ import team.mosk.api.server.domain.product.model.vo.Selling;
 @Builder
 public class CreateProductRequest {
 
+    @NotBlank
     private String name;
+
+    @NotBlank
     private String description;
+
+    @NotNull
     private Long price;
 
+    @NotNull
     private Long categoryId;
 
     public Product toEntity() {
