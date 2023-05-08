@@ -73,11 +73,11 @@ public class ProductControllerTest {
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1))
-                .andExpect(jsonPath("$.name").value(createRequest.getName()))
-                .andExpect(jsonPath("$.description").value(createRequest.getDescription()))
-                .andExpect(jsonPath("$.price").value(createRequest.getPrice()))
-                .andExpect(jsonPath("$.selling").value(Selling.SELLING.name()))
+                .andExpect(jsonPath("$.data.id").value(1))
+                .andExpect(jsonPath("$.data.name").value(createRequest.getName()))
+                .andExpect(jsonPath("$.data.description").value(createRequest.getDescription()))
+                .andExpect(jsonPath("$.data.price").value(createRequest.getPrice()))
+                .andExpect(jsonPath("$.data.selling").value(Selling.SELLING.name()))
                 .andDo(print());
     }
 
@@ -176,10 +176,10 @@ public class ProductControllerTest {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(updateRequest.getProductId()))
-                .andExpect(jsonPath("$.name").value(updateRequest.getName()))
-                .andExpect(jsonPath("$.description").value(updateRequest.getDescription()))
-                .andExpect(jsonPath("$.price").value(updateRequest.getPrice()))
+                .andExpect(jsonPath("$.data.id").value(updateRequest.getProductId()))
+                .andExpect(jsonPath("$.data.name").value(updateRequest.getName()))
+                .andExpect(jsonPath("$.data.description").value(updateRequest.getDescription()))
+                .andExpect(jsonPath("$.data.price").value(updateRequest.getPrice()))
                 .andDo(print());
     }
 

@@ -15,10 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 import team.mosk.api.server.domain.product.dto.*;
 import team.mosk.api.server.domain.product.service.ProductReadService;
 import team.mosk.api.server.domain.product.service.ProductService;
+import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
 import java.io.IOException;
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,29 +32,33 @@ public class ProductController {
     private final ProductReadService productReadService;
 
     @PostMapping("/products")
-    public ResponseEntity<ProductResponse> create(@Validated @RequestBody CreateProductRequest request,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.create(request.toEntity(), request.getCategoryId(), userDetails.getId()));
+    @ResponseStatus(CREATED)
+    public ApiResponse<ProductResponse> create(@Validated @RequestBody CreateProductRequest request,
+                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.of(CREATED, productService.create(request.toEntity(), request.getCategoryId(), userDetails.getId()));
     }
 
     @PutMapping("/products")
-    public ResponseEntity<ProductResponse> update(@Validated @RequestBody UpdateProductRequest request,
+    @ResponseStatus(OK)
+    public ApiResponse<ProductResponse> update(@Validated @RequestBody UpdateProductRequest request,
                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.ok(productService.update(request, userDetails.getId()));
+        return ApiResponse.ok(productService.update(request, userDetails.getId()));
     }
 
     @DeleteMapping("/products/{productId}")
-    public ResponseEntity<Void> delete(@PathVariable Long productId,
+    @ResponseStatus(NO_CONTENT)
+    public ApiResponse<Void> delete(@PathVariable Long productId,
                                        @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.delete(productId, userDetails.getId());
-        return ResponseEntity.noContent().build();
+        return ApiResponse.of(NO_CONTENT, null);
     }
 
     @PatchMapping("/products/status")
-    public ResponseEntity<Void> changeSellingStatus(@Validated @RequestBody SellingStatusRequest request,
+    @ResponseStatus(OK)
+    public ApiResponse<Void> changeSellingStatus(@Validated @RequestBody SellingStatusRequest request,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.changeSellingStatus(request, userDetails.getId());
-        return ResponseEntity.ok().build();
+        return ApiResponse.ok(null);
     }
 
 
@@ -60,25 +67,29 @@ public class ProductController {
      */
 
     @GetMapping("/public/products/category")
-    public ResponseEntity<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearchFromCategory productSearchFromCategory) {
-        return ResponseEntity.ok(productReadService.findAllByCategoryIdEachStore(productSearchFromCategory));
+    @ResponseStatus(OK)
+    public ApiResponse<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearchFromCategory productSearchFromCategory) {
+        return ApiResponse.ok(productReadService.findAllByCategoryIdEachStore(productSearchFromCategory));
     }
 
     @GetMapping("/public/products/all")
-    public ResponseEntity<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
+    @ResponseStatus(OK)
+    public ApiResponse<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
                                                                    @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ResponseEntity.ok(productReadService.findAllWithPaging(storeId, pageable));
+        return ApiResponse.ok(productReadService.findAllWithPaging(storeId, pageable));
     }
 
     @GetMapping("/public/products")
-    public ResponseEntity<ProductResponse> findByProductId(@ModelAttribute ProductSearch productSearch) {
-        return ResponseEntity.ok(productReadService.findByProductIdAndStoreId(productSearch));
+    @ResponseStatus(OK)
+    public ApiResponse<ProductResponse> findByProductId(@ModelAttribute ProductSearch productSearch) {
+        return ApiResponse.ok(productReadService.findByProductIdAndStoreId(productSearch));
     }
 
     @GetMapping("/public/products/keywords")
-    public ResponseEntity<List<ProductResponse>> findProductsHasKeyword(@RequestParam(name = "storeId") Long storeId,
+    @ResponseStatus(OK)
+    public ApiResponse<List<ProductResponse>> findProductsHasKeyword(@RequestParam(name = "storeId") Long storeId,
                                                                         @RequestParam(name = "keyword") String keyword) {
-        return ResponseEntity.ok(productReadService.findProductsHasKeyword(storeId, keyword));
+        return ApiResponse.ok(productReadService.findProductsHasKeyword(storeId, keyword));
     }
 
 
@@ -87,6 +98,7 @@ public class ProductController {
      */
 
     @GetMapping("/public/products/img/{productId}")
+    @ResponseStatus(OK)
     public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId) throws IOException {
         ProductImgResponse response = productReadService.findImgByProductId(productId);
         return ResponseEntity.ok()
@@ -95,6 +107,7 @@ public class ProductController {
     }
 
     @PutMapping("/products/img")
+    @ResponseStatus(OK)
     public ResponseEntity<byte[]> updateImg(@RequestParam(name = "newImg") MultipartFile newFile,
                                             @RequestParam(name = "productId") Long productId,
                                             @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
