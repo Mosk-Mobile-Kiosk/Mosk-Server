@@ -12,14 +12,13 @@ import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 public class WithAuthUserSecurityContextFactory implements WithSecurityContextFactory<WithAuthUser> {
     @Override
     public SecurityContext createSecurityContext(WithAuthUser annotation) {
-        CustomUserDetails userDetails = new CustomUserDetails(1L, GIVEN_EMAIL, "password");
+        CustomUserDetails userDetails = new CustomUserDetails(annotation.id(), annotation.email(), annotation.password());
 
         UsernamePasswordAuthenticationToken token =
-                new UsernamePasswordAuthenticationToken(userDetails, "password", null);
+                new UsernamePasswordAuthenticationToken(userDetails, annotation.password(), null);
 
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(token);
 
-        return context;
+        return SecurityContextHolder.getContext();
     }
 }

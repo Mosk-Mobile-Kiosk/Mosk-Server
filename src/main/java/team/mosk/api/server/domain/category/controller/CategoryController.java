@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.category.dto.CreateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
@@ -13,7 +14,9 @@ import team.mosk.api.server.domain.category.service.CategoryReadService;
 import team.mosk.api.server.domain.category.service.CategoryService;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -31,7 +34,7 @@ public class CategoryController {
 
     @DeleteMapping("/categories/{categoryId}")
     public ResponseEntity<Void> delete(@PathVariable Long categoryId,
-                                       @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
+                                       @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         categoryService.delete(categoryId, userDetails.getId());
         return ResponseEntity.noContent().build();
     }

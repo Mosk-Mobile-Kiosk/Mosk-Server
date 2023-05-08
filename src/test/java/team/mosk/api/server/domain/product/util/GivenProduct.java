@@ -5,11 +5,11 @@ import team.mosk.api.server.domain.product.model.vo.Selling;
 
 public class GivenProduct {
 
-    private static final String PRODUCT_NAME = "테스트 상품";
-    private static final String PRODUCT_DESCRIPTION = "테스트 설명";
-    private static final Long PRODUCT_PRICE = 100L;
+    public static final String PRODUCT_NAME = "테스트 상품";
+    public static final String PRODUCT_DESCRIPTION = "테스트 설명";
+    public static final Long PRODUCT_PRICE = 100L;
 
-    private static final Selling PRODUCT_SELLING_STATUS = Selling.SELLING;
+    public static final Selling PRODUCT_SELLING_STATUS = Selling.SELLING;
 
     public static Product toEntity() {
         return Product.builder()

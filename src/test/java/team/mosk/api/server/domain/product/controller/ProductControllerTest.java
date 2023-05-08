@@ -34,6 +34,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -50,15 +51,15 @@ public class ProductControllerTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("상품 생성")
+    @DisplayName("상품 생성 요청 JSON의 내용에 따라 상품을 생성한다.")
     @WithAuthUser
     void create() throws Exception {
         when(productService.create(any(), any(), any())).thenReturn(ProductResponse.of(GivenProduct.toEntityWithProductCount()));
 
         CreateProductRequest createRequest = CreateProductRequest.builder()
-                .name("a")
-                .description("de")
-                .price(1L)
+                .name(GivenProduct.PRODUCT_NAME)
+                .description(GivenProduct.PRODUCT_DESCRIPTION)
+                .price(GivenProduct.PRODUCT_PRICE)
                 .categoryId(1L)
                 .build();
 
@@ -68,6 +69,11 @@ public class ProductControllerTest {
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.name").value(createRequest.getName()))
+                .andExpect(jsonPath("$.description").value(createRequest.getDescription()))
+                .andExpect(jsonPath("$.price").value(createRequest.getPrice()))
+                .andExpect(jsonPath("$.selling").value(Selling.SELLING.name()))
                 .andDo(print());
     }
 
