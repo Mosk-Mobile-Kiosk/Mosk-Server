@@ -48,7 +48,7 @@ public class ProductController {
     }
 
     @PatchMapping("/products/status")
-    public ResponseEntity<Void> changeSellingStatus(@RequestBody SellingStatusRequest request,
+    public ResponseEntity<Void> changeSellingStatus(@Validated @RequestBody SellingStatusRequest request,
                                                     @AuthenticationPrincipal CustomUserDetails userDetails) {
         productService.changeSellingStatus(request, userDetails.getId());
         return ResponseEntity.ok().build();
