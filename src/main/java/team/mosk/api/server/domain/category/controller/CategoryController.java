@@ -5,15 +5,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.category.dto.CreateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.service.CategoryReadService;
 import team.mosk.api.server.domain.category.service.CategoryService;
+import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,22 +28,25 @@ public class CategoryController {
     private final CategoryReadService categoryReadService;
 
     @PostMapping("/categories")
-    public ResponseEntity<CategoryResponse> create(@Validated @RequestBody CreateCategoryRequest request,
-                                                   @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.create(request.toEntity(), userDetails.getId()));
+    @ResponseStatus(HttpStatus.CREATED)
+    public ApiResponse<CategoryResponse> create(@Validated @RequestBody CreateCategoryRequest request,
+                              @AuthenticationPrincipal CustomUserDetails userDetails) {
+        return ApiResponse.of(HttpStatus.CREATED, categoryService.create(request.toEntity(), userDetails.getId()));
     }
 
     @DeleteMapping("/categories/{categoryId}")
-    public ResponseEntity<Void> delete(@PathVariable Long categoryId,
-                                       @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ApiResponse<Void> delete(@PathVariable Long categoryId,
+                                       @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         categoryService.delete(categoryId, userDetails.getId());
-        return ResponseEntity.noContent().build();
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
     @PutMapping("/categories")
-    public ResponseEntity<CategoryResponse> update(@Validated @RequestBody UpdateCategoryRequest request,
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<CategoryResponse> update(@Validated @RequestBody UpdateCategoryRequest request,
                                                    @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
-        return ResponseEntity.ok(categoryService.update(request, userDetails.getId()));
+        return ApiResponse.ok(categoryService.update(request, userDetails.getId()));
     }
 
     /**
@@ -47,7 +54,8 @@ public class CategoryController {
      */
 
     @GetMapping("/public/categories/{storeId}")
-    public ResponseEntity<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(categoryReadService.findAllByStoreId(storeId));
+    @ResponseStatus(HttpStatus.OK)
+    public ApiResponse<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {
+        return ApiResponse.ok(categoryReadService.findAllByStoreId(storeId));
     }
 }

@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.product.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -11,15 +12,14 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class UpdateProductRequest {
 
-    @NotBlank
+    @NotNull(message = "상품 아이디는 필수입니다.")
     private Long productId;
 
-    @NotBlank
+    @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
-    @NotBlank
     private String description;
 
-    @NotBlank
+    @NotNull(message = "가격 설정은 필수입니다.")
     private Long price;
 }

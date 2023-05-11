@@ -4,6 +4,7 @@ import lombok.*;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -12,9 +13,9 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class SellingStatusRequest {
 
-    @NotBlank
+    @NotNull(message = "상품 아이디는 필수입니다.")
     private Long productId;
 
-    @NotBlank
+    @NotNull(message = "상태는 필수입니다.")
     private Selling selling;
 }

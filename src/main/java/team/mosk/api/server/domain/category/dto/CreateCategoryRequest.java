@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class CreateCategoryRequest {
 
-    @NotBlank
+    @NotBlank(message = "이름은 필수입니다.")
     private String name;
 
     public Category toEntity() {

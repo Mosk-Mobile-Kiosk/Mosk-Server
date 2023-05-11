@@ -39,7 +39,6 @@ public class CategoryServiceTest {
     CategoryReadService categoryReadService;
 
     static Store store;
-    static Long CategoryId;
 
     @BeforeEach
     void init() {
@@ -74,9 +73,9 @@ public class CategoryServiceTest {
     @DisplayName("카테고리 업데이트")
     @WithAuthUser
     void update() {
-        categoryService.create(GivenCategory.toEntity(), store.getId());
+        CategoryResponse categoryResponse = categoryService.create(GivenCategory.toEntity(), store.getId());
         UpdateCategoryRequest updateRequest = UpdateCategoryRequest.builder()
-                .categoryId(1L)
+                .categoryId(categoryResponse.getId())
                 .name("newName")
                 .build();
 

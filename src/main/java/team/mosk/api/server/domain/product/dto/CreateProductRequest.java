@@ -14,16 +14,16 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class CreateProductRequest {
 
-    @NotBlank
+    @NotBlank(message = "상품 이름은 필수입니다.")
     private String name;
 
-    @NotBlank
+
     private String description;
 
-    @NotNull
+    @NotNull(message = "가격 설정은 필수입니다.")
     private Long price;
 
-    @NotNull
+    @NotNull(message = "카테고리 아이디는 필수입니다.")
     private Long categoryId;
 
     public Product toEntity() {

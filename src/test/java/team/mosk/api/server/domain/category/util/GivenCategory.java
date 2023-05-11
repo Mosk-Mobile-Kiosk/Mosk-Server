@@ -12,6 +12,12 @@ public class GivenCategory {
                 .build();
     }
 
+    public static Category toEntityWithBlankName() {
+        return Category.builder()
+                .name("")
+                .build();
+    }
+
     public static Category toEntityWithCategoryCount() {
         return Category.builder()
                 .id(1L)
