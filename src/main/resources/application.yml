@@ -12,3 +12,8 @@ gongGongData:
 
 macFilePath: /Users/hhpp1205/Documents/mosk-img
 windowsFilePath: C:\Users\bae\Desktop\study\mosk-img
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher

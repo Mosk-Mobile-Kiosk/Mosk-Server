@@ -35,7 +35,7 @@ public class AuthService {
     }
 
     public AccessToken reissue(AccessToken accessToken, String refreshToken) {
-        if(!StringUtils.hasText(refreshToken) && tokenProvider.validateToken(refreshToken)) {
+        if(!StringUtils.hasText(refreshToken) || !tokenProvider.validateToken(refreshToken)) {
             throw new TokenNotFoundException("잘못된 JWT 서명입니다.");
         }
 
