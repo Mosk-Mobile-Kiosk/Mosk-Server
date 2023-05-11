@@ -9,6 +9,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
 import team.mosk.api.server.domain.store.dto.BusinessCheckResponse;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
+import team.mosk.api.server.domain.store.exception.DuplicateCrnException;
+import team.mosk.api.server.domain.store.exception.DuplicateEmailException;
 import team.mosk.api.server.domain.store.exception.QRCodeNotFoundException;
 import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.QRCode;
@@ -41,11 +43,13 @@ public class StoreReadService {
         return StoreResponse.of(store);
     }
 
-    public boolean emailDuplicateCheck(String email) {
-        return storeRepository.existsByEmail(email);
+    public void emailDuplicateCheck(String email) {
+        if(storeRepository.existsByEmail(email)) {
+            throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
+        }
     }
 
-    public boolean businessRegistrationCheck(BusinessCheckRequest request) {
+    public void businessRegistrationCheck(BusinessCheckRequest request) {
         ArrayList<BusinessCheckRequest> bcrList = new ArrayList<>();
         bcrList.add(request);
 
@@ -55,11 +59,9 @@ public class StoreReadService {
                 .toEntity(BusinessCheckResponse.class)
                 .block();
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            return isBusinessCheck(response.getBody().getValid_msg());
+        if (response.getStatusCode() != HttpStatus.OK || !isBusinessCheck(response.getBody().getValid_msg())) {
+            throw new DuplicateCrnException("이미 존재하는 사업자등록 번호 입니다.");
         }
-
-        return false;
     }
 
     public QRCode getQRCode(Long storeId) {

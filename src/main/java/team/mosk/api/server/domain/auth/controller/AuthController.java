@@ -1,15 +1,14 @@
 package team.mosk.api.server.domain.auth.controller;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
-import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
 import team.mosk.api.server.domain.auth.service.AuthService;
+import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.jwt.dto.TokenDto;
 
 import javax.servlet.http.Cookie;
@@ -28,29 +27,34 @@ public class AuthController {
         this.authService = authService;
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/public/auth")
-    public ResponseEntity<AccessToken> login(@RequestBody @Validated SignInDto request) {
+    public ApiResponse<AccessToken> login(@RequestBody @Validated SignInDto request, HttpServletResponse response) {
         TokenDto tokenDto = authService.login(request);
         String refreshToken = tokenDto.getRefreshToken();
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .header(HttpHeaders.SET_COOKIE, getCookie(refreshToken).toString())
-                .body(new AccessToken(tokenDto.getAccessToken()));
+
+        Cookie cookie = new Cookie("refreshToken", getCookie(refreshToken).toString());
+        response.addCookie(cookie);
+
+        return ApiResponse.of(HttpStatus.CREATED, AccessToken.of(tokenDto.getAccessToken()));
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/auth")
-    public ResponseEntity<Void> logout(HttpServletResponse response) {
+    public ApiResponse<Void> logout(HttpServletResponse response) {
         Cookie cookie = new Cookie("refreshToken", null);
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
 
-        return ResponseEntity.noContent().build();
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("public/auth/reissue")
-    public ResponseEntity<AccessToken> reissue(@RequestBody @Validated AccessToken accessToken,
-                                               @CookieValue(name = "refreshToken") String refreshToken) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.reissue(accessToken, refreshToken));
+    public ApiResponse<AccessToken> reissue(@RequestBody @Validated AccessToken accessToken,
+                                            @CookieValue(name = "refreshToken") String refreshToken) {
+        return ApiResponse.of(HttpStatus.CREATED, authService.reissue(accessToken, refreshToken));
     }
 
     private ResponseCookie getCookie(String refreshToken) {

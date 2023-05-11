@@ -13,6 +13,7 @@ import team.mosk.api.server.domain.store.dto.*;
 import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.service.StoreReadService;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
 import java.io.File;
@@ -29,36 +30,32 @@ public class StoreController {
     private final StoreService storeService;
     private final StoreReadService storeReadService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("public/stores")
-    public ResponseEntity<StoreResponse> create(@Validated @RequestBody SignUpRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(storeService.create(request.toEntity()));
+    public ApiResponse<StoreResponse> create(@Validated @RequestBody SignUpRequest request) {
+        return ApiResponse.of(HttpStatus.CREATED, storeService.create(request.toEntity()));
     }
 
     @GetMapping("stores")
-    public ResponseEntity<StoreResponse> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
-        return ResponseEntity.ok().body(storeReadService.findById(customUserDetails.getId()));
+    public ApiResponse<StoreResponse> findById(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ApiResponse.ok(storeReadService.findById(customUserDetails.getId()));
     }
 
-    @GetMapping("public/stores/email-check/{email}")
-    public ResponseEntity<Void> emailCheck(@PathVariable String email) {
-        if (storeReadService.emailDuplicateCheck(email)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
 
-        return ResponseEntity.ok().build();
+    @GetMapping("public/stores/email-check/{email}")
+    public ApiResponse<Void> emailCheck(@PathVariable String email) {
+        storeReadService.emailDuplicateCheck(email);
+        return ApiResponse.ok();
     }
 
     @GetMapping("public/stores/business-registration")
-    public ResponseEntity<Void> businessRegistrationCheck(@RequestParam("crn") String crn,
-                                                          @RequestParam("foundedDate") String foundedDate,
-                                                          @RequestParam("ownerName") String ownerName) {
-        BusinessCheckRequest request = new BusinessCheckRequest(crn, foundedDate.replaceAll("-", ""), ownerName);
-
-        if (storeReadService.businessRegistrationCheck(request)) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-
-        return ResponseEntity.ok().build();
+    public ApiResponse<Void> businessRegistrationCheck(@RequestParam("crn") String crn,
+                                                       @RequestParam("foundedDate") String foundedDate,
+                                                       @RequestParam("ownerName") String ownerName) {
+        BusinessCheckRequest request =
+                BusinessCheckRequest.of(crn, foundedDate.replaceAll("-", ""), ownerName);
+        storeReadService.businessRegistrationCheck(request);
+        return ApiResponse.ok();
     }
 
     @PutMapping("/stores")
@@ -83,7 +80,7 @@ public class StoreController {
     }
 
     @GetMapping(value = "/stores/qrcode")
-    public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws IOException {
+    public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
         return ResponseEntity.ok()
                .contentType(MediaType.IMAGE_PNG)

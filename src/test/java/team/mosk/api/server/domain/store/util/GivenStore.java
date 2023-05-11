@@ -18,7 +18,7 @@ public class GivenStore {
     public static final String GIVEN_ADDRESS = "테스트 주소";
 
     public static final String GIVEN_CRN = "테스트 사업자등록번호";
-    public static final String GIVEN_FOUNDED_DATE = "테스트 사업자등록번호";
+    public static final String GIVEN_FOUNDED_DATE = "테스트 창업일";
 
 
     //QRCode

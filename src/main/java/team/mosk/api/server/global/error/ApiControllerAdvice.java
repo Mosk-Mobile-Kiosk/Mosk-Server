@@ -10,6 +10,7 @@ import team.mosk.api.server.global.common.ApiResponse;
 @RestControllerAdvice
 public class ApiControllerAdvice {
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Object> bindException(BindException e) {

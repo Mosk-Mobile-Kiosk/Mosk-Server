@@ -1,9 +1,6 @@
 package team.mosk.api.server.domain.store.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
@@ -21,10 +18,19 @@ public class BusinessCheckRequest {
     private String b_sector = "";
     private String b_type = "";
 
+    @Builder
     public BusinessCheckRequest(String b_no, String start_dt, String p_nm) {
         this.b_no = b_no;
         this.start_dt = start_dt;
         this.p_nm = p_nm;
+    }
+
+    public static BusinessCheckRequest of(String b_no, String start_dt, String p_nm) {
+        return BusinessCheckRequest.builder()
+                .b_no(b_no)
+                .start_dt(start_dt)
+                .p_nm(p_nm)
+                .build();
     }
 
     public String getB_no() {
