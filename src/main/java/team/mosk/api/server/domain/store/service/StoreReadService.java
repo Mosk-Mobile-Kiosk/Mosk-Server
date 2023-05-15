@@ -20,8 +20,6 @@ import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
-import java.net.URI;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 
 @Service

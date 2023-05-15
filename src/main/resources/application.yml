@@ -7,8 +7,6 @@ jwt:
   accessToken-validity-in-seconds: 3600 # 1??
   refreshToken-validity-in-seconds: 18000 # 5??
 
-
-
 gongGongData:
   apiKey: y3VIhvpKbdXiPhDgY5dMR8eIRvYV3Tg2zy7ySnet4Ow4rI+T/wXYfuZ3o5r9OwL9355ZQhBNTVmC54Ng+6PsEg==
 
