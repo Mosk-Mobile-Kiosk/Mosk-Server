@@ -2,12 +2,14 @@ package team.mosk.api.server.domain.product.model.persist;
 
 import lombok.*;
 import team.mosk.api.server.domain.category.model.persist.Category;
+import team.mosk.api.server.domain.option.model.OptionGroup;
 import team.mosk.api.server.domain.product.dto.UpdateProductRequest;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -40,6 +42,9 @@ public class Product extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    private List<OptionGroup> optionGroups;
 
     /**
      * methods
