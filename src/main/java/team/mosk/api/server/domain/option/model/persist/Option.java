@@ -1,9 +1,6 @@
-package team.mosk.api.server.domain.option.model;
+package team.mosk.api.server.domain.option.model.persist;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class Option extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
