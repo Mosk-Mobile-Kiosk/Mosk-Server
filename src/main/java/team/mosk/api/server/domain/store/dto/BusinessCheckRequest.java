@@ -9,9 +9,9 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class BusinessCheckRequest {
     //필수가 아닌 값들은 ""로 대체 가능
-    private String b_no ="";        //필수
-    private String start_dt = "";   //필수
-    private String p_nm = "";       //필수
+    private String b_no ="";        //필수 '-'가 없이 10자리 숫자만 가능
+    private String start_dt = "";   //필수 '-'가 없이 YYYYMMDD 형식
+    private String p_nm = "";       //필수 외국인 사업자의 경우에는 영문명 입력
     private String p_nm2 = "";
     private String b_nm = "";
     private String corp_no = "";

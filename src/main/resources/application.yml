@@ -1,14 +1,40 @@
+server:
+  port: 9090
+
 jwt:
   header: Authorization
   secret: d8028ea5f26cdd3c639ffadd5f29675090f7630e6cfbd40991cd57bd78c5212ecbc0a2d1feddecc8e424fa32d31afe926b49b98c5e17dfd1760297449fc0b8ca
   accessToken-validity-in-seconds: 3600 # 1??
   refreshToken-validity-in-seconds: 18000 # 5??
 
-server:
-  port: 9090
+
 
 gongGongData:
-  apiKey: y3VIhvpKbdXiPhDgY5dMR8eIRvYV3Tg2zy7ySnet4Ow4rI%2BT%2FwXYfuZ3o5r9OwL9355ZQhBNTVmC54Ng%2B6PsEg%3D%3D
+  apiKey: y3VIhvpKbdXiPhDgY5dMR8eIRvYV3Tg2zy7ySnet4Ow4rI+T/wXYfuZ3o5r9OwL9355ZQhBNTVmC54Ng+6PsEg==
 
-macFilePath: /Users/hhpp1205/Documents/mosk-img
-windowsFilePath: C:\Users\bae\Desktop\study\mosk-img
+storePageUrl: "http://localhost:3030/"
+qrImgWidthHeight: "500x500"
+
+spring:
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:~/testdb
+
+---
+spring:
+  config:
+    activate:
+      on-profile: mac
+
+filePath: /Users/hhpp1205/Documents/mosk-img
+---
+spring:
+  config:
+    activate:
+      on-profile: windows
+
+filePath: C:\Users\bae\Desktop\study\mosk-img
+

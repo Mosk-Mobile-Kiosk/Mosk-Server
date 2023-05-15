@@ -1,11 +1,13 @@
 package team.mosk.api.server.domain.store.service;
 
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
 import team.mosk.api.server.domain.store.dto.BusinessCheckResponse;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
@@ -18,6 +20,8 @@ import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 @Service
@@ -25,15 +29,22 @@ import java.util.ArrayList;
 public class StoreReadService {
 
     private final StoreRepository storeRepository;
+
     private final QRCodeRepository qrCodeRepository;
+
     private final WebClient webClient;
+
+    private final String gongGongApiKey;
+
 
     public StoreReadService(StoreRepository storeRepository,
                             QRCodeRepository qrCodeRepository,
-                            @Qualifier("gongGongDataClient") WebClient webClient) {
+                            @Qualifier("gongGongDataClient") WebClient webClient,
+                            @Value("${gongGongData.apiKey}") String gongGongApiKey) {
         this.storeRepository = storeRepository;
         this.qrCodeRepository = qrCodeRepository;
         this.webClient = webClient;
+        this.gongGongApiKey = gongGongApiKey;
     }
 
     public StoreResponse findById(Long storeId) {
@@ -45,7 +56,7 @@ public class StoreReadService {
 
     public void emailDuplicateCheck(String email) {
         if(storeRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException("이미 존재하는 이메일입니다.");
+            throw new DuplicateEmailException("사용중인 이메일입니다.");
         }
     }
 

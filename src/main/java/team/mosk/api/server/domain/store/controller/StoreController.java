@@ -53,25 +53,27 @@ public class StoreController {
                                                        @RequestParam("foundedDate") String foundedDate,
                                                        @RequestParam("ownerName") String ownerName) {
         BusinessCheckRequest request =
-                BusinessCheckRequest.of(crn, foundedDate.replaceAll("-", ""), ownerName);
+                BusinessCheckRequest.of(crn.replaceAll("-", ""), foundedDate.replaceAll("-", ""), ownerName);
         storeReadService.businessRegistrationCheck(request);
         return ApiResponse.ok();
     }
 
     @PutMapping("/stores")
-    public ResponseEntity<StoreResponse> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public ApiResponse<StoreResponse> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @Validated @RequestBody StoreUpdateRequest request) {
-        return ResponseEntity.ok(storeService.update(customUserDetails.getId(), request));
+        return ApiResponse.ok(storeService.update(customUserDetails.getId(), request));
     }
 
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/stores")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ApiResponse<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         storeService.delete(customUserDetails.getId());
-        return ResponseEntity.noContent().build();
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
     @PostMapping("/stores/qrcode")
-    public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws InterruptedException {
         storeService.createQRCode(customUserDetails.getId());
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
         return ResponseEntity.ok()
@@ -79,7 +81,7 @@ public class StoreController {
                 .body(qrCodeToByte(qrCode));
     }
 
-    @GetMapping(value = "/stores/qrcode")
+    @GetMapping("/stores/qrcode")
     public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
         return ResponseEntity.ok()
@@ -89,6 +91,7 @@ public class StoreController {
 
     private byte[] qrCodeToByte(QRCode qrCode) {
         try {
+            log.info("path : {}", qrCode.getPath());
             return Files.readAllBytes(new File(qrCode.getPath()).toPath());
         } catch (IOException e) {
             log.error("error={}", e);

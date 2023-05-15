@@ -12,7 +12,6 @@ public class ApiControllerAdvice {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(BindException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiResponse<Object> bindException(BindException e) {
         return ApiResponse.of(
                 HttpStatus.BAD_REQUEST,

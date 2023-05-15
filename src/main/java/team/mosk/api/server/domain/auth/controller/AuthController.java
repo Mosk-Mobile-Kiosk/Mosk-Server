@@ -1,8 +1,8 @@
 package team.mosk.api.server.domain.auth.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseCookie;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
@@ -13,15 +13,15 @@ import team.mosk.api.server.global.jwt.dto.TokenDto;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
-
+@Slf4j
 @RestController
 @RequestMapping("/api/v1")
 public class AuthController {
 
     private final AuthService authService;
-    private final Long refreshTokenValidityInMillisecond;
+    private final int refreshTokenValidityInMillisecond;
 
-    public AuthController(@Value("${jwt.refreshToken-validity-in-seconds}") Long refreshTokenValidityInMillisecond,
+    public AuthController(@Value("${jwt.refreshToken-validity-in-seconds}") int refreshTokenValidityInMillisecond,
                           AuthService authService) {
         this.refreshTokenValidityInMillisecond = refreshTokenValidityInMillisecond;
         this.authService = authService;
@@ -33,7 +33,15 @@ public class AuthController {
         TokenDto tokenDto = authService.login(request);
         String refreshToken = tokenDto.getRefreshToken();
 
-        Cookie cookie = new Cookie("refreshToken", getCookie(refreshToken).toString());
+        Cookie cookie = createCookie(
+                refreshToken,
+                "refreshToken",
+                true,
+                true,
+                "/",
+                refreshTokenValidityInMillisecond
+        );
+
         response.addCookie(cookie);
 
         return ApiResponse.of(HttpStatus.CREATED, AccessToken.of(tokenDto.getAccessToken()));
@@ -57,13 +65,13 @@ public class AuthController {
         return ApiResponse.of(HttpStatus.CREATED, authService.reissue(accessToken, refreshToken));
     }
 
-    private ResponseCookie getCookie(String refreshToken) {
-        return ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .path("/")
-                .maxAge(refreshTokenValidityInMillisecond)
-                .build();
+    private Cookie createCookie(String key, String value, boolean isHttpOnly, boolean isSecure, String path, int maxAge) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setHttpOnly(isHttpOnly);
+        cookie.setSecure(isSecure);
+        cookie.setPath(path);
+        cookie.setMaxAge(maxAge);
+        return cookie;
     }
 
 }
