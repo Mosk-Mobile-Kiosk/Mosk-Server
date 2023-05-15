@@ -495,4 +495,5 @@ class StoreControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
     }
+
 }

@@ -59,15 +59,17 @@ public class StoreController {
     }
 
     @PutMapping("/stores")
-    public ResponseEntity<StoreResponse> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
+    public ApiResponse<StoreResponse> update(@AuthenticationPrincipal CustomUserDetails customUserDetails,
                                                 @Validated @RequestBody StoreUpdateRequest request) {
-        return ResponseEntity.ok(storeService.update(customUserDetails.getId(), request));
+        return ApiResponse.ok(storeService.update(customUserDetails.getId(), request));
     }
 
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/stores")
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ApiResponse<Void> delete(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         storeService.delete(customUserDetails.getId());
-        return ResponseEntity.noContent().build();
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
     @PostMapping("/stores/qrcode")
