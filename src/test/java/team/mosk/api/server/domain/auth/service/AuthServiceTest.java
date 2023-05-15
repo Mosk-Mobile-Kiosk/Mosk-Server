@@ -1,12 +1,12 @@
 package team.mosk.api.server.domain.auth.service;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
 import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 
 @SpringBootTest
+@Transactional
 class AuthServiceTest {
 
     @Autowired
@@ -38,10 +39,7 @@ class AuthServiceTest {
     @Test
     void login() {
         //given
-        Store store = Store.builder()
-                .email(GIVEN_EMAIL)
-                .password(encoder.encode(GIVEN_PASSWORD))
-                .build();
+        Store store = createStore(GIVEN_EMAIL, GIVEN_PASSWORD);
         storeRepository.save(store);
 
         SignInDto request = SignInDto.builder()
@@ -61,10 +59,7 @@ class AuthServiceTest {
     @Test
     void loginWithUnSavedEmail() {
         //given
-        Store store = Store.builder()
-                .email(GIVEN_EMAIL)
-                .password(encoder.encode(GIVEN_PASSWORD))
-                .build();
+        Store store = createStore(GIVEN_EMAIL, GIVEN_PASSWORD);
         storeRepository.save(store);
 
         SignInDto request = SignInDto.builder()
@@ -78,14 +73,11 @@ class AuthServiceTest {
                 .hasMessage("가게를 찾을 수 없습니다.");
     }
 
-    @DisplayName("로그인 시 비밀번호가 다르면   발생한다.")
+    @DisplayName("로그인 시 비밀번호가 다르면 BadCredentialsException 발생한다.")
     @Test
     void loginWithWrongPassword() {
         //given
-        Store store = Store.builder()
-                .email(GIVEN_EMAIL)
-                .password(encoder.encode(GIVEN_PASSWORD))
-                .build();
+        Store store = createStore(GIVEN_EMAIL, GIVEN_PASSWORD);
         storeRepository.save(store);
 
         SignInDto request = SignInDto.builder()
@@ -103,10 +95,7 @@ class AuthServiceTest {
     @Test
     void reissue() {
         //given
-        Store store = Store.builder()
-                .email(GIVEN_EMAIL)
-                .password(encoder.encode(GIVEN_PASSWORD))
-                .build();
+        Store store = createStore(GIVEN_EMAIL, GIVEN_PASSWORD);
         storeRepository.save(store);
 
         TokenDto token = tokenProvider.createToken(GIVEN_EMAIL, null);
@@ -118,14 +107,11 @@ class AuthServiceTest {
         assertThat(result).isNotNull();
     }
 
-    @DisplayName("refreshToken 검증에 실패 시 오류 발생한다.")
+    @DisplayName("재검증 시 refreshToken 검증에 실패 시 오류 발생한다.")
     @Test
     void reissueWithWrongRefreshToken() {
         //given
-        Store store = Store.builder()
-                .email(GIVEN_EMAIL)
-                .password(encoder.encode(GIVEN_PASSWORD))
-                .build();
+        Store store = createStore(GIVEN_EMAIL, GIVEN_PASSWORD);
         storeRepository.save(store);
 
         TokenDto token = tokenProvider.createToken(GIVEN_EMAIL, null);
@@ -135,6 +121,13 @@ class AuthServiceTest {
         assertThatThrownBy(() -> authService.reissue(AccessToken.of(token.getAccessToken()), refreshToken))
                 .isInstanceOf(TokenNotFoundException.class)
                 .hasMessage("잘못된 JWT 서명입니다.");
+    }
+
+    private Store createStore(String email, String password) {
+        return Store.builder()
+                .email(email)
+                .password(encoder.encode(password))
+                .build();
     }
 
 }

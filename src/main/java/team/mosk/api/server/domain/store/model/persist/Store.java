@@ -50,7 +50,7 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Payment> payments;
 
-    @OneToOne(mappedBy = "store")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "store")
     private QRCode qrCode;
 
     @Builder

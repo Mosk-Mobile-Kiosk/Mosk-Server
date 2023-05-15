@@ -52,8 +52,11 @@ public class SecurityConfig {
                 .cors()
                 .configurationSource(corsConfigurationSource())
                 .and()
+                .headers().frameOptions().sameOrigin()
+                .and()
                 .authorizeHttpRequests()
                 .antMatchers(HttpMethod.OPTIONS).permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers(PUBLIC).permitAll()
                 .anyRequest().authenticated();
 

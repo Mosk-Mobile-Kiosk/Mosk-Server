@@ -53,7 +53,7 @@ public class StoreController {
                                                        @RequestParam("foundedDate") String foundedDate,
                                                        @RequestParam("ownerName") String ownerName) {
         BusinessCheckRequest request =
-                BusinessCheckRequest.of(crn, foundedDate.replaceAll("-", ""), ownerName);
+                BusinessCheckRequest.of(crn.replaceAll("-", ""), foundedDate.replaceAll("-", ""), ownerName);
         storeReadService.businessRegistrationCheck(request);
         return ApiResponse.ok();
     }
@@ -71,7 +71,7 @@ public class StoreController {
     }
 
     @PostMapping("/stores/qrcode")
-    public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+    public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws InterruptedException {
         storeService.createQRCode(customUserDetails.getId());
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
         return ResponseEntity.ok()
@@ -79,7 +79,7 @@ public class StoreController {
                 .body(qrCodeToByte(qrCode));
     }
 
-    @GetMapping(value = "/stores/qrcode")
+    @GetMapping("/stores/qrcode")
     public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
         return ResponseEntity.ok()
@@ -89,6 +89,7 @@ public class StoreController {
 
     private byte[] qrCodeToByte(QRCode qrCode) {
         try {
+            log.info("path : {}", qrCode.getPath());
             return Files.readAllBytes(new File(qrCode.getPath()).toPath());
         } catch (IOException e) {
             log.error("error={}", e);
