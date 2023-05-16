@@ -1,6 +1,7 @@
 package team.mosk.api.server.domain.option.model.persist;
 
 import lombok.*;
+import team.mosk.api.server.domain.option.dto.UpdateOptionRequest;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
@@ -23,4 +24,17 @@ public class Option extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_id")
     private OptionGroup optionGroup;
+
+    /**
+     * methods
+     */
+
+    public void initGroup(final OptionGroup optionGroup) {
+        this.optionGroup = optionGroup;
+    }
+
+    public void update(final UpdateOptionRequest request) {
+        this.name = request.getName();
+        this.price = request.getPrice();
+    }
 }

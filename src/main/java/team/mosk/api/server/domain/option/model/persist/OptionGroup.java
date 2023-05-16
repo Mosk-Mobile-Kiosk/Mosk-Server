@@ -1,6 +1,7 @@
 package team.mosk.api.server.domain.option.model.persist;
 
 import lombok.*;
+import team.mosk.api.server.domain.option.dto.UpdateOptionGroupRequest;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.global.common.BaseEntity;
 
@@ -33,5 +34,9 @@ public class OptionGroup extends BaseEntity {
 
     public void initProduct(final Product product) {
         this.product = product;
+    }
+
+    public void update(final UpdateOptionGroupRequest request) {
+        this.name = request.getName();
     }
 }
