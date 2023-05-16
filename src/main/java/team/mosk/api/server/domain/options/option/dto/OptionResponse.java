@@ -9,9 +9,9 @@ import team.mosk.api.server.domain.options.option.model.persist.Option;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OptionResponse {
 
-    private Long optionId;
+    private Long id;
     private String name;
-    private int price;
+    private Long price;
 
     public static OptionResponse of(final Option option) {
         return new OptionResponse(option.getId(), option.getName(), option.getPrice());

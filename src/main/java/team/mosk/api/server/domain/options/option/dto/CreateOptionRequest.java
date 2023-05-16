@@ -15,7 +15,7 @@ public class CreateOptionRequest {
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
     @NotNull(message = "가격은 필수입니다.")
-    private int price;
+    private Long price;
     @NotNull(message = "그룹 정보는 필수입니다.")
     private Long optionGroupId;
 
