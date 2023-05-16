@@ -47,7 +47,7 @@ public class OptionGroupControllerTest {
     @Test
     @DisplayName("요청 내용에 따라 옵션 그룹을 생성하고 응답 객체를 반환한다.")
     @WithAuthUser
-    void create() throws Exception{
+    void create() throws Exception {
         when(optionGroupService.create(any(), any(), any())).thenReturn(OptionGroupResponse.of(GivenOptionGroup.toEntityWithCount()));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -70,7 +70,7 @@ public class OptionGroupControllerTest {
     @Test
     @DisplayName("만약 생성 요청 중 이름이 비어있다면 예외를 발생시킨다.")
     @WithAuthUser
-    void createThrowsExceptionWhenNameIsBlank() throws Exception{
+    void createThrowsExceptionWhenNameIsBlank() throws Exception {
         when(optionGroupService.create(any(), any(), any())).thenReturn(OptionGroupResponse.of(GivenOptionGroup.toEntityWithCount()));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -92,7 +92,7 @@ public class OptionGroupControllerTest {
     @Test
     @DisplayName("만약 생성 요청 중 상품 정보가 비어있다면 예외를 발생시킨다.")
     @WithAuthUser
-    void createThrowsExceptionWhenProductIdIsNull() throws Exception{
+    void createThrowsExceptionWhenProductIdIsNull() throws Exception {
         when(optionGroupService.create(any(), any(), any())).thenReturn(OptionGroupResponse.of(GivenOptionGroup.toEntityWithCount()));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -121,7 +121,7 @@ public class OptionGroupControllerTest {
     @Test
     @DisplayName("요청 내용에 따라 옵션 그룹의 내용을 변경하고 응답 객체를 반환한다.")
     @WithAuthUser
-    void update() throws Exception{
+    void update() throws Exception {
         when(optionGroupService.update(any(), any())).thenReturn(OptionGroupResponse.of(GivenOptionGroup.toEntityForUpdateTest()));
 
         ObjectMapper mapper = new ObjectMapper();
@@ -199,7 +199,7 @@ public class OptionGroupControllerTest {
     @Test
     @DisplayName("옵션 그룹 아이디를 기반으로 해당 옵션 그룹을 삭제한다.")
     @WithAuthUser
-    void delete() throws Exception{
+    void delete() throws Exception {
         doNothing().when(optionGroupService).delete(any(), any());
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/optiongroups/1"))
