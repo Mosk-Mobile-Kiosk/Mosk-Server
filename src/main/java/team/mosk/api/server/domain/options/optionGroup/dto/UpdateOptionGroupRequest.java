@@ -9,6 +9,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
 public class UpdateOptionGroupRequest {
 
     @NotNull(message = "그룹 아이디는 필수입니다.")
