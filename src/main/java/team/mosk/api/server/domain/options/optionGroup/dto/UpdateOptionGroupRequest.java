@@ -1,4 +1,4 @@
-package team.mosk.api.server.domain.option.dto;
+package team.mosk.api.server.domain.options.optionGroup.dto;
 
 import lombok.*;
 
@@ -9,13 +9,11 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-@Builder
-public class UpdateOptionRequest {
+public class UpdateOptionGroupRequest {
 
-    @NotNull(message = "옵션 아이디는 필수입니다.")
-    private Long optionId;
+    @NotNull(message = "그룹 아이디는 필수입니다.")
+    private Long groupId;
+
     @NotBlank(message = "이름은 필수입니다.")
     private String name;
-    @NotNull(message = "가격은 필수입니다.")
-    private int price;
 }

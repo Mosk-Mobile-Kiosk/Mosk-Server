@@ -1,7 +1,8 @@
-package team.mosk.api.server.domain.option.model.persist;
+package team.mosk.api.server.domain.options.option.model.persist;
 
 import lombok.*;
-import team.mosk.api.server.domain.option.dto.UpdateOptionRequest;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
+import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;

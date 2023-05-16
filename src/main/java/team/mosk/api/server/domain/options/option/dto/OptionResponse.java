@@ -1,7 +1,7 @@
-package team.mosk.api.server.domain.option.dto;
+package team.mosk.api.server.domain.options.option.dto;
 
 import lombok.*;
-import team.mosk.api.server.domain.option.model.persist.Option;
+import team.mosk.api.server.domain.options.option.model.persist.Option;
 
 @Getter
 @Setter

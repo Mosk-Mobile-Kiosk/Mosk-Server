@@ -1,15 +1,14 @@
-package team.mosk.api.server.domain.option.controller;
+package team.mosk.api.server.domain.options.option.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import team.mosk.api.server.domain.option.dto.CreateOptionRequest;
-import team.mosk.api.server.domain.option.dto.OptionResponse;
-import team.mosk.api.server.domain.option.dto.UpdateOptionRequest;
-import team.mosk.api.server.domain.option.service.OptionService;
+import team.mosk.api.server.domain.options.option.dto.CreateOptionRequest;
+import team.mosk.api.server.domain.options.option.dto.OptionResponse;
+import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
+import team.mosk.api.server.domain.options.option.service.OptionService;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 

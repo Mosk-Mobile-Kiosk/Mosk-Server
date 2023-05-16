@@ -1,14 +1,14 @@
-package team.mosk.api.server.domain.option.service;
+package team.mosk.api.server.domain.options.optionGroup.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import team.mosk.api.server.domain.category.error.OwnerInfoMisMatchException;
-import team.mosk.api.server.domain.option.dto.OptionGroupResponse;
-import team.mosk.api.server.domain.option.dto.UpdateOptionGroupRequest;
-import team.mosk.api.server.domain.option.error.OptionGroupNotFoundException;
-import team.mosk.api.server.domain.option.model.persist.OptionGroup;
-import team.mosk.api.server.domain.option.model.persist.OptionGroupRepository;
+import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
+import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
+import team.mosk.api.server.domain.options.optionGroup.error.OptionGroupNotFoundException;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroupRepository;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;

@@ -1,7 +1,7 @@
-package team.mosk.api.server.domain.option.dto;
+package team.mosk.api.server.domain.options.optionGroup.dto;
 
 import lombok.*;
-import team.mosk.api.server.domain.option.model.persist.OptionGroup;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
