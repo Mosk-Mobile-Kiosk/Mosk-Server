@@ -27,8 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@ActiveProfiles("windows")
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
 public class OptionControllerTest {
 
     @Autowired

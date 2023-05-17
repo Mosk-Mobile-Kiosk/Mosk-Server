@@ -32,7 +32,7 @@ import static team.mosk.api.server.domain.category.util.GivenCategory.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("windows")
 public class CategoryControllerTest {
 
     @Autowired
