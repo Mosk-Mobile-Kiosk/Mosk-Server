@@ -1,5 +1,6 @@
 package team.mosk.api.server.domain.options.option.model.persist;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
@@ -24,6 +25,7 @@ public class Option extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_id")
+    @JsonBackReference
     private OptionGroup optionGroup;
 
     /**

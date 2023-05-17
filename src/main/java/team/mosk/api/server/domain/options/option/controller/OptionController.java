@@ -8,9 +8,12 @@ import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.options.option.dto.CreateOptionRequest;
 import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
+import team.mosk.api.server.domain.options.option.service.OptionReadService;
 import team.mosk.api.server.domain.options.option.service.OptionService;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
+
+import java.util.List;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -21,6 +24,7 @@ import static org.springframework.http.HttpStatus.*;
 public class OptionController {
 
     private final OptionService optionService;
+    private final OptionReadService optionReadService;
 
     @PostMapping("/options")
     @ResponseStatus(CREATED)
@@ -42,5 +46,21 @@ public class OptionController {
                                     @AuthenticationPrincipal CustomUserDetails details) {
         optionService.delete(optionId, details.getId());
         return ApiResponse.of(NO_CONTENT, null);
+    }
+
+    /**
+     * ReadService
+     */
+
+    @GetMapping("/public/options/{optionId}")
+    @ResponseStatus(OK)
+    public ApiResponse<OptionResponse> findByOptionId(@PathVariable Long optionId) {
+        return ApiResponse.ok(optionReadService.findByOptionId(optionId));
+    }
+
+    @GetMapping("/public/options/all/{groupId}")
+    @ResponseStatus(OK)
+    public ApiResponse<List<OptionResponse>> findAllOptionByGroupId(@PathVariable Long groupId) {
+        return ApiResponse.ok(optionReadService.findAllOptionByGroupId(groupId));
     }
 }

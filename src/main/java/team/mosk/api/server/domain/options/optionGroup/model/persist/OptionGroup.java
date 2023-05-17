@@ -1,5 +1,6 @@
 package team.mosk.api.server.domain.options.optionGroup.model.persist;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
@@ -7,6 +8,7 @@ import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,8 +24,9 @@ public class OptionGroup extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL)
-    private List<Option> options;
+    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<Option> options = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")

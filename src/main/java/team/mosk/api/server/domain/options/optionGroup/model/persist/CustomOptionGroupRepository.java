@@ -5,5 +5,5 @@ import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
 import java.util.List;
 
 public interface CustomOptionGroupRepository {
-    List<OptionGroupResponse> findAllOptionGroup();
+    List<OptionGroupResponse> findAllOptionGroupByProductId(final Long productId);
 }
