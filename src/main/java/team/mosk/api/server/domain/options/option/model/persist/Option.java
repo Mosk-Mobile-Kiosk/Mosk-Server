@@ -20,7 +20,7 @@ public class Option extends BaseEntity {
 
     private String name;
 
-    private Long price;
+    private int price;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_id")
