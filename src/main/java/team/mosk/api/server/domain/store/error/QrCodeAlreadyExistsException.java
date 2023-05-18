@@ -1,4 +1,4 @@
-package team.mosk.api.server.domain.store.exception;
+package team.mosk.api.server.domain.store.error;
 
 public class QrCodeAlreadyExistsException extends RuntimeException {
 

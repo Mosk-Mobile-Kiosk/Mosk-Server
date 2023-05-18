@@ -1,6 +1,8 @@
 package team.mosk.api.server.domain.order.model;
 
 import lombok.*;
+import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
+import team.mosk.api.server.domain.order.error.OrderCompletedException;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
 import team.mosk.api.server.domain.orderproduct.model.OrderProduct;
 import team.mosk.api.server.domain.store.model.persist.Store;
@@ -11,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,25 +43,26 @@ public class Order extends BaseEntity {
     private Store store;
 
     @Builder
-    private Order(Long id, OrderStatus orderStatus, int totalPrice, LocalDateTime registeredDate, List<OrderProduct> orderProducts) {
+    public Order(Long id, OrderStatus orderStatus, int totalPrice, LocalDateTime registeredDate, List<OrderProduct> orderProducts, Store store) {
         this.id = id;
         this.orderStatus = orderStatus;
         this.totalPrice = totalPrice;
         this.registeredDate = registeredDate;
         this.orderProducts = orderProducts;
+        this.store = store;
     }
 
-    public static Order createInitOrder(LocalDateTime registeredDate) {
+
+
+
+    public static Order createInitOrder(Store store, LocalDateTime registeredDate) {
         return Order.builder()
-                .orderStatus(OrderStatus.INIT)
+                .orderStatus(INIT)
                 .totalPrice(0)
                 .registeredDate(registeredDate)
                 .orderProducts(new ArrayList<>())
+                .store(store)
                 .build();
-    }
-
-    public void setOrderProducts(List<OrderProduct> orderProducts) {
-        this.orderProducts = orderProducts;
     }
 
     public void plusTotalPrice(long price) {
@@ -81,5 +86,20 @@ public class Order extends BaseEntity {
 
     public void setOrderProduct(OrderProduct orderProduct) {
         this.orderProducts.add(orderProduct);
+    }
+
+    public void cancel() {
+        if(orderStatus != INIT && orderStatus != PAYMENT_COMPLETED) {
+            throw new OrdeCancelDeniedException("주문상태:" + this.orderStatus + "는 주문 취소가 불가능합니다.");
+        }
+
+        this.orderStatus = CANCELED;
+    }
+
+    public void orderCompleted() {
+        if (this.orderStatus != PAYMENT_COMPLETED) {
+            throw new OrderCompletedException("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+        }
+        this.orderStatus = COMPLETED;
     }
 }

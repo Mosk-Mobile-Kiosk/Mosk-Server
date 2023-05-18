@@ -9,7 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
-import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
+import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.global.jwt.TokenProvider;

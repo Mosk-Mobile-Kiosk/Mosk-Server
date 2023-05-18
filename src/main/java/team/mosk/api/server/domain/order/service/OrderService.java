@@ -7,14 +7,18 @@ import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderResponse;
+import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
+import team.mosk.api.server.domain.order.error.OrderNotFoundException;
 import team.mosk.api.server.domain.order.model.Order;
 import team.mosk.api.server.domain.order.model.OrderRepository;
 import team.mosk.api.server.domain.orderproduct.model.OrderProduct;
-import team.mosk.api.server.domain.orderproduct.model.OrderProductRepository;
 import team.mosk.api.server.domain.orderproductoption.model.OrderProductOption;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
+import team.mosk.api.server.domain.store.error.StoreNotFoundException;
+import team.mosk.api.server.domain.store.model.persist.Store;
+import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,12 +29,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OrderService {
 
+    private final StoreRepository storeRepository;
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
 
-    public OrderResponse createOrder(List<CreateOrderRequest> createOrderRequests, LocalDateTime registeredDate) {
-        Order order = Order.createInitOrder(registeredDate);
+    public OrderResponse createOrder(Long storeId, List<CreateOrderRequest> createOrderRequests, LocalDateTime registeredDate) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        Order order = Order.createInitOrder(store, registeredDate);
         
         for(CreateOrderRequest createOrderRequest : createOrderRequests) {
             Product product = productRepository.findById(createOrderRequest.getProductId())
@@ -44,25 +52,52 @@ public class OrderService {
 
             order.setOrderProduct(orderProduct);
 
-            long optionTotalPrice = options.stream()
-                    .map(Option::getPrice)
-                    .mapToLong(value -> value)
-                    .sum();
-            long productTotalPrice = (product.getPrice() + optionTotalPrice) * createOrderRequest.getQuantity();
+            long productTotalPrice = getProductTotalPrice(createOrderRequest.getQuantity(), product, options);
             order.plusTotalPrice(productTotalPrice);
         }
 
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    public void cancel() {
-        // TODO: 2023/05/17  
+    public void cancel(Long storeId, Long orderId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+
+        if(store != order.getStore()) {
+            throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
+        }
+
+        order.cancel();
     }
-    
+
+    public void orderCompleted(Long storeId, Long orderId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+
+        if(store != order.getStore()) {
+            throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
+        }
+
+        order.orderCompleted();
+    }
+
     private List<OrderProductOption> createListBy(OrderProduct orderProduct, List<Option> options) {
         return options.stream()
                 .map(option -> OrderProductOption.of(orderProduct, option))
                 .collect(Collectors.toList());
+    }
+
+    private long getProductTotalPrice(int quantity, Product product, List<Option> options) {
+        long optionTotalPrice = options.stream()
+                .mapToLong(Option::getPrice)
+                .sum();
+        return (product.getPrice() + optionTotalPrice) * quantity;
     }
 
 
