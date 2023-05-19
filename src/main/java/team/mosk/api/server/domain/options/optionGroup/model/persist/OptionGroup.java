@@ -24,7 +24,7 @@ public class OptionGroup extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<Option> options = new ArrayList<>();
 

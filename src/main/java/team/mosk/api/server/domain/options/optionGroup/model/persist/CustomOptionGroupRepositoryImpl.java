@@ -36,13 +36,16 @@ public class CustomOptionGroupRepositoryImpl implements CustomOptionGroupReposit
                 .groupBy(optionGroup.id)
                 .fetch();
 
-        for(OptionGroupResponse ogr : response) {
-            for(OptionResponse or : ogr.getOptions()) {
-                System.out.println(or.getId());
-                System.out.println(or.getName());
-                System.out.println(or.getPrice());
-            }
-        }
+        response.forEach(og -> {
+            og.setOptions(query
+                    .select(Projections.constructor(OptionResponse.class,
+                            option.id,
+                            option.name,
+                            option.price))
+                    .from(option)
+                    .where(option.optionGroup.id.eq(og.getId()))
+                    .fetch());
+        });
 
         return response;
     }
