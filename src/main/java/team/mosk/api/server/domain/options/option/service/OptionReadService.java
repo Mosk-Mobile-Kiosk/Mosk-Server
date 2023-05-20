@@ -27,8 +27,4 @@ public class OptionReadService {
                 .orElseThrow(() -> new OptionNotFoundException(OPTION_NOT_FOUND));
         return OptionResponse.of(findOption);
     }
-
-    public List<OptionResponse> findAllOptionByGroupId(final Long groupId) {
-        return optionRepository.findAllOptionByGroupId(groupId);
-    }
 }

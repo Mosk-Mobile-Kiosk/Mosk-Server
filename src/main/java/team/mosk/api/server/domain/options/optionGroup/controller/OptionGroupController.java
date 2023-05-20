@@ -61,7 +61,7 @@ public class OptionGroupController {
 
     @GetMapping("/public/optiongroups/all/{productId}")
     @ResponseStatus(OK)
-    public ApiResponse<List<OptionGroupResponse>> findAllOptionGroup(@PathVariable Long productId) {
+    public ApiResponse<List<OptionGroupResponse>> findAllOptionGroupAndOptions(@PathVariable Long productId) {
         return ApiResponse.ok(optionGroupReadService.findAllOptionGroupByProductId(productId));
     }
 }

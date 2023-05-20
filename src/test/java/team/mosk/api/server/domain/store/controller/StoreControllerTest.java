@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import team.mosk.api.server.domain.store.dto.SignUpRequest;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
@@ -33,6 +34,7 @@ import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 import static team.mosk.api.server.domain.store.util.GivenStore.*;
 
 @SpringBootTest
+@ActiveProfiles("mac")
 @AutoConfigureMockMvc
 class StoreControllerTest {
 

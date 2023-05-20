@@ -43,4 +43,12 @@ public class OptionGroup extends BaseEntity {
     public void update(final UpdateOptionGroupRequest request) {
         this.name = request.getName();
     }
+
+    public void addOption(final Option option) {
+        this.options.add(option);
+    }
+
+    public void removeOption(final Option option) {
+        this.options.remove(option);
+    }
 }
