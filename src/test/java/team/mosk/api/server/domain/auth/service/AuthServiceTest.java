@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 
 @SpringBootTest
+@ActiveProfiles({"mac", "dev"})
 @Transactional
 class AuthServiceTest {
 

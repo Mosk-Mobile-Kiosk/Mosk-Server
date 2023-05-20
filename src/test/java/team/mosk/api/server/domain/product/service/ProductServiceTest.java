@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.product.util.TextValidator.*;
 
 @SpringBootTest
+@ActiveProfiles({"windows", "dev"})
 @Transactional
 public class ProductServiceTest {
 

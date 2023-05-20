@@ -36,6 +36,7 @@ public class OptionService {
 
         option.initGroup(findGroup);
         Option savedOption = optionRepository.save(option);
+        findGroup.addOption(savedOption);
 
         return OptionResponse.of(savedOption);
     }
