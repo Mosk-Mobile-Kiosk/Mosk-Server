@@ -22,4 +22,8 @@ public class UpdateProductRequest {
 
     @NotNull(message = "가격 설정은 필수입니다.")
     private Long price;
+
+    private String encodedImg;
+
+    private String imgType;
 }

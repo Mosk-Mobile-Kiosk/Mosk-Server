@@ -78,7 +78,7 @@ public class OptionServiceTest {
     static Product product;
     static OptionGroup optionGroup;
     @BeforeEach
-    void init() {
+    void init() throws Exception {
         Store newStore = Store.builder()
                 .email("test@test.test")
                 .password("12345")
@@ -110,7 +110,10 @@ public class OptionServiceTest {
                 .selling(Selling.SELLING)
                 .build();
 
-        ProductResponse productResponse = productService.create(newProduct, category.getId(), store.getId());
+        final String encodedImg = "";
+        final String imgType = "";
+
+        ProductResponse productResponse = productService.create(newProduct, encodedImg, imgType, category.getId(), store.getId());
 
         product = productRepository.findById(productResponse.getId())
                 .orElseThrow(() -> new ProductNotFoundException("error"));

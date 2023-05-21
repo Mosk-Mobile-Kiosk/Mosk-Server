@@ -10,10 +10,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface CustomProductRepository {
-    Page<ProductResponse> findAllWithPaging(final Long storeId, final Pageable pageable);
-    List<ProductResponse> findAllByCategoryIdEachStore(final ProductSearchFromCategory productSearchFromCategory);
 
-    Optional<ProductResponse> findByProductIdAndStoreId(final ProductSearch productSearch);
+    ProductResponse findByProductId(final Long id);
 
-    List<ProductResponse> findProductsHasKeyword(final Long storeId, final String keyword);
+    ProductResponse findByKeyword(final String keyword, final Long storeId);
 }
