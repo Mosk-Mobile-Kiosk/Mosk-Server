@@ -124,7 +124,6 @@ public class OptionGroupServiceTest {
 
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getName()).isEqualTo(GivenOptionGroup.GROUP_NAME);
-        assertThat(response.getProductName()).isEqualTo(product.getName());
     }
 
     @Test
@@ -190,7 +189,6 @@ public class OptionGroupServiceTest {
 
         assertThat(findGroup.getId()).isEqualTo(savedResponse.getId());
         assertThat(findGroup.getName()).isEqualTo(savedResponse.getName());
-        assertThat(findGroup.getProductName()).isEqualTo(savedResponse.getProductName());
         assertThat(findGroup.getOptions().size()).isEqualTo(2);
     }
 
@@ -231,11 +229,9 @@ public class OptionGroupServiceTest {
 
         assertThat(optionGroups.get(0).getId()).isEqualTo(savedResponse1.getId());
         assertThat(optionGroups.get(0).getName()).isEqualTo(savedResponse1.getName());
-        assertThat(optionGroups.get(0).getProductName()).isEqualTo(savedResponse1.getProductName());
         assertThat(optionGroups.get(0).getOptions().size()).isEqualTo(2);
         assertThat(optionGroups.get(1).getId()).isEqualTo(savedResponse2.getId());
         assertThat(optionGroups.get(1).getName()).isEqualTo(savedResponse2.getName());
-        assertThat(optionGroups.get(1).getProductName()).isEqualTo(savedResponse2.getProductName());
         assertThat(optionGroups.get(1).getOptions().size()).isEqualTo(2);
     }
 }
