@@ -1,5 +1,6 @@
 package team.mosk.api.server.domain.store.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -23,26 +24,12 @@ import java.util.ArrayList;
 
 @Service
 @Transactional(readOnly = true)
+@RequiredArgsConstructor
 public class StoreReadService {
 
     private final StoreRepository storeRepository;
-
     private final QRCodeRepository qrCodeRepository;
-
-    private final WebClient webClient;
-
-    private final String gongGongApiKey;
-
-
-    public StoreReadService(StoreRepository storeRepository,
-                            QRCodeRepository qrCodeRepository,
-                            @Qualifier("gongGongDataClient") WebClient webClient,
-                            @Value("${apiKey.gongGongData}") String gongGongApiKey) {
-        this.storeRepository = storeRepository;
-        this.qrCodeRepository = qrCodeRepository;
-        this.webClient = webClient;
-        this.gongGongApiKey = gongGongApiKey;
-    }
+    private final BusinessCheckService businessCheckService;
 
     public StoreResponse findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
@@ -61,15 +48,7 @@ public class StoreReadService {
         ArrayList<BusinessCheckRequest> bcrList = new ArrayList<>();
         bcrList.add(request);
 
-        ResponseEntity<BusinessCheckResponse> response = webClient.post()
-                .bodyValue(bcrList)
-                .retrieve()
-                .toEntity(BusinessCheckResponse.class)
-                .block();
-
-        if (response.getStatusCode() != HttpStatus.OK || !isBusinessCheck(response.getBody().getValid_msg())) {
-            throw new DuplicateCrnException("이미 존재하는 사업자등록 번호 입니다.");
-        }
+        businessCheckService.callBusinessRegistrationCheck(bcrList);
     }
 
     public QRCode getQRCode(Long storeId) {
@@ -80,8 +59,6 @@ public class StoreReadService {
                 .orElseThrow(() -> new QRCodeNotFoundException("QRCODE를 찾을 수 없습니다."));
     }
 
-    private boolean isBusinessCheck(String resultMsg) {
-        return resultMsg == "" ? true : false;
-    }
+
 
 }
