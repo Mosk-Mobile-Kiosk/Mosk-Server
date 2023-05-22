@@ -22,17 +22,16 @@ public class OptionGroupResponse {
     private Long id;
     private String name;
     private List<OptionResponse> options;
-    private String productName;
 
     public static OptionGroupResponse of(final OptionGroup optionGroup) {
         if(optionGroup.getOptions() != null) {
             List<OptionResponse> options = optionGroup.getOptions().stream()
                     .map(option -> new OptionResponse(option.getId(), option.getName(), option.getPrice()))
                     .toList();
-            return new OptionGroupResponse(optionGroup.getId(), optionGroup.getName(), options, optionGroup.getProduct().getName());
+            return new OptionGroupResponse(optionGroup.getId(), optionGroup.getName(), options);
         }
 
         List<OptionResponse> options = new ArrayList<>();
-        return new OptionGroupResponse(optionGroup.getId(), optionGroup.getName(), options, optionGroup.getProduct().getName());
+        return new OptionGroupResponse(optionGroup.getId(), optionGroup.getName(), options);
     }
 }

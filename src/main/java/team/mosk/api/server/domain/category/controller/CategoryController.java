@@ -15,9 +15,9 @@ import team.mosk.api.server.domain.category.service.CategoryService;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Optional;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,22 +28,22 @@ public class CategoryController {
     private final CategoryReadService categoryReadService;
 
     @PostMapping("/categories")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public ApiResponse<CategoryResponse> create(@Validated @RequestBody CreateCategoryRequest request,
                               @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ApiResponse.of(HttpStatus.CREATED, categoryService.create(request.toEntity(), userDetails.getId()));
+        return ApiResponse.of(CREATED, categoryService.create(request.toEntity(), userDetails.getId()));
     }
 
     @DeleteMapping("/categories/{categoryId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(NO_CONTENT)
     public ApiResponse<Void> delete(@PathVariable Long categoryId,
                                        @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
         categoryService.delete(categoryId, userDetails.getId());
-        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
+        return ApiResponse.of(NO_CONTENT, null);
     }
 
     @PutMapping("/categories")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(OK)
     public ApiResponse<CategoryResponse> update(@Validated @RequestBody UpdateCategoryRequest request,
                                                    @AuthenticationPrincipal CustomUserDetails userDetails) throws IllegalAccessException {
         return ApiResponse.ok(categoryService.update(request, userDetails.getId()));
@@ -53,9 +53,15 @@ public class CategoryController {
      * ReadService Methods
      */
 
-    @GetMapping("/public/categories/{storeId}")
-    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/public/categories/all/{storeId}")
+    @ResponseStatus(OK)
     public ApiResponse<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {
         return ApiResponse.ok(categoryReadService.findAllByStoreId(storeId));
+    }
+
+    @GetMapping("/public/categories/{categoryId}")
+    @ResponseStatus(OK)
+    public ApiResponse<CategoryResponse> findByCategoryId(@PathVariable Long categoryId) {
+        return ApiResponse.ok(categoryReadService.findByCategoryId(categoryId));
     }
 }

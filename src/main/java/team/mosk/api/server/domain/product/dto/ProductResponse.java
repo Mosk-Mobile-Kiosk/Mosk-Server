@@ -49,8 +49,7 @@ public class ProductResponse {
                     return new OptionGroupResponse(
                             optionGroup.getId(),
                             optionGroup.getName(),
-                            options,
-                            optionGroup.getProduct().getName()
+                            options
                     );
                 })
                 .toList();

@@ -4,6 +4,7 @@ import lombok.*;
 import team.mosk.api.server.domain.category.model.persist.Category;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -17,6 +18,7 @@ public class CreateCategoryRequest {
     public Category toEntity() {
         return Category.builder()
                 .name(name)
+                .products(new ArrayList<>())
                 .build();
     }
 

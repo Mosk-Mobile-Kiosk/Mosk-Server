@@ -18,4 +18,8 @@ public class CategoryReadService {
     public List<CategoryResponse> findAllByStoreId(final Long storeId) {
         return categoryRepository.findAllByStoreId(storeId);
     }
+
+    public CategoryResponse findByCategoryId(final Long id) {
+        return categoryRepository.findByCategoryId(id);
+    }
 }
