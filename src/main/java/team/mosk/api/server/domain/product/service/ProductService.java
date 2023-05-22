@@ -92,10 +92,6 @@ public class ProductService {
             return ProductResponse.of(savedProduct);
         } else {
             initBasicImg(savedProduct);
-            Resource resource = resourceLoader.getResource("classpath:img/basic.jpg");
-            File file = resource.getFile();
-            byte[] bytes = Files.readAllBytes(file.toPath());
-            String encodedBytes = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
 
             return ProductResponse.of(savedProduct);
         }
