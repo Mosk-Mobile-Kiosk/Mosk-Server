@@ -30,7 +30,7 @@ public class Category extends BaseEntity {
     private Store store;
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<Product> products = new ArrayList<>();
+    private List<Product> products;
 
     /**
      * methods

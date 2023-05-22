@@ -18,18 +18,22 @@ public class CustomCategoryRepositoryImpl implements CustomCategoryRepository{
     private final JPAQueryFactory query;
 
     @Override
+    public CategoryResponse findByCategoryId(final Long id) {
+        Category findCategory = query.select(category)
+                .from(category)
+                .where(category.id.eq(id))
+                .fetchOne();
+
+        return CategoryResponse.of(findCategory);
+    }
+
+    @Override
     public List<CategoryResponse> findAllByStoreId(final Long storeId) {
-        List<CategoryResponse> categories = query.select(Projections.constructor(CategoryResponse.class,
-                        category.id.as("id"),
-                        category.name.as("name")))
+        List<Category> categories = query.select(category)
                 .from(category)
                 .where(category.store.id.eq(storeId))
                 .fetch();
 
-        if (categories.size() == 0) {
-            throw new CategoryNotFoundException("상점에 카테고리가 존재하지 않습니다.");
-        }
-
-        return categories;
+        return categories.stream().map(CategoryResponse::of).toList();
     }
 }

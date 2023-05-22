@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface CustomCategoryRepository {
 
+    CategoryResponse findByCategoryId(final Long id);
     List<CategoryResponse> findAllByStoreId(final Long storeId);
 }

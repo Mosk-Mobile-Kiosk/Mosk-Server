@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.product.dto.ProductImgResponse;
 import team.mosk.api.server.domain.product.dto.ProductResponse;
-import team.mosk.api.server.domain.product.dto.ProductSearchFromCategory;
 import team.mosk.api.server.domain.product.dto.ProductSearch;
 import team.mosk.api.server.domain.product.error.ProductImgNotFoundException;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
