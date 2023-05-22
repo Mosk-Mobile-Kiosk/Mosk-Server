@@ -34,15 +34,15 @@ public class ProductController {
     @PostMapping("/products")
     @ResponseStatus(CREATED)
     public ApiResponse<ProductResponse> create(@Validated @RequestBody CreateProductRequest request,
-                              @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ApiResponse.of(CREATED, productService.create(request.toEntity(), request.getCategoryId(), userDetails.getId()));
+                              @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        return ApiResponse.of(CREATED, productService.create(request.toEntity(), request.getEncodedImg(), request.getImgType(), request.getCategoryId(), userDetails.getId()));
     }
 
     @PutMapping("/products")
     @ResponseStatus(OK)
     public ApiResponse<ProductResponse> update(@Validated @RequestBody UpdateProductRequest request,
-                                                  @AuthenticationPrincipal CustomUserDetails userDetails) {
-        return ApiResponse.ok(productService.update(request, userDetails.getId()));
+                                                  @AuthenticationPrincipal CustomUserDetails userDetails) throws Exception {
+        return ApiResponse.ok(productService.update(request, request.getEncodedImg(), request.getImgType(), userDetails.getId()));
     }
 
     @DeleteMapping("/products/{productId}")
@@ -66,54 +66,21 @@ public class ProductController {
      * ReadService Methods
      */
 
-    @GetMapping("/public/products/category")
+    @GetMapping("/public/products/{productId}")
     @ResponseStatus(OK)
-    public ApiResponse<List<ProductResponse>> findAllByCategoryNameEachStore(@ModelAttribute ProductSearchFromCategory productSearchFromCategory) {
-        return ApiResponse.ok(productReadService.findAllByCategoryIdEachStore(productSearchFromCategory));
+    public ApiResponse<ProductResponse> findByProductId(@PathVariable Long productId) {
+        return ApiResponse.ok(productReadService.findByProductId(productId));
     }
 
-    @GetMapping("/public/products/all")
+    @GetMapping("/public/products/img/{productId}")
     @ResponseStatus(OK)
-    public ApiResponse<Page<ProductResponse>> findAllWithPaging(@RequestParam(name = "storeId") Long storeId,
-                                                                   @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return ApiResponse.ok(productReadService.findAllWithPaging(storeId, pageable));
+    public ApiResponse<ProductImgResponse> findImgByProductId(@PathVariable Long productId) throws Exception {
+        return ApiResponse.ok(productReadService.findImgByProductId(productId));
     }
 
     @GetMapping("/public/products")
     @ResponseStatus(OK)
-    public ApiResponse<ProductResponse> findByProductId(@ModelAttribute ProductSearch productSearch) {
-        return ApiResponse.ok(productReadService.findByProductIdAndStoreId(productSearch));
-    }
-
-    @GetMapping("/public/products/keywords")
-    @ResponseStatus(OK)
-    public ApiResponse<List<ProductResponse>> findProductsHasKeyword(@RequestParam(name = "storeId") Long storeId,
-                                                                        @RequestParam(name = "keyword") String keyword) {
-        return ApiResponse.ok(productReadService.findProductsHasKeyword(storeId, keyword));
-    }
-
-
-    /**
-     * files
-     */
-
-    @GetMapping("/public/products/img/{productId}")
-    @ResponseStatus(OK)
-    public ResponseEntity<byte[]> findImgByProductId(@PathVariable Long productId) throws IOException {
-        ProductImgResponse response = productReadService.findImgByProductId(productId);
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(response.getContentType()))
-                .body(response.getFile());
-    }
-
-    @PutMapping("/products/img")
-    @ResponseStatus(OK)
-    public ResponseEntity<byte[]> updateImg(@RequestParam(name = "newImg") MultipartFile newFile,
-                                            @RequestParam(name = "productId") Long productId,
-                                            @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        ProductImgResponse response = productService.updateImg(newFile, productId, userDetails.getId());
-        return ResponseEntity.ok()
-                .contentType(MediaType.valueOf(response.getContentType()))
-                .body(response.getFile());
+    public ApiResponse<List<ProductResponse>> findByKeyword(@ModelAttribute ProductSearch productSearch) {
+        return ApiResponse.ok(productReadService.findByKeyword(productSearch.getProductName(), productSearch.getStoreId()));
     }
 }

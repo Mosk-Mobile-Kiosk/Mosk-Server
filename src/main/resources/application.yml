@@ -27,12 +27,14 @@ spring:
     activate:
       on-profile: mac
 
-filePath: /Users/hhpp1205/Documents/mosk-img
+filePath: /Users/hhpp1205/Documents/mosk-img/
+basicFilePath: classpath:img/basic.jpg
 ---
 spring:
   config:
     activate:
       on-profile: windows
 
-filePath: C:\Users\bae\Desktop\study\mosk-img
+filePath: C:\Users\bae\Desktop\study\mosk-img\
+basicFilePath: classpath:img/basic.jpg
 

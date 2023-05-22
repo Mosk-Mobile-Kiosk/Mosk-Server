@@ -71,4 +71,12 @@ public class Product extends BaseEntity {
     public void initProductImg(final ProductImg productImg) {
         this.productImg = productImg;
     }
+
+    public void addOptionGroup(final OptionGroup optionGroup) {
+        this.optionGroups.add(optionGroup);
+    }
+
+    public void removeOptionGroup(final OptionGroup optionGroup) {
+        this.optionGroups.remove(optionGroup);
+    }
 }

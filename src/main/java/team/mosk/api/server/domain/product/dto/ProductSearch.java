@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.product.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -10,9 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Builder
 public class ProductSearch {
 
-    @NotBlank
-    private Long productId;
+    private String productName;
 
-    @NotBlank
     private Long storeId;
 }

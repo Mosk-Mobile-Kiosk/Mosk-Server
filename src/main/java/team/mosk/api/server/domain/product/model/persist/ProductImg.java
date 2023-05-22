@@ -20,8 +20,6 @@ public class ProductImg {
 
     private String path;
 
-    private String contentType;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private Product product;

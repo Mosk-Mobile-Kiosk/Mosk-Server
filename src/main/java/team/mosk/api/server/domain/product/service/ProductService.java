@@ -1,11 +1,12 @@
 package team.mosk.api.server.domain.product.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.util.StringUtils;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.error.OwnerInfoMisMatchException;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -14,8 +15,7 @@ import team.mosk.api.server.domain.product.dto.ProductImgResponse;
 import team.mosk.api.server.domain.product.dto.ProductResponse;
 import team.mosk.api.server.domain.product.dto.SellingStatusRequest;
 import team.mosk.api.server.domain.product.dto.UpdateProductRequest;
-import team.mosk.api.server.domain.product.error.BasicImgInitFailedException;
-import team.mosk.api.server.domain.product.error.FailedDeleteImgException;
+import team.mosk.api.server.domain.product.error.ProductImgNotFoundException;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
@@ -23,15 +23,16 @@ import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
-import team.mosk.api.server.global.common.GetPathByEnvironment;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.UUID;
 
 @Service
 @Transactional
-@RequiredArgsConstructor
 @Slf4j
 public class ProductService {
 
@@ -40,14 +41,39 @@ public class ProductService {
     private final ProductImgRepository productImgRepository;
 
     private final StoreRepository storeRepository;
+    private final ResourceLoader resourceLoader;
+    private final String basicFilePath;
+    private final String filePath;
 
+    public ProductService(CategoryRepository categoryRepository,
+                          ProductRepository productRepository,
+                          ProductImgRepository productImgRepository,
+                          StoreRepository storeRepository,
+                          ResourceLoader resourceLoader,
+                          @Value("${basicFilePath}") String basicFilePath,
+                          @Value("${filePath}") String filePath) {
+        this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+        this.productImgRepository = productImgRepository;
+        this.storeRepository = storeRepository;
+        this.resourceLoader = resourceLoader;
+        this.basicFilePath = basicFilePath;
+        this.filePath = filePath;
+    }
 
     private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
     private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
     private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
     private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
 
-    public ProductResponse create(final Product product, final Long categoryId, final Long storeId) {
+    private static final String BASE_IMG_TYPE = ".jpg";
+
+    public ProductResponse create(final Product product,
+                                  final String encodedImg,
+                                  final String imgType,
+                                  final Long categoryId,
+                                  final Long storeId) throws Exception {
+
         Category findCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
 
@@ -58,16 +84,44 @@ public class ProductService {
         product.initStore(findStore);
         Product savedProduct = productRepository.save(product);
 
-        initBasicImg(savedProduct);
+        // img save
+        if(StringUtils.hasText(encodedImg) && StringUtils.hasText(imgType)) {
+            //초기 이미지 입력이 존재할 경우
+            saveParamImg(encodedImg, imgType, savedProduct);
 
-        return ProductResponse.of(savedProduct);
+            return ProductResponse.of(savedProduct);
+        } else {
+            initBasicImg(savedProduct);
+            Resource resource = resourceLoader.getResource("classpath:img/basic.jpg");
+            File file = resource.getFile();
+            byte[] bytes = Files.readAllBytes(file.toPath());
+            String encodedBytes = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+
+            return ProductResponse.of(savedProduct);
+        }
     }
 
-    public ProductResponse update(final UpdateProductRequest request, final Long storeId) {
+    public ProductResponse update(final UpdateProductRequest request, final String encodedImg, final String imgType, final Long storeId) throws Exception {
         Product findProduct = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         validateStoreOwner(findProduct.getStore().getId(), storeId);
+
+        if(StringUtils.hasText(encodedImg) && StringUtils.hasText(imgType)) {
+            ProductImg findImg = productImgRepository.findImgByProductId(findProduct.getId())
+                    .orElseThrow(() -> new ProductImgNotFoundException("IMG_NOT_FOUNDED"));
+
+            final String oldPath = findImg.getPath();
+
+            productImgRepository.delete(findImg);
+
+            if(!oldPath.contains("basic.jpg")) {
+                File target = new File(oldPath);
+                target.delete();
+            }
+
+            saveParamImg(encodedImg, imgType, findProduct);
+        }
 
         findProduct.update(request);
         return ProductResponse.of(findProduct);
@@ -94,73 +148,54 @@ public class ProductService {
     }
 
     /**
-     * files
+     * utils
      */
 
-    public ProductImgResponse updateImg(final MultipartFile newFile, final Long productId, final Long storeId) throws IOException {
-        Product findProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
-
-        validateStoreOwner(findProduct.getStore().getId(), storeId);
-
-        String oldPath = findProduct.getProductImg().getPath();
-        log.info("oldPath is [{}]", oldPath);
-        String uuid = UUID.randomUUID().toString();
-        String path = GetPathByEnvironment.getPath("update") + uuid;
-
-        dropOldImgMetaFromDB(findProduct.getProductImg());
-
-        ProductImg newProductImg = ProductImg.builder()
-                .name(uuid)
-                .path(path)
-                .contentType(newFile.getContentType())
-                .product(findProduct)
-                .build();
-
-        ProductImg savedProductImg = productImgRepository.save(newProductImg);
-        findProduct.initProductImg(savedProductImg);
-
-        newFile.transferTo(new File(path));
-
-        boolean result = deleteTargetFile(oldPath);
-        if (!result) {
-            throw new FailedDeleteImgException(FAILED_DELETE_IMG);
-        }
-
-        return ProductImgResponse.of(savedProductImg);
-    }
-
-    public void validateStoreOwner(final Long storeId, final Long targetId) {
+    private void validateStoreOwner(final Long storeId, final Long targetId) {
         if (!storeId.equals(targetId)) {
             throw new OwnerInfoMisMatchException(OWNER_MISMATCHED);
         }
     }
 
-    public boolean deleteTargetFile(final String oldPath) {
+    private File saveImgToFile(final byte[] imgBytes, final String fileName) throws Exception {
+        String fullPath = filePath + fileName;
+        Files.write(Paths.get(fullPath), imgBytes);
 
-        if (!oldPath.contains("basic.jpg")) {
-            File file = new File(oldPath);
-            return file.delete();
-        }
-
-        return true;
+        return new File(fullPath);
     }
 
-    public void initBasicImg(final Product product) throws BasicImgInitFailedException {
-        File target = new File(GetPathByEnvironment.getPath("basic"));
-
-        ProductImg basicProductImg = ProductImg.builder()
-                .name(target.getName())
-                .contentType(MediaType.IMAGE_JPEG_VALUE)
-                .path(target.getPath())
+    private void initBasicImg(final Product product) {
+        ProductImg productImg = ProductImg.builder()
+                .name("basic.jpg")
+                .path(basicFilePath)
                 .product(product)
                 .build();
 
-        ProductImg savedImg = productImgRepository.save(basicProductImg);
-        product.initProductImg(savedImg);
+        ProductImg savedProductImg
+                = productImgRepository.save(productImg);
+
+        product.initProductImg(savedProductImg);
     }
 
-    public void dropOldImgMetaFromDB(final ProductImg productImg) {
-        productImgRepository.delete(productImg);
+    private void saveParamImg(String encodedImg, String imgType, Product product) throws Exception {
+
+        byte[] decodedImg = Base64.getDecoder().decode(encodedImg.substring(encodedImg.indexOf(",") + 1));
+        String newFileName = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 12);
+
+        if(imgType.contains(".")) {
+            newFileName += imgType;
+        } else {
+            newFileName = newFileName + "." + imgType;
+        }
+
+        File file = saveImgToFile(decodedImg, newFileName);
+        ProductImg productImg = ProductImg.builder()
+                .name(newFileName)
+                .path(file.getPath())
+                .product(product)
+                .build();
+
+        ProductImg savedImg = productImgRepository.save(productImg);
+        product.initProductImg(savedImg);
     }
 }
