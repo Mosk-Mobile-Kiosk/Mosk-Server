@@ -37,7 +37,7 @@ public class ProductReadService {
         return productRepository.findByProductId(id);
     }
 
-    public ProductResponse findByKeyword(final String keyword, final Long storeId) {
+    public List<ProductResponse> findByKeyword(final String keyword, final Long storeId) {
         return productRepository.findByKeyword(keyword, storeId);
     }
 

@@ -13,5 +13,5 @@ public interface CustomProductRepository {
 
     ProductResponse findByProductId(final Long id);
 
-    ProductResponse findByKeyword(final String keyword, final Long storeId);
+    List<ProductResponse> findByKeyword(final String keyword, final Long storeId);
 }

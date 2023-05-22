@@ -80,7 +80,7 @@ public class ProductController {
 
     @GetMapping("/public/products")
     @ResponseStatus(OK)
-    public ApiResponse<ProductResponse> findByKeyword(@ModelAttribute ProductSearch productSearch) {
+    public ApiResponse<List<ProductResponse>> findByKeyword(@ModelAttribute ProductSearch productSearch) {
         return ApiResponse.ok(productReadService.findByKeyword(productSearch.getProductName(), productSearch.getStoreId()));
     }
 }
