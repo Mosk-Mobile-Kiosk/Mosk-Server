@@ -1,18 +1,23 @@
 package team.mosk.api.server.global.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.DefaultUriBuilderFactory;
-import org.springframework.web.util.UriBuilderFactory;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 
 @Configuration
 public class WebClientConfig {
+
+    private final String tossApiKey;
+
+    public WebClientConfig(@Value("${apiKey.toss}") String tossApiKey) {
+        this.tossApiKey = tossApiKey;
+    }
 
     @Bean(name = "gongGongDataClient")
     public WebClient gongGongDataClient() {
@@ -34,4 +39,18 @@ public class WebClientConfig {
                 .defaultHeader("Content-Type", MediaType.IMAGE_PNG_VALUE)
                 .build();
     }
+
+    @Bean(name = "tossClient")
+    public WebClient tossClient() {
+        return WebClient.builder()
+                .baseUrl("https://api.tosspayments.com/v1/payments/")
+                .defaultHeaders(headers -> {
+                            headers.set("Authorization", "Basic " + tossApiKey);
+                            headers.set("Content-Type", "application/json");
+                        }
+                )
+                .build();
+    }
+
+
 }

@@ -5,21 +5,19 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @Getter
 @NoArgsConstructor
 public class CreateOrderRequest {
 
-    private Long productId;
+    private String paymentKey;
+    private String orderId;
 
-    private List<Long> optionIds;
-
-    private int quantity;
+    List<OrderProductRequest> orderProductRequests;
 
     @Builder
-    public CreateOrderRequest(Long productId, List<Long> optionIds, int quantity) {
-        this.productId = productId;
-        this.optionIds = optionIds;
-        this.quantity = quantity;
+    public CreateOrderRequest(String paymentKey, String orderId, List<OrderProductRequest> orderProductRequests) {
+        this.paymentKey = paymentKey;
+        this.orderId = orderId;
+        this.orderProductRequests = orderProductRequests;
     }
 }

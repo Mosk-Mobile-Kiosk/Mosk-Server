@@ -35,6 +35,8 @@ public class Order extends BaseEntity {
 
     private LocalDateTime registeredDate;
 
+    private String paymentKey;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
@@ -43,23 +45,22 @@ public class Order extends BaseEntity {
     private Store store;
 
     @Builder
-    public Order(Long id, OrderStatus orderStatus, int totalPrice, LocalDateTime registeredDate, List<OrderProduct> orderProducts, Store store) {
+    public Order(Long id, OrderStatus orderStatus, int totalPrice, LocalDateTime registeredDate, String paymentKey, List<OrderProduct> orderProducts, Store store) {
         this.id = id;
         this.orderStatus = orderStatus;
         this.totalPrice = totalPrice;
         this.registeredDate = registeredDate;
+        this.paymentKey = paymentKey;
         this.orderProducts = orderProducts;
         this.store = store;
     }
 
-
-
-
-    public static Order createInitOrder(Store store, LocalDateTime registeredDate) {
+    public static Order createInitOrder(Store store, LocalDateTime registeredDate, String paymentKey) {
         return Order.builder()
                 .orderStatus(INIT)
                 .totalPrice(0)
                 .registeredDate(registeredDate)
+                .paymentKey(paymentKey)
                 .orderProducts(new ArrayList<>())
                 .store(store)
                 .build();

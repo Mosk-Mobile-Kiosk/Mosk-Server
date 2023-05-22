@@ -5,8 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
-import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
-import team.mosk.api.server.domain.order.dto.OrderResponse;
+import team.mosk.api.server.domain.order.dto.*;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
 import team.mosk.api.server.domain.order.error.OrderNotFoundException;
 import team.mosk.api.server.domain.order.model.Order;
@@ -33,33 +32,37 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
+    private final PaymentService paymentService;
 
-    public OrderResponse createOrder(Long storeId, List<CreateOrderRequest> createOrderRequests, LocalDateTime registeredDate) {
+    public OrderResponse createOrder(Long storeId, CreateOrderRequest createOrderRequest, LocalDateTime registeredDate) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
 
-        Order order = Order.createInitOrder(store, registeredDate);
+        Order order = Order.createInitOrder(store, registeredDate, createOrderRequest.getPaymentKey());
         
-        for(CreateOrderRequest createOrderRequest : createOrderRequests) {
-            Product product = productRepository.findById(createOrderRequest.getProductId())
+        for(OrderProductRequest orderProductRequest : createOrderRequest.getOrderProductRequests()) {
+            Product product = productRepository.findById(orderProductRequest.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
 
-            OrderProduct orderProduct = OrderProduct.of(order, product, createOrderRequest.getQuantity());
-            List<Option> options = optionRepository.findAllById(createOrderRequest.getOptionIds());
+            OrderProduct orderProduct = OrderProduct.of(order, product, orderProductRequest.getQuantity());
+            List<Option> options = optionRepository.findAllById(orderProductRequest.getOptionIds());
 
             List<OrderProductOption> orderProductOptions = createListBy(orderProduct, options);
             orderProduct.setOrderProductOptions(orderProductOptions);
 
             order.setOrderProduct(orderProduct);
 
-            long productTotalPrice = getProductTotalPrice(createOrderRequest.getQuantity(), product, options);
+            long productTotalPrice = getProductTotalPrice(orderProductRequest.getQuantity(), product, options);
             order.plusTotalPrice(productTotalPrice);
         }
+
+        paymentService.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
 
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    public void cancel(Long storeId, Long orderId) {
+
+    public void cancel(Long storeId, Long orderId, String reason) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
 
@@ -69,6 +72,8 @@ public class OrderService {
         if(store != order.getStore()) {
             throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
         }
+
+        paymentService.paymentCancel(order.getPaymentKey(), reason);
 
         order.cancel();
     }

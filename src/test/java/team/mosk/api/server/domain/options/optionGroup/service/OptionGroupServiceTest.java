@@ -36,7 +36,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("test")
+@ActiveProfiles("mac")
 @Transactional
 public class OptionGroupServiceTest {
 
@@ -108,6 +108,7 @@ public class OptionGroupServiceTest {
         OptionGroupResponse response
                 = optionGroupService.create(GivenOptionGroup.toEntity(), product.getId(), store.getId());
 
+        System.out.println("response = " + response);
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getName()).isEqualTo(GivenOptionGroup.GROUP_NAME);
         assertThat(response.getProduct().getId()).isEqualTo(product.getId());

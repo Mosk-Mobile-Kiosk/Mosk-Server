@@ -4,11 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
+import team.mosk.api.server.domain.order.dto.OrderProductRequest;
 import team.mosk.api.server.domain.order.dto.OrderResponse;
 import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
@@ -24,8 +26,10 @@ import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_EMAIL;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
@@ -51,11 +55,17 @@ class OrderServiceTest {
     @Autowired
     private StoreRepository storeRepository;
 
+    @MockBean
+    private PaymentService paymentService;
+
 
     @DisplayName("ProductId와 optionId 리스트를 받아 주문을할 수 있다.")
     @Test
     void createOrder() {
         //given
+        String paymentKey = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString();
+
         Store store = createStore(GIVEN_EMAIL);
         Store savedStore = storeRepository.save(store);
 
@@ -75,15 +85,21 @@ class OrderServiceTest {
         Option savedOption1 = optionRepository.save(option1);
         Option savedOption2 = optionRepository.save(option2);
 
-        CreateOrderRequest createOrderRequest1 = new CreateOrderRequest(product1.getId(), List.of(savedOption1.getId(), savedOption2.getId()), 1);
-        CreateOrderRequest createOrderRequest2 = new CreateOrderRequest(product2.getId(), List.of(savedOption1.getId()), 2);
+        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), List.of(savedOption1.getId(), savedOption2.getId()), 1);
+        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), List.of(savedOption1.getId()), 2);
 
-        List<CreateOrderRequest> createOrderRequests = List.of(createOrderRequest1, createOrderRequest2);
+        List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
+
+        CreateOrderRequest request = CreateOrderRequest.builder()
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .orderProductRequests(orderProductRequests)
+                .build();
 
         LocalDateTime now = LocalDateTime.now();
 
         //when
-        OrderResponse orderResponse = orderService.createOrder(savedStore.getId(), createOrderRequests, now);
+        OrderResponse orderResponse = orderService.createOrder(savedStore.getId(), request, now);
 
         //then
         System.out.println("orderResponse = " + orderResponse);
@@ -104,7 +120,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId());
+        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -122,7 +138,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId());
+        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -145,7 +161,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrderAccessDeniedException.class)
                 .hasMessage("주문에 접근할 수 없습니다.");
     }
@@ -161,7 +177,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
     }
@@ -177,7 +193,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
     }
@@ -193,7 +209,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
     }

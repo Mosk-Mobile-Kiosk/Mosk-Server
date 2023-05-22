@@ -37,7 +37,7 @@ public class StoreReadService {
     public StoreReadService(StoreRepository storeRepository,
                             QRCodeRepository qrCodeRepository,
                             @Qualifier("gongGongDataClient") WebClient webClient,
-                            @Value("${gongGongData.apiKey}") String gongGongApiKey) {
+                            @Value("${apiKey.gongGongData}") String gongGongApiKey) {
         this.storeRepository = storeRepository;
         this.qrCodeRepository = qrCodeRepository;
         this.webClient = webClient;
