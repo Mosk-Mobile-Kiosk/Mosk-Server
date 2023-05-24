@@ -14,6 +14,8 @@ import team.mosk.api.server.domain.order.error.TossApiException;
 public class PaymentService {
     private final WebClient webClient;
 
+    private final String CANCEL_REASON = "단순변심";
+
     public PaymentService(@Qualifier("tossClient") WebClient webClient) {
         this.webClient = webClient;
     }
@@ -32,10 +34,10 @@ public class PaymentService {
                 });
     }
 
-    public void paymentCancel(String paymentKey, String reason) {
+    public void paymentCancel(String paymentKey) {
         webClient.post()
                 .uri(paymentKey + "/cancel")
-                .bodyValue(new TossPaymentCancelRequest(reason))
+                .bodyValue(new TossPaymentCancelRequest(CANCEL_REASON))
                 .retrieve()
                 .onStatus(HttpStatus::isError, response -> {
                     response.bodyToMono(TossPaymentErrorResponse.class)

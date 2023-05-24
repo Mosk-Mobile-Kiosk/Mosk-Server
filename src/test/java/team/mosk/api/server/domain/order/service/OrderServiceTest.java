@@ -74,12 +74,12 @@ class OrderServiceTest {
 
         Option option1 = Option.builder()
                 .name("샷추가")
-                .price(1000)
+                .price(1000l)
                 .build();
 
         Option option2 = Option.builder()
                 .name("얼음 많이")
-                .price(500)
+                .price(500l)
                 .build();
 
         Option savedOption1 = optionRepository.save(option1);
@@ -120,7 +120,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -138,7 +138,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -161,7 +161,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
                 .isInstanceOf(OrderAccessDeniedException.class)
                 .hasMessage("주문에 접근할 수 없습니다.");
     }
@@ -177,7 +177,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
     }
@@ -193,7 +193,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
     }
@@ -209,7 +209,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
     }

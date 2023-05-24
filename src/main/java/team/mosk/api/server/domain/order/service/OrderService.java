@@ -61,8 +61,10 @@ public class OrderService {
         return OrderResponse.of(orderRepository.save(order));
     }
 
-
-    public void cancel(Long storeId, Long orderId, String reason) {
+    /**
+     * @param orderId tossApi 주문 생성시 입력한 문자값
+     */
+    public void cancel(Long storeId, Long orderId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
 
@@ -73,7 +75,7 @@ public class OrderService {
             throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
         }
 
-        paymentService.paymentCancel(order.getPaymentKey(), reason);
+        paymentService.paymentCancel(order.getPaymentKey());
 
         order.cancel();
     }

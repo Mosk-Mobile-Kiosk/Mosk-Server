@@ -88,6 +88,7 @@ public class Product extends BaseEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+    }
 
     public void addOptionGroup(final OptionGroup optionGroup) {
         this.optionGroups.add(optionGroup);

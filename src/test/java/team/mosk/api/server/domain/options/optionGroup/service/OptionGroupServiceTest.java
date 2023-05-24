@@ -235,4 +235,5 @@ public class OptionGroupServiceTest {
         assertThat(optionGroups.get(1).getName()).isEqualTo(savedResponse2.getName());
         assertThat(optionGroups.get(1).getOptions().size()).isEqualTo(2);
     }
+
 }

@@ -11,7 +11,7 @@ public class OptionResponse {
 
     private Long id;
     private String name;
-    private int price;
+    private long price;
 
     public static OptionResponse of(final Option option) {
         return new OptionResponse(option.getId(), option.getName(), option.getPrice());
