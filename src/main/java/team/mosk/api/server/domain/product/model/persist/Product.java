@@ -33,7 +33,8 @@ public class Product extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Selling selling;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product")
     private ProductImg productImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -73,6 +74,7 @@ public class Product extends BaseEntity {
         this.productImg = productImg;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -86,5 +88,12 @@ public class Product extends BaseEntity {
     @Override
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
+
+    public void addOptionGroup(final OptionGroup optionGroup) {
+        this.optionGroups.add(optionGroup);
+    }
+
+    public void removeOptionGroup(final OptionGroup optionGroup) {
+        this.optionGroups.remove(optionGroup);
     }
 }

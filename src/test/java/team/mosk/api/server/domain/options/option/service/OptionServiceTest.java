@@ -5,7 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -34,15 +36,15 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
 
-import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
 
 @SpringBootTest
+@ActiveProfiles({"windows", "dev"})
 @Transactional
-@ActiveProfiles("test")
 public class OptionServiceTest {
 
     @Autowired
@@ -67,13 +69,15 @@ public class OptionServiceTest {
     OptionService optionService;
     @Autowired
     OptionRepository optionRepository;
+    @Autowired
+    OptionReadService optionReadService;
 
     static Store store;
     static Category category;
     static Product product;
     static OptionGroup optionGroup;
     @BeforeEach
-    void init() {
+    void init() throws Exception {
         Store newStore = Store.builder()
                 .email("test@test.test")
                 .password("12345")
@@ -105,13 +109,17 @@ public class OptionServiceTest {
                 .selling(Selling.SELLING)
                 .build();
 
-        ProductResponse productResponse = productService.create(newProduct, category.getId(), store.getId());
+        final String encodedImg = "";
+        final String imgType = "";
+
+        ProductResponse productResponse = productService.create(newProduct, encodedImg, imgType, category.getId(), store.getId());
 
         product = productRepository.findById(productResponse.getId())
                 .orElseThrow(() -> new ProductNotFoundException("error"));
 
         OptionGroup newGroup = OptionGroup.builder()
                 .name("GROUP")
+                .options(new ArrayList<>())
                 .build();
 
         OptionGroupResponse groupResponse = optionGroupService.create(newGroup, product.getId(), store.getId());
@@ -166,5 +174,20 @@ public class OptionServiceTest {
         Optional<Option> findOption = optionRepository.findById(id);
 
         assertThat(findOption.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("전달받은 옵션 아이디를 기반으로 조회하고 응답 객체를 반환한다.")
+    void findOptionByOptionId() {
+        OptionResponse savedResponse
+                = optionService.create(GivenOption.toEntity(), optionGroup.getId(), store.getId());
+
+        final Long id = savedResponse.getId();
+
+        OptionResponse findResponse = optionReadService.findByOptionId(id);
+
+        assertThat(findResponse.getId()).isEqualTo(id);
+        assertThat(findResponse.getName()).isEqualTo(GivenOption.OPTION_NAME);
+        assertThat(findResponse.getPrice()).isEqualTo(GivenOption.OPTION_PRICE);
     }
 }

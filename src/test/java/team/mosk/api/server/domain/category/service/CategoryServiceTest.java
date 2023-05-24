@@ -5,6 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
@@ -24,6 +25,7 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles({"windows", "dev"})
 @Transactional
 public class CategoryServiceTest {
     @Autowired

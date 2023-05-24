@@ -5,8 +5,8 @@ import team.mosk.api.server.domain.options.option.model.persist.Option;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
 public class OptionResponse {
 
     private Long id;

@@ -1,12 +1,18 @@
 package team.mosk.api.server.domain.product.dto;
 
 import lombok.*;
+import team.mosk.api.server.domain.options.option.dto.OptionResponse;
+import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @AllArgsConstructor
 public class ProductResponse {
 
@@ -20,11 +26,32 @@ public class ProductResponse {
 
     private Selling selling;
 
+    private List<OptionGroupResponse> optionGroups;
+
     public static ProductResponse of(final Product product) {
         return new ProductResponse(product.getId(),
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
-                product.getSelling());
+                product.getSelling(),
+                bindingGroup(product.getOptionGroups()));
+    }
+
+    public static List<OptionGroupResponse> bindingGroup(List<OptionGroup> optionGroups) {
+        return optionGroups.stream()
+                .map(optionGroup -> {
+                    List<OptionResponse> options = new ArrayList<>();
+                    if (optionGroup.getOptions() != null) {
+                        options = optionGroup.getOptions().stream()
+                                .map(OptionResponse::of)
+                                .toList();
+                    }
+                    return new OptionGroupResponse(
+                            optionGroup.getId(),
+                            optionGroup.getName(),
+                            options
+                    );
+                })
+                .toList();
     }
 }

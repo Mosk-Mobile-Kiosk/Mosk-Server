@@ -20,9 +20,6 @@ public class ProductImg {
 
     private String path;
 
-    private String contentType;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_id")
+    @OneToOne(mappedBy = "productImg", cascade = CascadeType.ALL)
     private Product product;
 }

@@ -4,22 +4,25 @@ import lombok.*;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
 
 import java.io.File;
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Base64;
 
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class ProductImgResponse {
 
-    private byte[] file;
+    private String encodedImg;
+    private String imgType;
+    private Long productId;
 
-    private String contentType;
+    public static ProductImgResponse of(final ProductImg productImg, final byte[] bytes) throws Exception {
+        String encodedImg = new String(Base64.getEncoder().encode(bytes), StandardCharsets.UTF_8);
+        String imgType = productImg.getName().substring(productImg.getName().indexOf("."));
 
-    public static ProductImgResponse of(final ProductImg productImg) throws IOException {
-        byte[] file = Files.readAllBytes(new File(productImg.getPath()).toPath());
-        return new ProductImgResponse(file, productImg.getContentType());
+        return new ProductImgResponse(encodedImg, imgType, productImg.getProduct().getId());
     }
 }

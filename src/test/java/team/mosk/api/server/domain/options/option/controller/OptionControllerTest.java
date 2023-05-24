@@ -15,13 +15,13 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import team.mosk.api.server.domain.options.option.dto.CreateOptionRequest;
 import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
+import team.mosk.api.server.domain.options.option.service.OptionReadService;
 import team.mosk.api.server.domain.options.option.service.OptionService;
 import team.mosk.api.server.domain.options.option.util.GivenOption;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,6 +36,8 @@ public class OptionControllerTest {
 
     @MockBean
     OptionService optionService;
+    @MockBean
+    OptionReadService optionReadService;
 
     static final String NAME_IS_REQUIRED = "이름은 필수입니다.";
     static final String PRICE_IS_REQUIRED = "가격은 필수입니다.";
@@ -272,4 +274,23 @@ public class OptionControllerTest {
     /**
      * Delete Test Methods
      */
+
+    /**
+     * Read Test Methods
+     */
+
+    @Test
+    @DisplayName("옵션 아이디를 기반으로 해당 옵션의 정보를 조회한다.")
+    void findOptionByOptionId() throws Exception {
+        when(optionReadService.findByOptionId(any())).thenReturn(OptionResponse.of(GivenOption.toEntityWithCount()));
+
+        mockMvc.perform(get("/api/v1/public/options/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.data.id").value(1L))
+                .andExpect(jsonPath("$.data.name").value(GivenOption.OPTION_NAME))
+                .andExpect(jsonPath("$.data.price").value(GivenOption.OPTION_PRICE))
+                .andDo(print());
+    }
 }

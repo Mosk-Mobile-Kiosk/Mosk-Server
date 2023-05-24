@@ -15,26 +15,32 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import team.mosk.api.server.domain.options.optionGroup.dto.CreateOptionGroupRequest;
 import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
+import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupReadService;
 import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupService;
 import team.mosk.api.server.domain.options.optionGroup.util.GivenOptionGroup;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")
+@ActiveProfiles("windows")
 public class OptionGroupControllerTest {
 
     @Autowired
     MockMvc mockMvc;
     @MockBean
     OptionGroupService optionGroupService;
+    @MockBean
+    OptionGroupReadService optionGroupReadService;
 
     static final String NAME_IS_REQUIRED = "이름은 필수입니다.";
     static final String PRODUCT_INFO_IS_REQUIRED = "상품 정보는 필수입니다.";
@@ -212,4 +218,63 @@ public class OptionGroupControllerTest {
     /**
      * Delete Test Methods
      */
-}
+
+    /**
+     * ReadService Methods
+     */
+
+    @Test
+    @DisplayName("옵션 그룹 아이디를 기반으로 해당 옵션 그룹과 모든 옵션을 불러온다.")
+    void findByGroupId() throws Exception {
+        OptionGroup givenGroup = GivenOptionGroup.toEntityWithCount();
+
+        when(optionGroupReadService.findByGroupId(any())).thenReturn(OptionGroupResponse.of(givenGroup));
+
+        mockMvc.perform(get("/api/v1/public/optiongroups/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.data.id").value(givenGroup.getId()))
+                .andExpect(jsonPath("$.data.name").value(givenGroup.getName()))
+                .andExpect(jsonPath("$.data.options[0].id").value(givenGroup.getOptions().get(0).getId()))
+                .andExpect(jsonPath("$.data.options[0].name").value(givenGroup.getOptions().get(0).getName()))
+                .andExpect(jsonPath("$.data.options[0].price").value(givenGroup.getOptions().get(0).getPrice()))
+                .andExpect(jsonPath("$.data.productName").value(givenGroup.getProduct().getName()))
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("상품 아이디로 모든 옵션 그룹과 각 그룹별 해당하는 옵션 전부를 불러온다.")
+    void findAllGroupAndOptionByProductId() throws Exception {
+        List<OptionGroupResponse> response = new ArrayList<>();
+        OptionGroup givenGroup1 = GivenOptionGroup.toEntityWithCount();
+        response.add(OptionGroupResponse.of(givenGroup1));
+        OptionGroup givenGroup2 = OptionGroup.builder()
+                .id(2L)
+                .name("Dummy")
+                .options(givenGroup1.getOptions())
+                .product(givenGroup1.getProduct())
+                .build();
+        response.add(OptionGroupResponse.of(givenGroup2));
+
+        when(optionGroupReadService.findAllOptionGroupByProductId(any())).thenReturn(response);
+
+        mockMvc.perform(get("/api/v1/public/optiongroups/all/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.data[0].id").value(givenGroup1.getId()))
+                .andExpect(jsonPath("$.data[0].name").value(givenGroup1.getName()))
+                .andExpect(jsonPath("$.data[0].options[0].id").value(givenGroup1.getOptions().get(0).getId()))
+                .andExpect(jsonPath("$.data[0].options[0].name").value(givenGroup1.getOptions().get(0).getName()))
+                .andExpect(jsonPath("$.data[0].options[0].price").value(givenGroup1.getOptions().get(0).getPrice()))
+                .andExpect(jsonPath("$.data[0].productName").value(givenGroup1.getProduct().getName()))
+                .andExpect(jsonPath("$.data[1].id").value(givenGroup2.getId()))
+                .andExpect(jsonPath("$.data[1].name").value(givenGroup2.getName()))
+                .andExpect(jsonPath("$.data[1].options[0].id").value(givenGroup2.getOptions().get(0).getId()))
+                .andExpect(jsonPath("$.data[1].options[0].name").value(givenGroup2.getOptions().get(0).getName()))
+                .andExpect(jsonPath("$.data[1].options[0].price").value(givenGroup2.getOptions().get(0).getPrice()))
+                .andExpect(jsonPath("$.data[1].productName").value(givenGroup2.getProduct().getName()))
+                .andDo(print());
+    }
+ }

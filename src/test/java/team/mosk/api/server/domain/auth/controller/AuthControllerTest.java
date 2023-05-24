@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
@@ -30,6 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 
 @SpringBootTest
+@ActiveProfiles("mac")
 @AutoConfigureMockMvc
 class AuthControllerTest {
 

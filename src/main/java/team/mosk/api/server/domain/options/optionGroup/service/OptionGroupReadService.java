@@ -27,7 +27,7 @@ public class OptionGroupReadService {
         return OptionGroupResponse.of(findGroup);
     }
 
-    public List<OptionGroupResponse> findAllOptionGroup() {
-        return optionGroupRepository.findAllOptionGroup();
+    public List<OptionGroupResponse> findAllOptionGroupByProductId(final Long productId) {
+        return optionGroupRepository.findAllOptionGroupByProductId(productId);
     }
 }

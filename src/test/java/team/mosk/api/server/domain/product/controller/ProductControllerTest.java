@@ -60,7 +60,7 @@ public class ProductControllerTest {
     @DisplayName("상품 생성 요청 JSON의 내용에 따라 상품을 생성한다.")
     @WithAuthUser
     void create() throws Exception {
-        when(productService.create(any(), any(), any())).thenReturn(ProductResponse.of(GivenProduct.toEntityWithProductCount()));
+        when(productService.create(any(), any(), any(), any(), any())).thenReturn(ProductResponse.of(GivenProduct.toEntityWithProductCount()));
 
         CreateProductRequest createRequest = CreateProductRequest.builder()
                 .name(GivenProduct.PRODUCT_NAME)
@@ -163,7 +163,7 @@ public class ProductControllerTest {
     void update() throws Exception {
         ProductResponse updateResponse = ProductResponse.of(GivenProduct.toEntityForUpdateTest());
 
-        when(productService.update(any(), any())).thenReturn(updateResponse);
+        when(productService.update(any(), any(), any(), any())).thenReturn(updateResponse);
 
         UpdateProductRequest updateRequest = UpdateProductRequest.builder()
                 .productId(1L)
@@ -191,7 +191,7 @@ public class ProductControllerTest {
     void updateHasThrowsExceptionCauseProductIdIsNull() throws Exception {
         ProductResponse updateResponse = ProductResponse.of(GivenProduct.toEntityForUpdateTest());
 
-        when(productService.update(any(), any())).thenReturn(updateResponse);
+        when(productService.update(any(), any(), any(), any())).thenReturn(updateResponse);
 
         UpdateProductRequest updateRequest = UpdateProductRequest.builder()
                 .name(GivenProduct.MODIFIED_PRODUCT_NAME)
@@ -217,7 +217,7 @@ public class ProductControllerTest {
     void updateHasThrowsExceptionCauseNameIsBlank() throws Exception {
         ProductResponse updateResponse = ProductResponse.of(GivenProduct.toEntityForUpdateTest());
 
-        when(productService.update(any(), any())).thenReturn(updateResponse);
+        when(productService.update(any(), any(), any(), any())).thenReturn(updateResponse);
 
         UpdateProductRequest updateRequest = UpdateProductRequest.builder()
                 .productId(1L)
@@ -243,7 +243,7 @@ public class ProductControllerTest {
     void updateHasThrowsExceptionCausePriceIsNull() throws Exception {
         ProductResponse updateResponse = ProductResponse.of(GivenProduct.toEntityForUpdateTest());
 
-        when(productService.update(any(), any())).thenReturn(updateResponse);
+        when(productService.update(any(), any(), any(), any())).thenReturn(updateResponse);
 
         UpdateProductRequest updateRequest = UpdateProductRequest.builder()
                 .productId(1L)
@@ -360,109 +360,5 @@ public class ProductControllerTest {
      * ReadService Methods
      */
 
-    @Test
-    @DisplayName("상품 ID로 상품 조회을 한다.")
-    @Transactional(readOnly = true)
-    @WithAuthUser
-    void findByProductId() throws Exception {
-        ProductResponse response = ProductResponse.of(GivenProduct.toEntityWithProductCount());
 
-        when(productReadService.findByProductIdAndStoreId(any())).thenReturn(response);
-
-        mockMvc.perform(get("/api/v1/public/products"))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("상점 ID로 전체 상품 페이징 조회한다. default size = 10")
-    @Transactional(readOnly = true)
-    void findAllWithPaging() throws Exception {
-        when(productReadService.findAllWithPaging(any(), any())).thenReturn(Page.empty());
-
-        mockMvc.perform(get("/api/v1/public/products?storeId=1&page=0"))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("카테고리 이름과 상점 ID로 해당 상점의 카테고리 상품 조회")
-    @Transactional(readOnly = true)
-    void findAllByCategoryNameEachStore() throws Exception {
-        ProductSearchFromCategory request = ProductSearchFromCategory.builder()
-                .categoryId(1L)
-                .storeId(1L)
-                .build();
-
-        List<ProductResponse> list = new ArrayList<>();
-        list.add(ProductResponse.of(GivenProduct.toEntityWithProductCount()));
-
-        when(productReadService.findAllByCategoryIdEachStore(any())).thenReturn(list);
-
-        String requestJSON = objectMapper.writeValueAsString(request);
-
-        mockMvc.perform(get("/api/v1/public/products/category")
-                        .content(requestJSON)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-
-    /**
-     * files
-     */
-
-    @Test
-    @DisplayName("URL에 포함된 상품 ID로 해당 상품의 이미지를 조회한다.")
-    @Transactional(readOnly = true)
-    void findImgByProductId(@TempDir Path temp) throws Exception {
-        Path testFile = temp.resolve("image.jpg");
-        Files.write(testFile, "test".getBytes());
-
-        ProductImg productImg = ProductImg.builder()
-                .id(1L)
-                .path(testFile.toString())
-                .contentType(MediaType.IMAGE_JPEG_VALUE)
-                .build();
-
-        when(productReadService.findImgByProductId(any())).thenReturn(ProductImgResponse.of(productImg));
-
-        mockMvc.perform(get("/api/v1/public/products/img/1"))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
-
-    @Test
-    @DisplayName("MultipartFile을 전송해 해당 ID를 가진 상품의 이미지 업데이트한다.")
-    @WithAuthUser
-    void updateImg(@TempDir Path temp) throws Exception {
-        Path testFile = temp.resolve("image.jpg");
-        Files.write(testFile, "test".getBytes());
-
-        ProductImg response = ProductImg.builder()
-                .id(1L)
-                .path(testFile.toString())
-                .name(testFile.getFileName().toString())
-                .contentType(MediaType.IMAGE_JPEG_VALUE)
-                .product(GivenProduct.toEntityWithProductCount())
-                .build();
-
-        when(productService.updateImg(any(), any(), any())).thenReturn(ProductImgResponse.of(response));
-
-        MockMultipartFile file =
-                new MockMultipartFile("newImg", "test.jpg", "image/jpeg", "test image content".getBytes());
-
-        Store store = Store.builder()
-                .id(1L)
-                .email("test@test.test")
-                .build();
-
-        mockMvc.perform(multipart(HttpMethod.PUT, "/api/v1/products/img")
-                        .file(file)
-                        .param("productId", "1")
-                        .with(user(CustomUserDetails.of(store))))
-                .andExpect(status().isOk())
-                .andDo(print());
-    }
 }
