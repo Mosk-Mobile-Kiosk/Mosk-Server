@@ -1,0 +1,29 @@
+package team.mosk.api.server.domain.subscribe.model.persist;
+
+import lombok.*;
+import team.mosk.api.server.domain.store.model.persist.Store;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+public class SubscribeHistory {
+
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "subscribe_history_id")
+    private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_id")
+    private Store store;
+
+    private LocalDate startDate;
+
+    private LocalDate endDate;
+
+    private Long price;
+}

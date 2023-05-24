@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import team.mosk.api.server.domain.category.model.persist.Category;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
+import team.mosk.api.server.domain.subscribe.model.persist.Subscribe;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
@@ -45,9 +46,12 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Product> products;
 
-
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "store")
     private QRCode qrCode;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "subscribe_id")
+    private Subscribe subscribe;
 
     @Builder
     public Store(Long id, String email, String password, String storeName, String ownerName, String call, String crn, String address, List<Category> categories, List<Product> products, QRCode qrCode) {
