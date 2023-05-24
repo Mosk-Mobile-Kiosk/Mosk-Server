@@ -1,10 +1,10 @@
-package team.mosk.api.server.domain.order.model;
+package team.mosk.api.server.domain.order.model.order;
 
 import lombok.*;
 import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
 import team.mosk.api.server.domain.order.error.OrderCompletedException;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
-import team.mosk.api.server.domain.orderproduct.model.OrderProduct;
+import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 

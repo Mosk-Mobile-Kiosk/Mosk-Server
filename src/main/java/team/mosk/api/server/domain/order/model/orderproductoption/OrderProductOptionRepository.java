@@ -1,4 +1,4 @@
-package team.mosk.api.server.domain.orderproductoption.model;
+package team.mosk.api.server.domain.order.model.orderproductoption;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

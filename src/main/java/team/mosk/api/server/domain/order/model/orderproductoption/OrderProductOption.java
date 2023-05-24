@@ -1,11 +1,11 @@
-package team.mosk.api.server.domain.orderproductoption.model;
+package team.mosk.api.server.domain.order.model.orderproductoption;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
-import team.mosk.api.server.domain.orderproduct.model.OrderProduct;
+import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;

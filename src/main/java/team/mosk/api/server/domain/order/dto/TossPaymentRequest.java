@@ -3,7 +3,7 @@ package team.mosk.api.server.domain.order.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import team.mosk.api.server.domain.order.model.Order;
+import team.mosk.api.server.domain.order.model.order.Order;
 
 import java.util.UUID;
 

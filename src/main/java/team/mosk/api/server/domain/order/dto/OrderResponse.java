@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
-import team.mosk.api.server.domain.order.model.Order;
+import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
 
 import java.time.LocalDateTime;
