@@ -13,7 +13,7 @@ import team.mosk.api.server.domain.category.model.persist.Category;
 import team.mosk.api.server.domain.category.model.persist.CategoryRepository;
 import team.mosk.api.server.domain.category.util.GivenCategory;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
-import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
+import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;

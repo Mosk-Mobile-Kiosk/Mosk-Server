@@ -10,6 +10,7 @@ import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -72,6 +73,21 @@ public class Product extends BaseEntity {
     public void initProductImg(final ProductImg productImg) {
         this.productImg = productImg;
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Product product = (Product) o;
+
+        return Objects.equals(id, product.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
 
     public void addOptionGroup(final OptionGroup optionGroup) {
         this.optionGroups.add(optionGroup);

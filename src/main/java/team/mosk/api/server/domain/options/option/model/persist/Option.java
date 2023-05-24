@@ -21,7 +21,7 @@ public class Option extends BaseEntity {
 
     private String name;
 
-    private Long price;
+    private int price;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "option_group_id")

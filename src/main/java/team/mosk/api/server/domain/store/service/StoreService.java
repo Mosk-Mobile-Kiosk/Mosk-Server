@@ -10,10 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
-import team.mosk.api.server.domain.store.exception.DuplicateCrnException;
-import team.mosk.api.server.domain.store.exception.DuplicateEmailException;
-import team.mosk.api.server.domain.store.exception.QrCodeAlreadyExistsException;
-import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
+import team.mosk.api.server.domain.store.error.DuplicateCrnException;
+import team.mosk.api.server.domain.store.error.DuplicateEmailException;
+import team.mosk.api.server.domain.store.error.QrCodeAlreadyExistsException;
+import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
@@ -30,33 +30,22 @@ import java.util.UUID;
 public class StoreService {
 
     private final StoreRepository storeRepository;
-
     private final QRCodeRepository qrCodeRepository;
-
+    private final QRCodeService qrCodeService;
     private final PasswordEncoder encoder;
-
-    private final WebClient webClient;
-
-    private final String qrImgWidthHeight;
-
     private final String qrImgSavedPath;
-
-    private final String storePageUrl;
 
     public StoreService(StoreRepository storeRepository,
                         QRCodeRepository qrCodeRepository,
+                        QRCodeService qrCodeService,
                         PasswordEncoder encoder,
-                        @Qualifier("qrCodeClient") WebClient webClient,
-                        @Value("${filePath}") String qrImgSavedPath,
-                        @Value("${storePageUrl}") String storePageUrl,
-                        @Value("${qrImgWidthHeight}") String qrImgWidthHeight) {
+                        @Value("${filePath}") String qrImgSavedPath
+                        ) {
         this.storeRepository = storeRepository;
         this.qrCodeRepository = qrCodeRepository;
+        this.qrCodeService = qrCodeService;
         this.encoder = encoder;
-        this.webClient = webClient;
         this.qrImgSavedPath = qrImgSavedPath;
-        this.storePageUrl = storePageUrl;
-        this.qrImgWidthHeight = qrImgWidthHeight;
     }
 
     public StoreResponse create(Store store) {
@@ -85,6 +74,11 @@ public class StoreService {
         storeRepository.deleteById(storeId);
     }
 
+
+    /**
+     * 빨간줄 큐알서비스로 옮겨야함
+     * @param storeId
+     */
     public void createQRCode(Long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
@@ -93,13 +87,12 @@ public class StoreService {
             throw new QrCodeAlreadyExistsException("이미 Qrcode가 존재합니다.");
         }
 
-        String uuidFileName = createUUIDFileName();
+        String uuid = createUUIDFileName();
 
-        callCreateQRCode(storePageUrl + storeId, uuidFileName);
+        qrCodeService.callCreateQRCode(storeId, uuid);
 
-        qrCodeRepository.save(new QRCode(qrImgSavedPath + "/" + uuidFileName, store));
+        qrCodeRepository.save(new QRCode(qrImgSavedPath + "/" + uuid, store));
     }
-
 
     private String createUUIDFileName() {
         String uuidFileName = UUID.randomUUID().toString();
@@ -107,23 +100,7 @@ public class StoreService {
         uuidFileName = uuidFileName.substring(0, idx) + ".png";
         return uuidFileName;
     }
-    private void callCreateQRCode(String path, String uuidFileName) {
-        byte[] bytes = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .queryParam("cht", "qr")
-                        .queryParam("chs", qrImgWidthHeight)
-                        .queryParam("chl", path)
-                        .build())
-                .retrieve()
-                .bodyToMono(byte[].class)
-                .block();
 
-        try (FileOutputStream outputStream = new FileOutputStream(new File(qrImgSavedPath + "/" + uuidFileName))) {
-            outputStream.write(bytes);
-        } catch (IOException e) {
-            log.error("error={}", e);
-            throw new RuntimeException("Error writing file", e);
-        }
-    }
+
 
 }

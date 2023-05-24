@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
-import team.mosk.api.server.domain.store.exception.StoreNotFoundException;
+import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.global.jwt.TokenProvider;
 import team.mosk.api.server.global.jwt.dto.TokenDto;

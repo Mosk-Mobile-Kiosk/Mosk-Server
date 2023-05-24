@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
-import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
-import team.mosk.api.server.domain.store.exception.DuplicateCrnException;
-import team.mosk.api.server.domain.store.exception.DuplicateEmailException;
+import team.mosk.api.server.domain.store.error.DuplicateCrnException;
+import team.mosk.api.server.domain.store.error.DuplicateEmailException;
 import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
@@ -40,8 +40,15 @@ class StoreServiceTest {
     @Autowired
     private QRCodeRepository qrCodeRepository;
 
+    @MockBean
+    private QRCodeService qrCodeService;
+
+    @MockBean
+    private BusinessCheckService businessCheckService;
+
     @Value("${filePath}")
     String filePath;
+
 
 
     @DisplayName("회원가입을 할 수 있다.")
