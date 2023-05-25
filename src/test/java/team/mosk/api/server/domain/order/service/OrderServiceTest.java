@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_EMAIL;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
@@ -87,6 +86,43 @@ class OrderServiceTest {
 
         OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), List.of(savedOption1.getId(), savedOption2.getId()), 1);
         OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), List.of(savedOption1.getId()), 2);
+
+        List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
+
+        CreateOrderRequest request = CreateOrderRequest.builder()
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .orderProductRequests(orderProductRequests)
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        //when
+        OrderResponse orderResponse = orderService.createOrder(savedStore.getId(), request, now);
+
+        //then
+        System.out.println("orderResponse = " + orderResponse);
+        Order order = orderRepository.findAll().get(0);
+        assertThat(order.getTotalPrice()).isEqualTo(3800);
+        assertThat(order.getRegisteredDate()).isEqualTo(now);
+        assertThat(order.getOrderStatus()).isEqualTo(INIT);
+    }
+
+    @DisplayName("ProductId와 옵션없이 주문을할 수 있다.")
+    @Test
+    void createOrderWithoutOption() {
+        //given
+        String paymentKey = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString();
+
+        Store store = createStore(GIVEN_EMAIL);
+        Store savedStore = storeRepository.save(store);
+
+        Product product1 = productRepository.save(GivenProduct.toEntity());
+        Product product2 = productRepository.save(GivenProduct.toEntity());
+
+        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), null, 1);
+        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), null, 2);
 
         List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
 

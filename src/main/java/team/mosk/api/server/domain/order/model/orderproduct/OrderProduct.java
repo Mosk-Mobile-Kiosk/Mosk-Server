@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.orderproductoption.OrderProductOption;
 import team.mosk.api.server.domain.product.model.persist.Product;
@@ -13,6 +14,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,12 +53,20 @@ public class OrderProduct extends BaseEntity {
         this.orderProductOptions = orderProductOptions;
     }
 
-    public static OrderProduct of(Order order, Product product, Integer quantity) {
-        return OrderProduct.builder()
+    public static OrderProduct of(Order order, Product product, Integer quantity, List<Option> options) {
+        OrderProduct orderProduct = OrderProduct.builder()
                 .order(order)
                 .product(product)
                 .quantity(quantity)
                 .build();
+
+        List<OrderProductOption> opos = options.stream()
+                .map(option -> OrderProductOption.of(orderProduct, option))
+                .collect(Collectors.toList());
+
+        orderProduct.setOrderProductOptions(opos);
+
+        return orderProduct;
     }
 
     @Override

@@ -38,5 +38,14 @@ public class OrderController {
         return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
+    @PutMapping("/orders/{orderId}/completion")
+    public ApiResponse<Void> complete(
+            @PathVariable Long orderId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+    ) {
+        orderService.orderCompleted(customUserDetails.getId(), orderId);
+        return ApiResponse.of(HttpStatus.NO_CONTENT, null);
+    }
+
 
 }

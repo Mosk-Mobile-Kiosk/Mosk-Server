@@ -21,7 +21,6 @@ import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,6 +33,7 @@ public class OrderService {
     private final OptionRepository optionRepository;
     private final PaymentService paymentService;
 
+
     public OrderResponse createOrder(Long storeId, CreateOrderRequest createOrderRequest, LocalDateTime registeredDate) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
@@ -44,16 +44,13 @@ public class OrderService {
             Product product = productRepository.findById(orderProductRequest.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
 
-            OrderProduct orderProduct = OrderProduct.of(order, product, orderProductRequest.getQuantity());
             List<Option> options = optionRepository.findAllById(orderProductRequest.getOptionIds());
 
-            List<OrderProductOption> orderProductOptions = createListBy(orderProduct, options);
-            orderProduct.setOrderProductOptions(orderProductOptions);
+            OrderProduct orderProduct = OrderProduct.of(order, product, orderProductRequest.getQuantity(), options);
 
             order.setOrderProduct(orderProduct);
 
-            long productTotalPrice = getProductTotalPrice(orderProductRequest.getQuantity(), product, options);
-            order.plusTotalPrice(productTotalPrice);
+            order.plusTotalPrice(getProductTotalPrice(orderProductRequest.getQuantity(), product, options));
         }
 
         paymentService.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
@@ -92,12 +89,6 @@ public class OrderService {
         }
 
         order.orderCompleted();
-    }
-
-    private List<OrderProductOption> createListBy(OrderProduct orderProduct, List<Option> options) {
-        return options.stream()
-                .map(option -> OrderProductOption.of(orderProduct, option))
-                .collect(Collectors.toList());
     }
 
     private long getProductTotalPrice(int quantity, Product product, List<Option> options) {
