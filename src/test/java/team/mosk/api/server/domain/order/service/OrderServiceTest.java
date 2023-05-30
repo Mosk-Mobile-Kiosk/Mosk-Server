@@ -74,12 +74,12 @@ class OrderServiceTest {
 
         Option option1 = Option.builder()
                 .name("샷추가")
-                .price(1000)
+                .price(1000L)
                 .build();
 
         Option option2 = Option.builder()
                 .name("얼음 많이")
-                .price(500)
+                .price(500L)
                 .build();
 
         Option savedOption1 = optionRepository.save(option1);
