@@ -27,4 +27,16 @@ public class SubscribeHistory extends BaseEntity {
     private LocalDate endDate;
 
     private Long price;
+
+    private Long totalPrice;
+
+    public static SubscribeHistory transfer(final Subscribe subscribe) {
+        return SubscribeHistory.builder()
+                .store(subscribe.getStore())
+                .startDate(subscribe.getStartDate())
+                .endDate(subscribe.getEndDate())
+                .price(subscribe.getPrice())
+                .totalPrice(subscribe.getTotalPrice())
+                .build();
+    }
 }
