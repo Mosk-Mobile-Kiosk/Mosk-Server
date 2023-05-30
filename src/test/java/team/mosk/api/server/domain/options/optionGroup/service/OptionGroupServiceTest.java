@@ -89,6 +89,7 @@ public class OptionGroupServiceTest {
 
         Category newCategory = Category.builder()
                 .name("category")
+                .products(new ArrayList<>())
                 .build();
 
         CategoryResponse categoryResponse = categoryService.create(newCategory, store.getId());
@@ -101,6 +102,7 @@ public class OptionGroupServiceTest {
                 .description("des")
                 .price(1000L)
                 .selling(Selling.SELLING)
+                .optionGroups(new ArrayList<>())
                 .build();
 
         final String encodedImg = "";
