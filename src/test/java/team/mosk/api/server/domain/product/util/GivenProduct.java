@@ -3,6 +3,8 @@ package team.mosk.api.server.domain.product.util;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.vo.Selling;
 
+import java.util.ArrayList;
+
 public class GivenProduct {
 
     public static final String PRODUCT_NAME = "테스트 상품";
@@ -21,6 +23,7 @@ public class GivenProduct {
                 .description(PRODUCT_DESCRIPTION)
                 .price(PRODUCT_PRICE)
                 .selling(PRODUCT_SELLING_STATUS)
+                .optionGroups(new ArrayList<>())
                 .build();
     }
 
@@ -31,6 +34,7 @@ public class GivenProduct {
                 .description(PRODUCT_DESCRIPTION)
                 .price(PRODUCT_PRICE)
                 .selling(PRODUCT_SELLING_STATUS)
+                .optionGroups(new ArrayList<>())
                 .build();
     }
 
@@ -41,6 +45,7 @@ public class GivenProduct {
                 .description(MODIFIED_PRODUCT_DESCRIPTION)
                 .price(MODIFIED_PRODUCT_PRICE)
                 .selling(Selling.SOLDOUT)
+                .optionGroups(new ArrayList<>())
                 .build();
     }
 }
