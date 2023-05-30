@@ -4,20 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.dto.CreateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
-import team.mosk.api.server.domain.category.service.CategoryReadService;
-import team.mosk.api.server.domain.category.service.CategoryService;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import java.util.ArrayList;
@@ -30,20 +25,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static team.mosk.api.server.domain.category.util.GivenCategory.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("windows")
-public class CategoryControllerTest {
+
+public class CategoryControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    CategoryService categoryService;
-    @MockBean
-    CategoryReadService categoryReadService;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Test
     @DisplayName("전달받은 JSON 으로 카테고리 정보를 저장한다.")

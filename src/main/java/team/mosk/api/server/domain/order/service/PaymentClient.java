@@ -11,12 +11,12 @@ import team.mosk.api.server.domain.order.dto.TossPaymentRequest;
 import team.mosk.api.server.domain.order.error.TossApiException;
 
 @Service
-public class PaymentService {
+public class PaymentClient {
     private final WebClient webClient;
 
     private final String CANCEL_REASON = "단순변심";
 
-    public PaymentService(@Qualifier("tossClient") WebClient webClient) {
+    public PaymentClient(@Qualifier("tossClient") WebClient webClient) {
         this.webClient = webClient;
     }
 

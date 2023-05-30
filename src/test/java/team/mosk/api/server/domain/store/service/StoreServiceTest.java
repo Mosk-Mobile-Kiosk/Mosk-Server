@@ -4,10 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
 import team.mosk.api.server.domain.store.error.DuplicateCrnException;
@@ -23,10 +20,8 @@ import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 import static team.mosk.api.server.domain.store.util.GivenStore.*;
 
-@ActiveProfiles("mac")
-@SpringBootTest
-@Transactional
-class StoreServiceTest {
+
+class StoreServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private StoreService storeService;
@@ -40,16 +35,8 @@ class StoreServiceTest {
     @Autowired
     private QRCodeRepository qrCodeRepository;
 
-    @MockBean
-    private QRCodeService qrCodeService;
-
-    @MockBean
-    private BusinessCheckService businessCheckService;
-
     @Value("${filePath}")
     String filePath;
-
-
 
     @DisplayName("회원가입을 할 수 있다.")
     @Test
@@ -290,18 +277,7 @@ class StoreServiceTest {
                 .hasMessage("사용중인 이메일입니다.");
     }
 
-//    @DisplayName("공공데이터")
-//    @Test
-//    void businessRegistrationCheck() {
-//        //given
-//        BusinessCheckRequest request = BusinessCheckRequest.builder()
-//                .b_no("0000000000")
-//                .start_dt("20230513")
-//                .p_nm("홍길동")
-//                .build();
-//
-//        //when //then
-//        storeReadService.businessRegistrationCheck(request);
-//    }
+
+
 
 }

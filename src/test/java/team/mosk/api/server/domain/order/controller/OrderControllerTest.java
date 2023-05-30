@@ -1,23 +1,18 @@
 package team.mosk.api.server.domain.order.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.options.option.util.GivenOption;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderProductRequest;
-import team.mosk.api.server.domain.order.service.OrderService;
+
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.product.util.GivenProduct;
@@ -31,14 +26,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static team.mosk.api.server.domain.order.util.GivenOrder.*;
 
-@ActiveProfiles("mac")
-@SpringBootTest
-@Transactional
-@AutoConfigureMockMvc
-class OrderControllerTest {
 
-    @MockBean
-    private OrderService orderService;
+class OrderControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
     private MockMvc mockMvc;
@@ -190,6 +179,7 @@ class OrderControllerTest {
         Option savedOption = optionRepository.save(GivenOption.toEntity());
 
         OrderProductRequest orderProductRequest = OrderProductRequest.builder()
+                .productId(1l)
                 .optionIds(List.of(savedOption.getId()))
                 .quantity(0)
                 .build();

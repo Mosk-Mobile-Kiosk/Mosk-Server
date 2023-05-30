@@ -12,14 +12,14 @@ import java.io.IOException;
 
 @Slf4j
 @Service
-public class QRCodeService {
+public class QRCodeClient {
 
     private final WebClient webClient;
     private final String qrImgWidthHeight;
     private final String qrImgSavedPath;
     private final String storePageUrl;
 
-    public QRCodeService(
+    public QRCodeClient(
             @Qualifier("qrCodeClient") WebClient webClient,
             @Value("${qrImgWidthHeight}")String qrImgWidthHeight,
             @Value("${filePath}")String qrImgSavedPath,

@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
@@ -35,10 +36,8 @@ import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
 import static team.mosk.api.server.domain.store.util.GivenStore.*;
 
-@ActiveProfiles("mac")
-@Transactional
-@SpringBootTest
-class OrderServiceTest {
+
+class OrderServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderService orderService;
@@ -55,8 +54,7 @@ class OrderServiceTest {
     @Autowired
     private StoreRepository storeRepository;
 
-    @MockBean
-    private PaymentService paymentService;
+
 
 
     @DisplayName("ProductId와 optionId 리스트를 받아 주문을할 수 있다.")
@@ -120,7 +118,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -138,7 +136,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -161,7 +159,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
                 .isInstanceOf(OrderAccessDeniedException.class)
                 .hasMessage("주문에 접근할 수 없습니다.");
     }
@@ -177,7 +175,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
     }
@@ -193,7 +191,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
     }
@@ -209,7 +207,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
     }

@@ -1,17 +1,10 @@
 package team.mosk.api.server.domain.store.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
-import team.mosk.api.server.domain.store.dto.BusinessCheckResponse;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
-import team.mosk.api.server.domain.store.error.DuplicateCrnException;
 import team.mosk.api.server.domain.store.error.DuplicateEmailException;
 import team.mosk.api.server.domain.store.error.QRCodeNotFoundException;
 import team.mosk.api.server.domain.store.error.StoreNotFoundException;
@@ -29,7 +22,7 @@ public class StoreReadService {
 
     private final StoreRepository storeRepository;
     private final QRCodeRepository qrCodeRepository;
-    private final BusinessCheckService businessCheckService;
+    private final BusinessCheckClient businessCheckClient;
 
     public StoreResponse findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
@@ -48,7 +41,7 @@ public class StoreReadService {
         ArrayList<BusinessCheckRequest> bcrList = new ArrayList<>();
         bcrList.add(request);
 
-        businessCheckService.callBusinessRegistrationCheck(bcrList);
+        businessCheckClient.callBusinessRegistrationCheck(bcrList);
     }
 
     public QRCode getQRCode(Long storeId) {

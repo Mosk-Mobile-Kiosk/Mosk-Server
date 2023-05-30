@@ -3,55 +3,31 @@ package team.mosk.api.server.domain.product.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.product.dto.*;
-import team.mosk.api.server.domain.product.model.persist.ProductImg;
 import team.mosk.api.server.domain.product.model.vo.Selling;
-import team.mosk.api.server.domain.product.service.ProductReadService;
-import team.mosk.api.server.domain.product.service.ProductService;
 import team.mosk.api.server.domain.product.util.GivenProduct;
-import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
-import team.mosk.api.server.global.security.principal.CustomUserDetails;
-
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("windows")
-public class ProductControllerTest {
+
+public class ProductControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    ProductService productService;
-    @MockBean
-    ProductReadService productReadService;
+    private MockMvc mockMvc;
+
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     /**
      * create test start

@@ -32,7 +32,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final OptionRepository optionRepository;
-    private final PaymentService paymentService;
+    private final PaymentClient paymentClient;
 
 
     public OrderResponse createOrder(Long storeId, CreateOrderRequest createOrderRequest, LocalDateTime registeredDate) {
@@ -62,7 +62,7 @@ public class OrderService {
             order.plusTotalPrice(getProductTotalPrice(orderProductRequest.getQuantity(), product, options));
         }
 
-        paymentService.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
+        paymentClient.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
 
         return OrderResponse.of(orderRepository.save(order));
     }
@@ -81,7 +81,7 @@ public class OrderService {
             throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
         }
 
-        paymentService.paymentCancel(order.getPaymentKey());
+        paymentClient.paymentCancel(order.getPaymentKey());
 
         order.cancel();
     }

@@ -4,9 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -38,10 +36,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles({"windows", "dev"})
-@Transactional
-public class OptionGroupServiceTest {
+public class OptionGroupServiceTest extends IntegrationTestSupport {
 
     @Autowired
     CategoryService categoryService;
@@ -124,8 +119,8 @@ public class OptionGroupServiceTest {
         OptionGroupResponse response
                 = optionGroupService.create(GivenOptionGroup.toEntity(), product.getId(), store.getId());
 
-        System.out.println("response = " + response);
-        assertThat(response.getId()).isEqualTo(1L);
+        OptionGroup result = optionGroupRepository.findById(response.getId()).orElse(null);
+        assertThat(result).isNotNull();
         assertThat(response.getName()).isEqualTo(GivenOptionGroup.GROUP_NAME);
     }
 

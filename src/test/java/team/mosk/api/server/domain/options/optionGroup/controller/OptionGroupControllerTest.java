@@ -4,20 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.options.optionGroup.dto.CreateOptionGroupRequest;
 import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
 import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
-import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupReadService;
-import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupService;
 import team.mosk.api.server.domain.options.optionGroup.util.GivenOptionGroup;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
@@ -30,17 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@ActiveProfiles("windows")
-public class OptionGroupControllerTest {
+
+public class OptionGroupControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
-    @MockBean
-    OptionGroupService optionGroupService;
-    @MockBean
-    OptionGroupReadService optionGroupReadService;
+    private MockMvc mockMvc;
 
     static final String NAME_IS_REQUIRED = "이름은 필수입니다.";
     static final String PRODUCT_INFO_IS_REQUIRED = "상품 정보는 필수입니다.";
