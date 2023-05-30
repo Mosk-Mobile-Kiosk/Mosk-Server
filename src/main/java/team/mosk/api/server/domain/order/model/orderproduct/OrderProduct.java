@@ -60,11 +60,13 @@ public class OrderProduct extends BaseEntity {
                 .quantity(quantity)
                 .build();
 
-        List<OrderProductOption> opos = options.stream()
-                .map(option -> OrderProductOption.of(orderProduct, option))
-                .collect(Collectors.toList());
+        if (!options.isEmpty()) {
+            List<OrderProductOption> opos = options.stream()
+                    .map(option -> OrderProductOption.of(orderProduct, option))
+                    .collect(Collectors.toList());
 
-        orderProduct.setOrderProductOptions(opos);
+            orderProduct.setOrderProductOptions(opos);
+        }
 
         return orderProduct;
     }

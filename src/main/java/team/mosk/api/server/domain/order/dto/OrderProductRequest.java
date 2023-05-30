@@ -15,6 +15,7 @@ public class OrderProductRequest {
     @NotNull(message = "상품번호는 필수값 입니다.")
     private Long productId;
 
+    @NotNull
     private List<Long> optionIds;
 
     @Min(value = 1, message = "상품주문 갯수는 1개 이상이여야 합니다.")

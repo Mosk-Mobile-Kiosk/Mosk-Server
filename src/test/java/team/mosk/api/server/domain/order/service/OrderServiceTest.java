@@ -25,6 +25,7 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -121,8 +122,8 @@ class OrderServiceTest {
         Product product1 = productRepository.save(GivenProduct.toEntity());
         Product product2 = productRepository.save(GivenProduct.toEntity());
 
-        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), null, 1);
-        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), null, 2);
+        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), new ArrayList<>(), 1);
+        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), new ArrayList<>(), 2);
 
         List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
 
@@ -140,7 +141,7 @@ class OrderServiceTest {
         //then
         System.out.println("orderResponse = " + orderResponse);
         Order order = orderRepository.findAll().get(0);
-        assertThat(order.getTotalPrice()).isEqualTo(3800);
+        assertThat(order.getTotalPrice()).isEqualTo(300);
         assertThat(order.getRegisteredDate()).isEqualTo(now);
         assertThat(order.getOrderStatus()).isEqualTo(INIT);
     }

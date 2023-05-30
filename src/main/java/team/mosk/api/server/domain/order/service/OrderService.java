@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.order.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.domain.options.option.error.OptionNotFoundException;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.order.dto.*;
@@ -11,7 +12,6 @@ import team.mosk.api.server.domain.order.error.OrderNotFoundException;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.order.OrderRepository;
 import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
-import team.mosk.api.server.domain.order.model.orderproductoption.OrderProductOption;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
@@ -20,6 +20,7 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -44,7 +45,15 @@ public class OrderService {
             Product product = productRepository.findById(orderProductRequest.getProductId())
                     .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
 
-            List<Option> options = optionRepository.findAllById(orderProductRequest.getOptionIds());
+            List<Option> options = new ArrayList<>();
+
+            if (!orderProductRequest.getOptionIds().isEmpty()) {
+                options = optionRepository.findAllById(orderProductRequest.getOptionIds());
+            }
+
+            if (orderProductRequest.getOptionIds().size() != options.size()) {
+                throw new OptionNotFoundException("옵션을 찾을 수 없습니다.");
+            }
 
             OrderProduct orderProduct = OrderProduct.of(order, product, orderProductRequest.getQuantity(), options);
 
@@ -92,9 +101,14 @@ public class OrderService {
     }
 
     private long getProductTotalPrice(int quantity, Product product, List<Option> options) {
-        long optionTotalPrice = options.stream()
-                .mapToLong(Option::getPrice)
-                .sum();
+        long optionTotalPrice = 0;
+
+        if (!options.isEmpty()) {
+            optionTotalPrice = options.stream()
+                    .mapToLong(Option::getPrice)
+                    .sum();
+        }
+
         return (product.getPrice() + optionTotalPrice) * quantity;
     }
 
