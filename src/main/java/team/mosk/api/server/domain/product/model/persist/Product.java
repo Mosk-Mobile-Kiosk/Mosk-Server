@@ -85,15 +85,16 @@ public class Product extends BaseEntity {
         return Objects.equals(id, product.id);
     }
 
-    @Override
-    public int hashCode() {
-        return id != null ? id.hashCode() : 0;
-
     public void addOptionGroup(final OptionGroup optionGroup) {
         this.optionGroups.add(optionGroup);
     }
 
     public void removeOptionGroup(final OptionGroup optionGroup) {
         this.optionGroups.remove(optionGroup);
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
     }
 }
