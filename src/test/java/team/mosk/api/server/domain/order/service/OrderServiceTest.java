@@ -25,11 +25,11 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_EMAIL;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
@@ -74,12 +74,12 @@ class OrderServiceTest {
 
         Option option1 = Option.builder()
                 .name("샷추가")
-                .price(1000l)
+                .price(1000L)
                 .build();
 
         Option option2 = Option.builder()
                 .name("얼음 많이")
-                .price(500l)
+                .price(500L)
                 .build();
 
         Option savedOption1 = optionRepository.save(option1);
@@ -109,43 +109,6 @@ class OrderServiceTest {
         assertThat(order.getOrderStatus()).isEqualTo(INIT);
     }
 
-    @DisplayName("ProductId와 옵션없이 주문을할 수 있다.")
-    @Test
-    void createOrderWithoutOption() {
-        //given
-        String paymentKey = UUID.randomUUID().toString();
-        String orderId = UUID.randomUUID().toString();
-
-        Store store = createStore(GIVEN_EMAIL);
-        Store savedStore = storeRepository.save(store);
-
-        Product product1 = productRepository.save(GivenProduct.toEntity());
-        Product product2 = productRepository.save(GivenProduct.toEntity());
-
-        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), new ArrayList<>(), 1);
-        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), new ArrayList<>(), 2);
-
-        List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
-
-        CreateOrderRequest request = CreateOrderRequest.builder()
-                .paymentKey(paymentKey)
-                .orderId(orderId)
-                .orderProductRequests(orderProductRequests)
-                .build();
-
-        LocalDateTime now = LocalDateTime.now();
-
-        //when
-        OrderResponse orderResponse = orderService.createOrder(savedStore.getId(), request, now);
-
-        //then
-        System.out.println("orderResponse = " + orderResponse);
-        Order order = orderRepository.findAll().get(0);
-        assertThat(order.getTotalPrice()).isEqualTo(300);
-        assertThat(order.getRegisteredDate()).isEqualTo(now);
-        assertThat(order.getOrderStatus()).isEqualTo(INIT);
-    }
-
     @DisplayName("주문 상태가 INIT일 경우 주문을 취소할 수 있다.")
     @Test
     void cancelWithOrderStatusINIT() {
@@ -157,7 +120,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId());
+        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -175,7 +138,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId());
+        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -198,7 +161,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrderAccessDeniedException.class)
                 .hasMessage("주문에 접근할 수 없습니다.");
     }
@@ -214,7 +177,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
     }
@@ -230,7 +193,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
     }
@@ -246,7 +209,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
     }

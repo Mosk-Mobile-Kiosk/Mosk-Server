@@ -7,8 +7,8 @@ public class GivenOption {
 
     public static final String MODIFIED_OPTION_NAME = "NEW 테스트 옵션";
 
-    public static final Long OPTION_PRICE = 1000l;
-    public static final Long MODIFIED_OPTION_PRICE = 10000l;
+    public static final Long OPTION_PRICE = 1000L;
+    public static final Long MODIFIED_OPTION_PRICE = 10000L;
 
     public static Option toEntity() {
         return Option.builder()
