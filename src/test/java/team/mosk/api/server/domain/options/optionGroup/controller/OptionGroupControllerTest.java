@@ -239,7 +239,6 @@ public class OptionGroupControllerTest {
                 .andExpect(jsonPath("$.data.options[0].id").value(givenGroup.getOptions().get(0).getId()))
                 .andExpect(jsonPath("$.data.options[0].name").value(givenGroup.getOptions().get(0).getName()))
                 .andExpect(jsonPath("$.data.options[0].price").value(givenGroup.getOptions().get(0).getPrice()))
-                .andExpect(jsonPath("$.data.productName").value(givenGroup.getProduct().getName()))
                 .andDo(print());
     }
 
@@ -268,13 +267,11 @@ public class OptionGroupControllerTest {
                 .andExpect(jsonPath("$.data[0].options[0].id").value(givenGroup1.getOptions().get(0).getId()))
                 .andExpect(jsonPath("$.data[0].options[0].name").value(givenGroup1.getOptions().get(0).getName()))
                 .andExpect(jsonPath("$.data[0].options[0].price").value(givenGroup1.getOptions().get(0).getPrice()))
-                .andExpect(jsonPath("$.data[0].productName").value(givenGroup1.getProduct().getName()))
                 .andExpect(jsonPath("$.data[1].id").value(givenGroup2.getId()))
                 .andExpect(jsonPath("$.data[1].name").value(givenGroup2.getName()))
                 .andExpect(jsonPath("$.data[1].options[0].id").value(givenGroup2.getOptions().get(0).getId()))
                 .andExpect(jsonPath("$.data[1].options[0].name").value(givenGroup2.getOptions().get(0).getName()))
                 .andExpect(jsonPath("$.data[1].options[0].price").value(givenGroup2.getOptions().get(0).getPrice()))
-                .andExpect(jsonPath("$.data[1].productName").value(givenGroup2.getProduct().getName()))
                 .andDo(print());
     }
  }

@@ -5,7 +5,7 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -22,9 +22,9 @@ public class Subscribe extends BaseEntity {
     @OneToOne(mappedBy = "subscribe", cascade = CascadeType.ALL)
     private Store store;
 
-    private LocalDateTime startDate;
+    private LocalDate startDate;
 
-    private LocalDateTime endDate;
+    private LocalDate endDate;
 
     private Long price;
 }
