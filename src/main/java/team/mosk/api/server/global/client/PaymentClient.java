@@ -1,4 +1,4 @@
-package team.mosk.api.server.domain.order.service;
+package team.mosk.api.server.global.client;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;

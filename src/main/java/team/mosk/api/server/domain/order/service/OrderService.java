@@ -9,15 +9,18 @@ import team.mosk.api.server.domain.options.option.model.persist.OptionRepository
 import team.mosk.api.server.domain.order.dto.*;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
 import team.mosk.api.server.domain.order.error.OrderNotFoundException;
+import team.mosk.api.server.domain.order.error.TossApiException;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.order.OrderRepository;
 import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
+import team.mosk.api.server.domain.order.vo.OrderStatus;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.client.PaymentClient;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,14 +65,17 @@ public class OrderService {
             order.plusTotalPrice(getProductTotalPrice(orderProductRequest.getQuantity(), product, options));
         }
 
-        paymentClient.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
+        try {
+            paymentClient.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
+        } catch (TossApiException e) {
+            order.setOrderStatus(OrderStatus.PAYMENT_FAILED);
+            orderRepository.save(order);
+            throw new TossApiException(e.getMessage());
+        }
 
         return OrderResponse.of(orderRepository.save(order));
     }
 
-    /**
-     * @param orderId tossApi 주문 생성시 입력한 문자값
-     */
     public void cancel(Long storeId, Long orderId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));

@@ -12,6 +12,7 @@ import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.client.BusinessCheckClient;
 
 import java.util.ArrayList;
 

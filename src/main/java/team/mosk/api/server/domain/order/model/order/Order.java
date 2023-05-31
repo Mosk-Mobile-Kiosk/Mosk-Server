@@ -105,4 +105,8 @@ public class Order extends BaseEntity {
         }
         this.orderStatus = COMPLETED;
     }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
 }
