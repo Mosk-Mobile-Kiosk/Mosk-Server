@@ -29,12 +29,12 @@ public class OrderController {
         return ApiResponse.of(HttpStatus.CREATED, orderService.createOrder(storeId, request, now));
     }
 
-    @DeleteMapping("/orders/{orderId}")
-    public ApiResponse<Void> delete(
-            @PathVariable Long orderId,
+    @DeleteMapping("/orders/{tossOrderId}")
+    public ApiResponse<Void> cancel(
+            @PathVariable Long tossOrderId,
             @AuthenticationPrincipal CustomUserDetails customUserDetails
     ) {
-        orderService.cancel(customUserDetails.getId(), orderId);
+        orderService.cancel(customUserDetails.getId(), tossOrderId);
         return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
