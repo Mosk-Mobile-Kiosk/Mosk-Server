@@ -3,11 +3,9 @@ package team.mosk.api.server.domain.auth.service;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
 import team.mosk.api.server.domain.store.error.StoreNotFoundException;
@@ -20,10 +18,8 @@ import team.mosk.api.server.global.jwt.exception.TokenNotFoundException;
 import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 
-@SpringBootTest
-@ActiveProfiles({"mac", "dev"})
-@Transactional
-class AuthServiceTest {
+
+class AuthServiceTest extends IntegrationTestSupport {
 
     @Autowired
     AuthService authService;

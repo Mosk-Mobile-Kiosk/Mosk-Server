@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -42,10 +43,8 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 import static team.mosk.api.server.domain.product.util.TextValidator.*;
 
-@SpringBootTest
-@ActiveProfiles({"windows", "dev"})
-@Transactional
-public class ProductServiceTest {
+
+public class ProductServiceTest extends IntegrationTestSupport {
 
     @Autowired
     ProductService productService;
