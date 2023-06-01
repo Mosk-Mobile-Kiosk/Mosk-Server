@@ -206,7 +206,7 @@ class StoreServiceTest extends IntegrationTestSupport {
         storeService.createQRCode(savedStore.getId());
 
         //then
-        QRCode qrCode = qrCodeRepository.findByStore(store).get();
+        QRCode qrCode = qrCodeRepository.findAll().get(0);
         assertThat(qrCode.getStore()).isEqualTo(savedStore);
     }
 
