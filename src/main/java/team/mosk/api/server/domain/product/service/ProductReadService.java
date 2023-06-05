@@ -19,6 +19,7 @@ import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -54,5 +55,16 @@ public class ProductReadService {
             byte[] bytes = Files.readAllBytes(new File(findImg.getPath()).toPath());
             return ProductImgResponse.of(findImg, bytes);
         }
+    }
+
+    public List<ProductResponse> findByStoreId(Long storeId) {
+        return productRepository.findByStoreId(storeId).stream()
+                .map(product -> new ProductResponse(
+                        product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice(),
+                        product.getSelling()))
+                .collect(Collectors.toList());
     }
 }

@@ -51,9 +51,9 @@ public class StoreController {
     public ApiResponse<Void> businessRegistrationCheck(@RequestParam("crn") String crn,
                                                        @RequestParam("foundedDate") String foundedDate,
                                                        @RequestParam("ownerName") String ownerName) {
-        BusinessCheckRequest request =
-                BusinessCheckRequest.of(crn.replaceAll("-", ""), foundedDate.replaceAll("-", ""), ownerName);
-        storeReadService.businessRegistrationCheck(request);
+//        BusinessCheckRequest request =
+//                BusinessCheckRequest.of(crn.replaceAll("-", ""), foundedDate.replaceAll("-", ""), ownerName);
+//        storeReadService.businessRegistrationCheck(request);
         return ApiResponse.ok();
     }
 

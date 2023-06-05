@@ -28,6 +28,14 @@ public class ProductResponse {
 
     private List<OptionGroupResponse> optionGroups;
 
+    public ProductResponse(Long id, String name, String description, Long price, Selling selling) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.selling = selling;
+    }
+
     public static ProductResponse of(final Product product) {
         return new ProductResponse(product.getId(),
                 product.getName(),

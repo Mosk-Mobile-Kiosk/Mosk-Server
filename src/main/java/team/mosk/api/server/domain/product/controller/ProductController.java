@@ -74,4 +74,10 @@ public class ProductController {
     public ApiResponse<List<ProductResponse>> findByKeyword(@ModelAttribute ProductSearch productSearch) {
         return ApiResponse.ok(productReadService.findByKeyword(productSearch.getProductName(), productSearch.getStoreId()));
     }
+
+    @GetMapping("/products")
+    @ResponseStatus(OK)
+    public ApiResponse<List<ProductResponse>> findByStoreId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ApiResponse.ok(productReadService.findByStoreId(customUserDetails.getId()));
+    }
 }
