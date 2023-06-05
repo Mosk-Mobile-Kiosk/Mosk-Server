@@ -13,6 +13,7 @@ import team.mosk.api.server.domain.subscribe.dto.SubscribeResponse;
 import team.mosk.api.server.domain.subscribe.service.SubscribeReadService;
 import team.mosk.api.server.domain.subscribe.util.GivenSubscribe;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,10 @@ public class SubscribeControllerTest extends ControllerIntegrationSupport {
                 .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
                 .andExpect(jsonPath("$.data[0].id").value(1L))
+                .andExpect(jsonPath("$.data[0].storeId").value(1L))
+                .andExpect(jsonPath("$.data[0].startDate").value(LocalDate.now().toString()))
+                .andExpect(jsonPath("$.data[0].endDate").value(LocalDate.now().plusMonths(1L).toString()))
+                .andExpect(jsonPath("$.data[0].price").value(1000L))
                 .andDo(print());
     }
 }

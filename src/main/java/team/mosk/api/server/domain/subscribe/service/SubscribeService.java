@@ -29,7 +29,7 @@ public class SubscribeService {
     private static final String SUB_INFO_NOT_FOUND = "구독 정보가 존재하지 않습니다.";
     public SubscribeResponse newSubscribe(final Long storeId, final Long period, final Long price) {
 
-        if (existsSubscribe(storeId)) {
+        if (!existsSubscribe(storeId)) {
             return renewSubscribe(storeId, period, price);
         }
 

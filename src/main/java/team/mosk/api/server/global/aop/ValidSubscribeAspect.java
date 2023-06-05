@@ -4,7 +4,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
-import team.mosk.api.server.domain.subscribe.error.AlreadyExpiredSubscribe;
+import team.mosk.api.server.domain.subscribe.error.AlreadyExpiredSubscribeException;
 import team.mosk.api.server.domain.subscribe.error.SubInfoNotFoundException;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
@@ -26,7 +26,7 @@ public class ValidSubscribeAspect {
                 if(details.getPeriod().isBefore(LocalDate.now())) {
                     throw new SubInfoNotFoundException(SUB_INFO_NOT_FOUND);
                 } else if (details.getPeriod() == null) {
-                    throw new AlreadyExpiredSubscribe(ALREADY_EXPIRED_SUB);
+                    throw new AlreadyExpiredSubscribeException(ALREADY_EXPIRED_SUB);
                 }
             }
         }
