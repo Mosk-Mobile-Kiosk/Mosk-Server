@@ -46,7 +46,8 @@ public class Store extends BaseEntity {
     @OneToMany(mappedBy = "store")
     private List<Product> products;
 
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "store")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "qrCode_id")
     private QRCode qrCode;
 
     @OneToOne(fetch = FetchType.LAZY)

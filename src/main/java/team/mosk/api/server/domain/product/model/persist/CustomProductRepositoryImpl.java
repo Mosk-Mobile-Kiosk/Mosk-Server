@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
+import team.mosk.api.server.domain.options.optionGroup.model.persist.QOptionGroup;
 import team.mosk.api.server.domain.product.dto.ProductResponse;
 import team.mosk.api.server.domain.product.model.persist.expression.ProductExpression;
 
@@ -29,6 +30,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     public ProductResponse findByProductId(final Long id) {
         Product findProduct = query.select(product)
                 .from(product)
+                .join(product.optionGroups, optionGroup)
+                .fetchJoin()
                 .where(EQ_PRODUCT_ID.eqProductField(id))
                 .fetchOne();
 
@@ -39,6 +42,8 @@ public class CustomProductRepositoryImpl implements CustomProductRepository {
     public List<ProductResponse> findByKeyword(final String keyword, final Long storeId) {
         List<Product> fetch = query.select(product)
                 .from(product)
+                .join(product.optionGroups, optionGroup)
+                .fetchJoin()
                 .where(hasKeyword(keyword),
                         EQ_STORE_ID.eqProductField(storeId))
                 .fetch();
