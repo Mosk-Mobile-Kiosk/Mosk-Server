@@ -20,8 +20,7 @@ public class QRCode extends BaseEntity {
 
     private String path;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "qrCode")
     private Store store;
 
 
