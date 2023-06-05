@@ -38,4 +38,12 @@ spring:
 
 filePath: C:\Users\bae\Desktop\study\mosk-img\
 basicFilePath: classpath:img/basic.jpg
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+
+filePath: img/
+basicFilePath: classpath:img/basic.jpg
 

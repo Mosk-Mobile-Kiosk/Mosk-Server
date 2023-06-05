@@ -2,11 +2,9 @@ package team.mosk.api.server.domain.order.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
@@ -15,6 +13,7 @@ import team.mosk.api.server.domain.order.dto.OrderResponse;
 import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
 import team.mosk.api.server.domain.order.error.OrderCompletedException;
+import team.mosk.api.server.domain.order.error.TossApiException;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.order.OrderRepository;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
@@ -30,15 +29,15 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_EMAIL;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
 import static team.mosk.api.server.domain.store.util.GivenStore.*;
 
-@ActiveProfiles("mac")
-@Transactional
-@SpringBootTest
-class OrderServiceTest {
+
+class OrderServiceTest extends IntegrationTestSupport {
 
     @Autowired
     private OrderService orderService;
@@ -55,8 +54,6 @@ class OrderServiceTest {
     @Autowired
     private StoreRepository storeRepository;
 
-    @MockBean
-    private PaymentService paymentService;
 
 
     @DisplayName("ProductId와 optionId 리스트를 받아 주문을할 수 있다.")
@@ -109,6 +106,83 @@ class OrderServiceTest {
         assertThat(order.getOrderStatus()).isEqualTo(INIT);
     }
 
+    @DisplayName("주문 시 API 호출 오류가 발생하면 주문상태는 PAYMENT_FAILED 이다.")
+    @Test
+    void createOrderWithApiCallFail() {
+        //given
+        String paymentKey = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString();
+
+        Store store = createStore(GIVEN_EMAIL);
+        Store savedStore = storeRepository.save(store);
+
+        Product product1 = productRepository.save(GivenProduct.toEntity());
+        Product product2 = productRepository.save(GivenProduct.toEntity());
+
+
+        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), List.of(), 1);
+        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), List.of(), 2);
+
+        List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
+
+        CreateOrderRequest request = CreateOrderRequest.builder()
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .orderProductRequests(orderProductRequests)
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        willThrow(new TossApiException("결제실패!")).given(paymentClient).paymentApproval(any());
+
+        //when //then
+        assertThatThrownBy(() -> orderService.createOrder(savedStore.getId(), request, now))
+                .isInstanceOf(TossApiException.class);
+
+        Order order = orderRepository.findAll().get(0);
+        assertThat(order.getTotalPrice()).isEqualTo(300);
+        assertThat(order.getRegisteredDate()).isEqualTo(now);
+        assertThat(order.getOrderStatus()).isEqualTo(PAYMENT_FAILED);
+    }
+
+    @DisplayName("ProductId 만 가지고 주문을 할수 있다.(옵션 없이)")
+    @Test
+    void createOrderWithoutOption() {
+        //given
+        String paymentKey = UUID.randomUUID().toString();
+        String orderId = UUID.randomUUID().toString();
+
+        Store store = createStore(GIVEN_EMAIL);
+        Store savedStore = storeRepository.save(store);
+
+        Product product1 = productRepository.save(GivenProduct.toEntity());
+        Product product2 = productRepository.save(GivenProduct.toEntity());
+
+
+        OrderProductRequest orderProductRequest1 = new OrderProductRequest(product1.getId(), List.of(), 1);
+        OrderProductRequest orderProductRequest2 = new OrderProductRequest(product2.getId(), List.of(), 2);
+
+        List<OrderProductRequest> orderProductRequests = List.of(orderProductRequest1, orderProductRequest2);
+
+        CreateOrderRequest request = CreateOrderRequest.builder()
+                .paymentKey(paymentKey)
+                .orderId(orderId)
+                .orderProductRequests(orderProductRequests)
+                .build();
+
+        LocalDateTime now = LocalDateTime.now();
+
+        //when
+        OrderResponse orderResponse = orderService.createOrder(savedStore.getId(), request, now);
+
+        //then
+        System.out.println("orderResponse = " + orderResponse);
+        Order order = orderRepository.findAll().get(0);
+        assertThat(order.getTotalPrice()).isEqualTo(300);
+        assertThat(order.getRegisteredDate()).isEqualTo(now);
+        assertThat(order.getOrderStatus()).isEqualTo(INIT);
+    }
+
     @DisplayName("주문 상태가 INIT일 경우 주문을 취소할 수 있다.")
     @Test
     void cancelWithOrderStatusINIT() {
@@ -120,7 +194,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -138,7 +212,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when
-        orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심");
+        orderService.cancel(savedStore.getId(), savedOrder.getId());
 
         //then
         Order findOrder = orderRepository.findById(savedOrder.getId()).get();
@@ -161,7 +235,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
                 .isInstanceOf(OrderAccessDeniedException.class)
                 .hasMessage("주문에 접근할 수 없습니다.");
     }
@@ -177,7 +251,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
     }
@@ -193,7 +267,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
     }
@@ -209,7 +283,7 @@ class OrderServiceTest {
         Order savedOrder = orderRepository.save(order);
 
         //when //then
-        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId(), "단순변심"))
+        assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
                 .isInstanceOf(OrdeCancelDeniedException.class)
                 .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
     }

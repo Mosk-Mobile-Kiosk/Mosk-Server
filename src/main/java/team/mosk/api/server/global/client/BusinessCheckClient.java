@@ -1,4 +1,4 @@
-package team.mosk.api.server.domain.store.service;
+package team.mosk.api.server.global.client;
 
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -12,11 +12,11 @@ import team.mosk.api.server.domain.store.error.DuplicateCrnException;
 import java.util.ArrayList;
 
 @Service
-public class BusinessCheckService {
+public class BusinessCheckClient {
 
     private final WebClient webClient;
 
-    public BusinessCheckService(@Qualifier("gongGongDataClient") WebClient webClient) {
+    public BusinessCheckClient(@Qualifier("gongGongDataClient") WebClient webClient) {
         this.webClient = webClient;
     }
 

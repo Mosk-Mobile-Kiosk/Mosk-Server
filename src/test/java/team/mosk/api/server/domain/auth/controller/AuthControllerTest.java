@@ -4,16 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
-import team.mosk.api.server.domain.auth.service.AuthService;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 import team.mosk.api.server.global.jwt.TokenProvider;
 import team.mosk.api.server.global.jwt.dto.TokenDto;
@@ -30,23 +26,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 
-@SpringBootTest
-@ActiveProfiles("mac")
-@AutoConfigureMockMvc
-class AuthControllerTest {
+class AuthControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
-    TokenProvider tokenProvider;
-
-    @MockBean
-    AuthService authService;
-
+    private TokenProvider tokenProvider;
 
     @DisplayName("사용자의 아이디, 비밀번호를 받아 로그인을 할 수 있다.")
     @Test

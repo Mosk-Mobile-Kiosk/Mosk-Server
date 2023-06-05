@@ -5,9 +5,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.error.CategoryNotFoundException;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -42,10 +42,8 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.*;
 
 
-@SpringBootTest
-@ActiveProfiles({"windows", "dev"})
-@Transactional
-public class OptionServiceTest {
+
+public class OptionServiceTest extends IntegrationTestSupport {
 
     @Autowired
     CategoryService categoryService;

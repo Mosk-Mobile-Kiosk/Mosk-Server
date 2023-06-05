@@ -4,19 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.options.option.dto.CreateOptionRequest;
 import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
-import team.mosk.api.server.domain.options.option.service.OptionReadService;
-import team.mosk.api.server.domain.options.option.service.OptionService;
 import team.mosk.api.server.domain.options.option.util.GivenOption;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
@@ -26,18 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@ActiveProfiles("windows")
-@AutoConfigureMockMvc
-public class OptionControllerTest {
+
+public class OptionControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
-
-    @MockBean
-    OptionService optionService;
-    @MockBean
-    OptionReadService optionReadService;
+    private MockMvc mockMvc;
 
     static final String NAME_IS_REQUIRED = "이름은 필수입니다.";
     static final String PRICE_IS_REQUIRED = "가격은 필수입니다.";

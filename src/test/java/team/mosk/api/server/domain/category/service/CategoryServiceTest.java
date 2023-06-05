@@ -4,9 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
+import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
 import team.mosk.api.server.domain.category.model.persist.Category;
@@ -24,10 +23,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
-@SpringBootTest
-@ActiveProfiles({"windows", "dev"})
-@Transactional
-public class CategoryServiceTest {
+
+public class CategoryServiceTest extends IntegrationTestSupport {
     @Autowired
     CategoryService categoryService;
     @Autowired

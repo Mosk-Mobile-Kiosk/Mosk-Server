@@ -2,12 +2,10 @@ package team.mosk.api.server.domain.store.service;
 
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.reactive.function.client.WebClient;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
 import team.mosk.api.server.domain.store.error.DuplicateCrnException;
@@ -18,10 +16,8 @@ import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.client.QRCodeClient;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.UUID;
 
 @Slf4j
@@ -31,19 +27,19 @@ public class StoreService {
 
     private final StoreRepository storeRepository;
     private final QRCodeRepository qrCodeRepository;
-    private final QRCodeService qrCodeService;
+    private final QRCodeClient qrCodeClient;
     private final PasswordEncoder encoder;
     private final String qrImgSavedPath;
 
     public StoreService(StoreRepository storeRepository,
                         QRCodeRepository qrCodeRepository,
-                        QRCodeService qrCodeService,
+                        QRCodeClient qrCodeClient,
                         PasswordEncoder encoder,
                         @Value("${filePath}") String qrImgSavedPath
                         ) {
         this.storeRepository = storeRepository;
         this.qrCodeRepository = qrCodeRepository;
-        this.qrCodeService = qrCodeService;
+        this.qrCodeClient = qrCodeClient;
         this.encoder = encoder;
         this.qrImgSavedPath = qrImgSavedPath;
     }
@@ -89,7 +85,7 @@ public class StoreService {
 
         String uuid = createUUIDFileName();
 
-        qrCodeService.callCreateQRCode(storeId, uuid);
+        qrCodeClient.callCreateQRCode(storeId, uuid);
 
         qrCodeRepository.save(new QRCode(qrImgSavedPath + "/" + uuid, store));
     }

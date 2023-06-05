@@ -5,6 +5,7 @@ import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
 import team.mosk.api.server.domain.order.error.OrderCompletedException;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
 import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
+import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
 
@@ -102,5 +104,9 @@ public class Order extends BaseEntity {
             throw new OrderCompletedException("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
         }
         this.orderStatus = COMPLETED;
+    }
+
+    public void setOrderStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
     }
 }

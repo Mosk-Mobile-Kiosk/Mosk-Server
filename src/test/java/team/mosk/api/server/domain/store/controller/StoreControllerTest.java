@@ -6,18 +6,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.store.dto.SignUpRequest;
 import team.mosk.api.server.domain.store.dto.StoreResponse;
 import team.mosk.api.server.domain.store.dto.StoreUpdateRequest;
 import team.mosk.api.server.domain.store.model.persist.QRCode;
-import team.mosk.api.server.domain.store.service.StoreReadService;
-import team.mosk.api.server.domain.store.service.StoreService;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
 
 import java.nio.file.Files;
@@ -33,24 +28,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static team.mosk.api.server.domain.auth.util.GivenAuth.*;
 import static team.mosk.api.server.domain.store.util.GivenStore.*;
 
-@SpringBootTest
-@ActiveProfiles("mac")
-@AutoConfigureMockMvc
-class StoreControllerTest {
 
+class StoreControllerTest extends ControllerIntegrationSupport {
 
     @Autowired
-    MockMvc mockMvc;
-
-    @MockBean
-    StoreService storeService;
-
-    @MockBean
-    StoreReadService storeReadService;
+    private MockMvc mockMvc;
 
     @Autowired
-    ObjectMapper objectMapper;
-
+    private ObjectMapper objectMapper;
 
     @DisplayName("가게를 등록할 수 있다.(회원가입)")
     @Test
