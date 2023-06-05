@@ -28,9 +28,6 @@ public class SubscribeControllerTest extends ControllerIntegrationSupport {
     @Autowired
     MockMvc mockMvc;
 
-    @MockBean
-    SubscribeReadService subscribeReadService;
-
     @Test
     @DisplayName("현재 로그인 중인 계정의 모든 구독 기록을 가져온다.")
     @WithAuthUser

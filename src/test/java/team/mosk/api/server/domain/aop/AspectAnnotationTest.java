@@ -25,7 +25,7 @@ public class AspectAnnotationTest extends ControllerIntegrationSupport {
 
     @Test
     @DisplayName("만약 구독기간이 현재 시점보다 과거라면 예외를 발생시킨다.")
-    @WithAuthUser(period = -1L)
+    @WithAuthUser(period = -1)
     void AspectAnnotationTest() throws Exception {
         CreateCategoryRequest request = CreateCategoryRequest.builder()
                 .name("Aspect Test")
@@ -36,8 +36,8 @@ public class AspectAnnotationTest extends ControllerIntegrationSupport {
         mockMvc.perform(post("/api/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJSON))
-                .andExpect(jsonPath("$.data.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.data.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andDo(print());
     }
 }
