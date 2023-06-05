@@ -4,6 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import team.mosk.api.server.domain.store.model.persist.Store;
 
+import java.time.LocalDate;
 import java.util.Collection;
 
 public class CustomUserDetails implements UserDetails {
@@ -12,10 +13,13 @@ public class CustomUserDetails implements UserDetails {
     private String email;
     private String password;
 
-    public CustomUserDetails(Long id, String email, String password) {
+    private LocalDate period;
+
+    public CustomUserDetails(Long id, String email, String password, LocalDate period) {
         this.id = id;
         this.email = email;
         this.password = password;
+        this.period = period;
     }
 
     public CustomUserDetails(Long id, String email) {
@@ -41,6 +45,8 @@ public class CustomUserDetails implements UserDetails {
     public Long getId() {
         return id;
     }
+
+    public LocalDate getPeriod() {return period; }
 
     @Override
     public boolean isAccountNonExpired() {

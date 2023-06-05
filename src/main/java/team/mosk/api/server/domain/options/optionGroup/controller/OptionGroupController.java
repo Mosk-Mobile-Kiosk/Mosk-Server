@@ -10,6 +10,7 @@ import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
 import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupReadService;
 import team.mosk.api.server.domain.options.optionGroup.service.OptionGroupService;
+import team.mosk.api.server.global.aop.ValidSubscribe;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
@@ -20,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@Slf4j
+@ValidSubscribe
 public class OptionGroupController {
 
     private final OptionGroupService optionGroupService;

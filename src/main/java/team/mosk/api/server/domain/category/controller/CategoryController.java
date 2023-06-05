@@ -12,6 +12,7 @@ import team.mosk.api.server.domain.category.dto.UpdateCategoryRequest;
 import team.mosk.api.server.domain.category.dto.CategoryResponse;
 import team.mosk.api.server.domain.category.service.CategoryReadService;
 import team.mosk.api.server.domain.category.service.CategoryService;
+import team.mosk.api.server.global.aop.ValidSubscribe;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
@@ -22,6 +23,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@ValidSubscribe
 public class CategoryController {
 
     private final CategoryService categoryService;
