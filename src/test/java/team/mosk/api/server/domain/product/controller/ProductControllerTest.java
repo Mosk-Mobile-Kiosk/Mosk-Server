@@ -75,8 +75,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품 이름은 필수입니다."))
                 .andDo(print());
     }
@@ -97,8 +97,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("가격 설정은 필수입니다."))
                 .andDo(print());
     }
@@ -119,8 +119,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJson)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("카테고리 아이디는 필수입니다."))
                 .andDo(print());
     }
@@ -181,8 +181,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품 아이디는 필수입니다."))
                 .andDo(print());
     }
@@ -207,8 +207,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품 이름은 필수입니다."))
                 .andDo(print());
     }
@@ -233,8 +233,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("가격 설정은 필수입니다."))
                 .andDo(print());
     }
@@ -300,8 +300,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품 아이디는 필수입니다."))
                 .andDo(print());
     }
@@ -322,8 +322,8 @@ public class ProductControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상태는 필수입니다."))
                 .andDo(print());
     }

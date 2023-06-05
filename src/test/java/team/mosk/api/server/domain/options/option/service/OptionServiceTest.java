@@ -35,6 +35,7 @@ import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -89,7 +90,7 @@ public class OptionServiceTest extends IntegrationTestSupport {
         StoreResponse response = storeService.create(newStore);
 
         store = storeRepository.findById(response.getId()).orElseThrow(
-                () -> new StoreNotFoundException("error"));
+                () -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         Category newCategory = Category.builder()
                 .name("category")
@@ -99,7 +100,7 @@ public class OptionServiceTest extends IntegrationTestSupport {
         CategoryResponse categoryResponse = categoryService.create(newCategory, store.getId());
 
         category = categoryRepository.findById(categoryResponse.getId())
-                .orElseThrow(() -> new CategoryNotFoundException("error"));
+                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
 
         Product newProduct = Product.builder()
                 .name("product")
@@ -115,7 +116,7 @@ public class OptionServiceTest extends IntegrationTestSupport {
         ProductResponse productResponse = productService.create(newProduct, encodedImg, imgType, category.getId(), store.getId());
 
         product = productRepository.findById(productResponse.getId())
-                .orElseThrow(() -> new ProductNotFoundException("error"));
+                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
 
         OptionGroup newGroup = OptionGroup.builder()
                 .name("GROUP")
@@ -125,7 +126,7 @@ public class OptionServiceTest extends IntegrationTestSupport {
         OptionGroupResponse groupResponse = optionGroupService.create(newGroup, product.getId(), store.getId());
 
         optionGroup = optionGroupRepository.findById(groupResponse.getId())
-                .orElseThrow(() -> new OptionGroupNotFoundException("error"));
+                .orElseThrow(() -> new OptionGroupNotFoundException(ErrorCode.OPTION_GROUP_NOT_FOUND));
     }
 
     @Test
@@ -135,7 +136,7 @@ public class OptionServiceTest extends IntegrationTestSupport {
                 = optionService.create(GivenOption.toEntity(), optionGroup.getId(), store.getId());
 
         Option option = optionRepository.findById(savedResponse.getId())
-                .orElseThrow(() -> new OptionGroupNotFoundException("error"));
+                .orElseThrow(() -> new OptionGroupNotFoundException(ErrorCode.OPTION_GROUP_NOT_FOUND));
 
         assertThat(option.getId()).isEqualTo(savedResponse.getId());
         assertThat(option.getName()).isEqualTo(savedResponse.getName());

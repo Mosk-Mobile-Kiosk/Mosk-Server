@@ -12,6 +12,7 @@ import team.mosk.api.server.domain.subscribe.model.persist.Subscribe;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeHistory;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeHistoryRepository;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -25,8 +26,7 @@ public class SubscribeService {
     private final SubscribeRepository subscribeRepository;
     private final SubscribeHistoryRepository subscribeHistoryRepository;
 
-    private static final String STORE_NOT_FOUND = "가게를 찾을 수 없습니다.";
-    private static final String SUB_INFO_NOT_FOUND = "구독 정보가 존재하지 않습니다.";
+
     public SubscribeResponse newSubscribe(final Long storeId, final Long period, final Long price) {
 
         if (!existsSubscribe(storeId)) {
@@ -34,7 +34,7 @@ public class SubscribeService {
         }
 
         Store findStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException(STORE_NOT_FOUND));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         Subscribe sub = Subscribe.createEntity(findStore, period, price);
 
@@ -46,7 +46,7 @@ public class SubscribeService {
 
     public SubscribeResponse renewSubscribe(final Long storeId, final Long period, final Long price) {
         Subscribe findSub = subscribeRepository.findByStoreId(storeId)
-                .orElseThrow(() -> new SubInfoNotFoundException(SUB_INFO_NOT_FOUND));
+                .orElseThrow(() -> new SubInfoNotFoundException(ErrorCode.SUB_INFO_NOT_FOUND));
 
         if(findSub.getEndDate().isBefore(LocalDate.now())) {
             findSub.resetStartDate();

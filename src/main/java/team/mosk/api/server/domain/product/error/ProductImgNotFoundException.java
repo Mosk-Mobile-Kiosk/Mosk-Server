@@ -1,7 +1,10 @@
 package team.mosk.api.server.domain.product.error;
 
-public class ProductImgNotFoundException extends RuntimeException{
-    public ProductImgNotFoundException(String message) {
-        super(message);
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
+
+public class ProductImgNotFoundException extends CombinedException {
+    public ProductImgNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

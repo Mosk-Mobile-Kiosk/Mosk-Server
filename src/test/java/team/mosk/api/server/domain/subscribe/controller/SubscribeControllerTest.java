@@ -38,8 +38,8 @@ public class SubscribeControllerTest extends ControllerIntegrationSupport {
         when(subscribeReadService.findAllByStoreId(any())).thenReturn(list);
 
         mockMvc.perform(get("/api/v1/subscribes"))
-                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.name()))
                 .andExpect(jsonPath("$.data[0].id").value(1L))
                 .andExpect(jsonPath("$.data[0].storeId").value(1L))
                 .andExpect(jsonPath("$.data[0].startDate").value(LocalDate.now().toString()))

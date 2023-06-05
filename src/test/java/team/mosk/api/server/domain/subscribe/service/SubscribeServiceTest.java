@@ -17,6 +17,7 @@ import team.mosk.api.server.domain.subscribe.model.persist.Subscribe;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeHistory;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeHistoryRepository;
 import team.mosk.api.server.domain.subscribe.model.persist.SubscribeRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -60,7 +61,7 @@ public class SubscribeServiceTest extends IntegrationTestSupport {
         StoreResponse response = storeService.create(newStore);
 
         store = storeRepository.findById(response.getId()).orElseThrow(
-                () -> new StoreNotFoundException("error")
+                () -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND)
         );
     }
 
@@ -79,7 +80,7 @@ public class SubscribeServiceTest extends IntegrationTestSupport {
          * 현재 계정에 적용이 시작된 구독 정보
          */
         Subscribe findSub = subscribeRepository.findById(response.getId())
-                        .orElseThrow(() -> new SubInfoNotFoundException("error"));
+                        .orElseThrow(() -> new SubInfoNotFoundException(ErrorCode.SUB_INFO_NOT_FOUND));
 
         assertThat(findSub.getStore().getId()).isEqualTo(store.getId());
         assertThat(findSub.getStartDate()).isEqualTo(now);

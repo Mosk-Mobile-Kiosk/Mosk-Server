@@ -32,6 +32,7 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -84,13 +85,13 @@ public class ProductServiceTest extends IntegrationTestSupport {
         StoreResponse response = storeService.create(newStore);
 
         store = storeRepository.findById(response.getId()).orElseThrow(
-                () -> new StoreNotFoundException("error")
+                () -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND)
         );
 
         CategoryResponse categoryResponse = categoryService.create(GivenCategory.toEntity(), store.getId());
 
         category = categoryRepository.findById(categoryResponse.getId())
-                .orElseThrow(() -> new CategoryNotFoundException("error"));
+                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
     }
 
     @Test
@@ -143,7 +144,7 @@ public class ProductServiceTest extends IntegrationTestSupport {
         productService.changeSellingStatus(request, store.getId());
 
         Product findProduct = productRepository.findById(productResponse.getId())
-                .orElseThrow(() -> new ProductNotFoundException("[changeSellingStatus] TEST HAS THROW EXCEPTION"));
+                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
 
         assertThat(findProduct.getSelling()).isEqualTo(Selling.SOLDOUT);
     }

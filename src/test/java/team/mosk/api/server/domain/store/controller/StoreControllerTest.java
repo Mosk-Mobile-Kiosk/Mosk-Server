@@ -79,8 +79,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("이메일 형식이여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -108,8 +108,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("이메일은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -137,8 +137,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("비밀번호는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -166,8 +166,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("가게이름은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -195,8 +195,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("사업주이름은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -224,8 +224,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("휴대폰 번호는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -253,8 +253,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("주소는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -282,8 +282,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("사업자등록 번호는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -360,8 +360,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                         .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("가게이름은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -384,8 +384,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                         .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("사업주이름은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -408,8 +408,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                         .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("휴대폰 번호는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -432,8 +432,8 @@ class StoreControllerTest extends ControllerIntegrationSupport {
                         .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("주소는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }

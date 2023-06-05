@@ -30,6 +30,7 @@ public class OrderController {
         return ApiResponse.of(HttpStatus.CREATED, orderService.createOrder(storeId, request, now));
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/orders/{tossOrderId}")
     public ApiResponse<Void> cancel(
             @PathVariable Long tossOrderId,
@@ -39,6 +40,7 @@ public class OrderController {
         return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/orders/{orderId}/completion")
     public ApiResponse<Void> complete(
             @PathVariable Long orderId,

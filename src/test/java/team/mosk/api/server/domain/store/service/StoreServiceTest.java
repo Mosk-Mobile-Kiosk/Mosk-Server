@@ -13,6 +13,7 @@ import team.mosk.api.server.domain.store.model.persist.QRCode;
 import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.Optional;
 
@@ -92,7 +93,7 @@ class StoreServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> storeService.create(store2))
                 .isInstanceOf(DuplicateEmailException.class)
-                .hasMessage("이미 등록된 이메일 입니다.");
+                .hasMessage(ErrorCode.DUPLICATE_EMAIL.getMessage());
     }
 
     @DisplayName("회원가입 시 이미 등록된 사업자등록번호를 사용할 수 없다.")
@@ -126,7 +127,7 @@ class StoreServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> storeService.create(store2))
                 .isInstanceOf(DuplicateCrnException.class)
-                .hasMessage("이미 등록된 사업자등록번호 입니다.");
+                .hasMessage(ErrorCode.DUPLICATE_CRN_NUMBER.getMessage());
     }
 
     @DisplayName("가게정보를 변경할 수 있다.")
@@ -274,7 +275,7 @@ class StoreServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> storeReadService.emailDuplicateCheck(GIVEN_EMAIL))
                 .isInstanceOf(DuplicateEmailException.class)
-                .hasMessage("사용중인 이메일입니다.");
+                .hasMessage(ErrorCode.DUPLICATE_EMAIL.getMessage());
     }
 
 

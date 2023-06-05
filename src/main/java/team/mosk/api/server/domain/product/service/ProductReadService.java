@@ -15,6 +15,7 @@ import team.mosk.api.server.domain.product.error.ProductNotFoundException;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
 import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -29,9 +30,6 @@ public class ProductReadService {
     private final ProductImgRepository productImgRepository;
     private final ResourceLoader resourceLoader;
 
-    private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
-    private static final String PRODUCT_IMG_NOT_FOUND = "이미지를 찾을 수 없습니다.";
-
     public ProductResponse findByProductId(final Long id) {
         return productRepository.findByProductId(id);
     }
@@ -42,7 +40,7 @@ public class ProductReadService {
 
     public ProductImgResponse findImgByProductId(final Long productId) throws Exception{
         ProductImg findImg = productImgRepository.findImgByProductId(productId)
-                .orElseThrow(() -> new ProductImgNotFoundException(PRODUCT_IMG_NOT_FOUND));
+                .orElseThrow(() -> new ProductImgNotFoundException(ErrorCode.PRODUCT_IMG_NOT_FOUND));
 
         if(findImg.getName().contains("basic.jpg")) {
             Resource resource = resourceLoader.getResource(findImg.getPath());

@@ -17,6 +17,7 @@ import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.global.client.QRCodeClient;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.UUID;
 
@@ -46,11 +47,11 @@ public class StoreService {
 
     public StoreResponse create(Store store) {
         if(storeRepository.existsByEmail(store.getEmail())) {
-            throw new DuplicateEmailException("이미 등록된 이메일 입니다.");
+            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
         }
 
         if(storeRepository.existsByCrn(store.getCrn())){
-            throw new DuplicateCrnException("이미 등록된 사업자등록번호 입니다.");
+            throw new DuplicateCrnException(ErrorCode.DUPLICATE_CRN_NUMBER);
         }
 
         store.setEncodePassword(encoder.encode(store.getPassword()));
@@ -60,7 +61,7 @@ public class StoreService {
 
     public StoreResponse update(Long storeId, StoreUpdateRequest request) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         store.update(request);
         return StoreResponse.of(store);
@@ -77,10 +78,10 @@ public class StoreService {
      */
     public void createQRCode(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         if(store.getQrCode() != null) {
-            throw new QrCodeAlreadyExistsException("이미 Qrcode가 존재합니다.");
+            throw new QrCodeAlreadyExistsException(ErrorCode.QR_CODE_ALREADY_EXISTS);
         }
 
         String uuid = createUUIDFileName();

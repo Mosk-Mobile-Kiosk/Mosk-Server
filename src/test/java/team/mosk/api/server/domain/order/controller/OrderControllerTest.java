@@ -13,7 +13,6 @@ import team.mosk.api.server.domain.options.option.util.GivenOption;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderProductRequest;
 
-import team.mosk.api.server.domain.order.error.TossApiException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.product.util.GivenProduct;
@@ -21,7 +20,6 @@ import team.mosk.api.server.domain.product.util.GivenProduct;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -102,8 +100,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value("400"))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("결제키는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -135,8 +133,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value("400"))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("주문번호는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -168,8 +166,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value("400"))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품번호는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -202,8 +200,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
-                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value("400"))
+                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품주문 갯수는 1개 이상이여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
