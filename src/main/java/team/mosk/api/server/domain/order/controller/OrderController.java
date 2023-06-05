@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderResponse;
 import team.mosk.api.server.domain.order.service.OrderService;
+import team.mosk.api.server.global.aop.ValidSubscribe;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 

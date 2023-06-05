@@ -10,6 +10,7 @@ import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
 import team.mosk.api.server.domain.options.option.service.OptionReadService;
 import team.mosk.api.server.domain.options.option.service.OptionService;
+import team.mosk.api.server.global.aop.ValidSubscribe;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
@@ -20,7 +21,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
-@Slf4j
+@ValidSubscribe
 public class OptionController {
 
     private final OptionService optionService;

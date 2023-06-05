@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import team.mosk.api.server.domain.product.dto.*;
 import team.mosk.api.server.domain.product.service.ProductReadService;
 import team.mosk.api.server.domain.product.service.ProductService;
+import team.mosk.api.server.global.aop.ValidSubscribe;
 import team.mosk.api.server.global.common.ApiResponse;
 import team.mosk.api.server.global.security.principal.CustomUserDetails;
 
@@ -17,6 +18,7 @@ import static org.springframework.http.HttpStatus.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1")
+@ValidSubscribe
 public class ProductController {
 
     private final ProductService productService;
