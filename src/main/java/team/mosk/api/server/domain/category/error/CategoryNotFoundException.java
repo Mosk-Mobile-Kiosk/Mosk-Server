@@ -1,7 +1,10 @@
 package team.mosk.api.server.domain.category.error;
 
-public class CategoryNotFoundException extends RuntimeException{
-    public CategoryNotFoundException(String message) {
-        super(message);
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
+
+public class CategoryNotFoundException extends CombinedException {
+    public CategoryNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

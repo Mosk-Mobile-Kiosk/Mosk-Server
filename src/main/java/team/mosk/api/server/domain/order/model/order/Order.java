@@ -1,20 +1,19 @@
 package team.mosk.api.server.domain.order.model.order;
 
 import lombok.*;
-import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
-import team.mosk.api.server.domain.order.error.OrderCompletedException;
+import team.mosk.api.server.domain.order.error.OrderCancelDeniedException;
+import team.mosk.api.server.domain.order.error.OrderUncompletedException;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
 import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
-import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static team.mosk.api.server.domain.order.vo.OrderStatus.*;
 
@@ -93,7 +92,7 @@ public class Order extends BaseEntity {
 
     public void cancel() {
         if(orderStatus != INIT && orderStatus != PAYMENT_COMPLETED) {
-            throw new OrdeCancelDeniedException("주문상태:" + this.orderStatus + "는 주문 취소가 불가능합니다.");
+            throw new OrderCancelDeniedException(ErrorCode.ORDER_CANCEL_DENIED);
         }
 
         this.orderStatus = CANCELED;
@@ -101,7 +100,7 @@ public class Order extends BaseEntity {
 
     public void orderCompleted() {
         if (this.orderStatus != PAYMENT_COMPLETED) {
-            throw new OrderCompletedException("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+            throw new OrderUncompletedException(ErrorCode.ORDER_UNCOMPLETED);
         }
         this.orderStatus = COMPLETED;
     }

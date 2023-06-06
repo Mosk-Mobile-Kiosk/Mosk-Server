@@ -9,7 +9,7 @@ import team.mosk.api.server.domain.options.option.model.persist.OptionRepository
 import team.mosk.api.server.domain.order.dto.*;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
 import team.mosk.api.server.domain.order.error.OrderNotFoundException;
-import team.mosk.api.server.domain.order.error.TossApiException;
+import team.mosk.api.server.domain.order.error.PaymentGatewayException;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.order.OrderRepository;
 import team.mosk.api.server.domain.order.model.orderproduct.OrderProduct;
@@ -21,6 +21,7 @@ import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.global.client.PaymentClient;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -40,13 +41,13 @@ public class OrderService {
 
     public OrderResponse createOrder(Long storeId, CreateOrderRequest createOrderRequest, LocalDateTime registeredDate) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         Order order = Order.createInitOrder(store, registeredDate, createOrderRequest.getPaymentKey());
         
         for(OrderProductRequest orderProductRequest : createOrderRequest.getOrderProductRequests()) {
             Product product = productRepository.findById(orderProductRequest.getProductId())
-                    .orElseThrow(() -> new ProductNotFoundException("상품을 찾을 수 없습니다."));
+                    .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
 
             List<Option> options = new ArrayList<>();
 
@@ -55,7 +56,7 @@ public class OrderService {
             }
 
             if (orderProductRequest.getOptionIds().size() != options.size()) {
-                throw new OptionNotFoundException("옵션을 찾을 수 없습니다.");
+                throw new OptionNotFoundException(ErrorCode.OPTION_NOT_FOUND);
             }
 
             OrderProduct orderProduct = OrderProduct.of(order, product, orderProductRequest.getQuantity(), options);
@@ -67,10 +68,10 @@ public class OrderService {
 
         try {
             paymentClient.paymentApproval(TossPaymentRequest.of(order, createOrderRequest.getPaymentKey()));
-        } catch (TossApiException e) {
+        } catch (PaymentGatewayException e) {
             order.setOrderStatus(OrderStatus.PAYMENT_FAILED);
             orderRepository.save(order);
-            throw new TossApiException(e.getMessage());
+            throw new PaymentGatewayException(ErrorCode.PAYMENT_GATEWAY_UNSTABLE);
         }
 
         return OrderResponse.of(orderRepository.save(order));
@@ -78,13 +79,13 @@ public class OrderService {
 
     public void cancel(Long storeId, Long orderId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new OrderNotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         if(store != order.getStore()) {
-            throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
+            throw new OrderAccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED);
         }
 
         paymentClient.paymentCancel(order.getPaymentKey());
@@ -94,13 +95,13 @@ public class OrderService {
 
     public void orderCompleted(Long storeId, Long orderId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         Order order = orderRepository.findById(orderId)
-                .orElseThrow(() -> new OrderNotFoundException("주문을 찾을 수 없습니다."));
+                .orElseThrow(() -> new OrderNotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
         if(store != order.getStore()) {
-            throw new OrderAccessDeniedException("주문에 접근할 수 없습니다.");
+            throw new OrderAccessDeniedException(ErrorCode.ORDER_ACCESS_DENIED);
         }
 
         order.orderCompleted();

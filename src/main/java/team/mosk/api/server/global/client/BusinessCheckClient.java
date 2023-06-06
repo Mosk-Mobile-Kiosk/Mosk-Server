@@ -8,6 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import team.mosk.api.server.domain.store.dto.BusinessCheckRequest;
 import team.mosk.api.server.domain.store.dto.BusinessCheckResponse;
 import team.mosk.api.server.domain.store.error.DuplicateCrnException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,7 @@ public class BusinessCheckClient {
                 .block();
 
         if (response.getStatusCode() != HttpStatus.OK || !isBusinessCheck(response.getBody().getValid_msg())) {
-            throw new DuplicateCrnException("이미 존재하는 사업자등록 번호 입니다.");
+            throw new DuplicateCrnException(ErrorCode.DUPLICATE_CRN_NUMBER);
         }
     }
 

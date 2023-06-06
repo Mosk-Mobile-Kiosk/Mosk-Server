@@ -10,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import team.mosk.api.server.ControllerIntegrationSupport;
 import team.mosk.api.server.domain.category.dto.CreateCategoryRequest;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -36,8 +37,9 @@ public class AspectAnnotationTest extends ControllerIntegrationSupport {
         mockMvc.perform(post("/api/v1/categories")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(requestJSON))
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.status").value(ErrorCode.SUB_INFO_NOT_FOUND.getStatus()))
+                .andExpect(jsonPath("$.code").value(ErrorCode.SUB_INFO_NOT_FOUND.getCode()))
+                .andExpect(jsonPath("$.message").value(ErrorCode.SUB_INFO_NOT_FOUND.getMessage()))
                 .andDo(print());
     }
 }

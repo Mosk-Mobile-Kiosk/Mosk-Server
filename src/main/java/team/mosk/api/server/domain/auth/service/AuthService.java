@@ -10,6 +10,7 @@ import team.mosk.api.server.domain.auth.dto.AccessToken;
 import team.mosk.api.server.domain.auth.dto.SignInDto;
 import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 import team.mosk.api.server.global.jwt.TokenProvider;
 import team.mosk.api.server.global.jwt.dto.TokenDto;
 import team.mosk.api.server.global.jwt.exception.TokenNotFoundException;
@@ -25,7 +26,7 @@ public class AuthService {
 
     public TokenDto login(SignInDto request) {
         CustomUserDetails userDetails = storeRepository.findUserDetailsByEmail(request.getEmail())
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
@@ -36,7 +37,7 @@ public class AuthService {
 
     public AccessToken reissue(AccessToken accessToken, String refreshToken) {
         if(!StringUtils.hasText(refreshToken) || !tokenProvider.validateToken(refreshToken)) {
-            throw new TokenNotFoundException("잘못된 JWT 서명입니다.");
+            throw new TokenNotFoundException(ErrorCode.TOKEN_NOT_FOUND);
         }
 
         Authentication authentication = tokenProvider.getAuthentication(accessToken.getAccessToken());

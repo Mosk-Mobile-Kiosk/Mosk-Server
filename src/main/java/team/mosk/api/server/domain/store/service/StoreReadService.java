@@ -13,6 +13,7 @@ import team.mosk.api.server.domain.store.model.persist.QRCodeRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.global.client.BusinessCheckClient;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.ArrayList;
 
@@ -27,14 +28,14 @@ public class StoreReadService {
 
     public StoreResponse findById(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         return StoreResponse.of(store);
     }
 
     public void emailDuplicateCheck(String email) {
         if(storeRepository.existsByEmail(email)) {
-            throw new DuplicateEmailException("사용중인 이메일입니다.");
+            throw new DuplicateEmailException(ErrorCode.DUPLICATE_EMAIL);
         }
     }
 
@@ -47,10 +48,10 @@ public class StoreReadService {
 
     public QRCode getQRCode(Long storeId) {
         Store store = storeRepository.findById(storeId)
-                .orElseThrow(() -> new StoreNotFoundException("가게를 찾을 수 없습니다."));
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
         return qrCodeRepository.findByStore(store)
-                .orElseThrow(() -> new QRCodeNotFoundException("QRCODE를 찾을 수 없습니다."));
+                .orElseThrow(() -> new QRCodeNotFoundException(ErrorCode.QR_CODE_NOT_FOUND));
     }
 
 
