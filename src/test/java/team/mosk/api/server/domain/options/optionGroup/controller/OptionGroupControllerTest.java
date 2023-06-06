@@ -56,8 +56,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                 .content(requestJSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.CREATED.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.CREATED.name()))
                 .andExpect(jsonPath("$.data.id").value(1L))
                 .andExpect(jsonPath("$.data.name").value(GivenOptionGroup.GROUP_NAME));
     }
@@ -78,8 +78,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value(NAME_IS_REQUIRED))
                 .andDo(print());
     }
@@ -100,8 +100,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value(PRODUCT_INFO_IS_REQUIRED))
                 .andDo(print());
     }
@@ -131,8 +131,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                 .content(requestJSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
                 .andExpect(jsonPath("$.data.id").value(1L))
                 .andExpect(jsonPath("$.data.name").value(GivenOptionGroup.MODIFIED_GROUP_NAME))
                 .andDo(print());
@@ -155,8 +155,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value(NAME_IS_REQUIRED))
                 .andDo(print());
     }
@@ -178,8 +178,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                         .content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value(GROUP_INFO_IS_REQUIRED))
                 .andDo(print());
     }
@@ -199,8 +199,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/optiongroups/1"))
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("$.status").value(HttpStatus.NO_CONTENT.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.NO_CONTENT.name()))
                 .andDo(print());
     }
 
@@ -221,8 +221,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
 
         mockMvc.perform(get("/api/v1/public/optiongroups/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
                 .andExpect(jsonPath("$.data.id").value(givenGroup.getId()))
                 .andExpect(jsonPath("$.data.name").value(givenGroup.getName()))
                 .andExpect(jsonPath("$.data.options[0].id").value(givenGroup.getOptions().get(0).getId()))
@@ -249,8 +249,8 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
 
         mockMvc.perform(get("/api/v1/public/optiongroups/all/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(HttpStatus.OK.value()))
-                .andExpect(jsonPath("$.code").value(HttpStatus.OK.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.OK.name()))
                 .andExpect(jsonPath("$.data[0].id").value(givenGroup1.getId()))
                 .andExpect(jsonPath("$.data[0].name").value(givenGroup1.getName()))
                 .andExpect(jsonPath("$.data[0].options[0].id").value(givenGroup1.getOptions().get(0).getId()))

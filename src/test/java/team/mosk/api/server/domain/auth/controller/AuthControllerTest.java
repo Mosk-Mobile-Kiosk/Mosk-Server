@@ -82,8 +82,8 @@ class AuthControllerTest extends ControllerIntegrationSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("이메일 형식이여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -112,8 +112,8 @@ class AuthControllerTest extends ControllerIntegrationSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value(400))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(400))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("이메일은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -142,8 +142,8 @@ class AuthControllerTest extends ControllerIntegrationSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("비밀번호는 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -214,8 +214,8 @@ class AuthControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("accessToken은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }

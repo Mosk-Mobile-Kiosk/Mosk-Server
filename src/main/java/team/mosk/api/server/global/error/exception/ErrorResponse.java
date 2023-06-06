@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ErrorResponse {
 
-    private int status;
-    private String code;
+    private int code;
+    private String status;
     private String message;
 
     private ErrorResponse(final ErrorCode errorCode) {

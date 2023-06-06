@@ -34,6 +34,6 @@ public class ApiControllerAdvice {
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse response = ErrorResponse.of(errorCode);
 
-        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getStatus()));
+        return new ResponseEntity<>(response, HttpStatus.valueOf(errorCode.getCode()));
     }
 }

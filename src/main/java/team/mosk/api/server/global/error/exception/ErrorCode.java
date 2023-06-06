@@ -71,11 +71,11 @@ public enum ErrorCode {
      */
     TOKEN_NOT_FOUND(400, "JWT001", "로그인 정보가 존재하지 않습니다.");
 
-    private final int status;
-    private final String code;
+    private final int code;
+    private final String status;
     private final String message;
 
-    ErrorCode(int status, String code, String message) {
+    ErrorCode(int code, String status, String message) {
         this.status = status;
         this.code = code;
         this.message = message;

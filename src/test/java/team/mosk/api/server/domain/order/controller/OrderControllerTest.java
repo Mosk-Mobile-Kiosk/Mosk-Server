@@ -100,8 +100,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("결제키는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -133,8 +133,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("주문번호는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -166,8 +166,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품번호는 필수값 입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
@@ -200,8 +200,8 @@ class OrderControllerTest extends ControllerIntegrationSupport {
                                 .content(body))
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.status").value("400"))
-                .andExpect(jsonPath("$.code").value(BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("상품주문 갯수는 1개 이상이여야 합니다."))
                 .andExpect(jsonPath("$.data").isEmpty());
     }
