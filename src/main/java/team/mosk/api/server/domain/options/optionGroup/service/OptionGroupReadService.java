@@ -30,4 +30,5 @@ public class OptionGroupReadService {
     public List<OptionGroupResponse> findAllOptionGroupByProductId(final Long productId) {
         return optionGroupRepository.findAllOptionGroupByProductId(productId);
     }
+
 }

@@ -89,11 +89,11 @@ public class ProductService {
             //초기 이미지 입력이 존재할 경우
             saveParamImg(encodedImg, imgType, savedProduct);
 
-            return ProductResponse.of(savedProduct);
+            return ProductResponse.ofWithCategory(savedProduct);
         } else {
             initBasicImg(savedProduct);
 
-            return ProductResponse.of(savedProduct);
+            return ProductResponse.ofWithCategory(savedProduct);
         }
     }
 
@@ -119,8 +119,13 @@ public class ProductService {
             saveParamImg(encodedImg, imgType, findProduct);
         }
 
+        Category findCategory = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
+
+        findProduct.setCategory(findCategory);
         findProduct.update(request);
-        return ProductResponse.of(findProduct);
+
+        return ProductResponse.ofWithCategory(findProduct);
     }
 
     public void delete(final Long productId, final Long storeId) {

@@ -26,4 +26,6 @@ public class UpdateProductRequest {
     private String encodedImg;
 
     private String imgType;
+
+    private Long categoryId;
 }

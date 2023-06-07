@@ -34,7 +34,7 @@ public class Product extends BaseEntity {
     private Selling selling;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product")
+    @JoinColumn(name = "product_img_id")
     private ProductImg productImg;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -97,4 +97,9 @@ public class Product extends BaseEntity {
     public int hashCode() {
         return id != null ? id.hashCode() : 0;
     }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
 }

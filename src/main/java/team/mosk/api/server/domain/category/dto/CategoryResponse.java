@@ -24,6 +24,11 @@ public class CategoryResponse {
 
     private List<ProductResponse> products;
 
+    public CategoryResponse(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public static CategoryResponse of(final Category category) {
         List<ProductResponse> products = category.getProducts().stream()
                 .map(ProductResponse::of).toList();

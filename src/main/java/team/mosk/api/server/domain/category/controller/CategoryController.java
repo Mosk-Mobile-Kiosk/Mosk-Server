@@ -55,6 +55,12 @@ public class CategoryController {
      * ReadService Methods
      */
 
+    @GetMapping("/categories")
+    @ResponseStatus(OK)
+    public ApiResponse<List<CategoryResponse>> findByStoreId(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        return ApiResponse.ok(categoryReadService.findByStoreId(customUserDetails.getId()));
+    }
+
     @GetMapping("/public/categories/all/{storeId}")
     @ResponseStatus(OK)
     public ApiResponse<List<CategoryResponse>> findAllByStoreId(@PathVariable Long storeId) {

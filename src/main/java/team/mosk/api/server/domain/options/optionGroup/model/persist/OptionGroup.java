@@ -5,6 +5,7 @@ import lombok.*;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
 import team.mosk.api.server.domain.product.model.persist.Product;
+import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
