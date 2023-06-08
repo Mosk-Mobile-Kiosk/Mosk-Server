@@ -63,9 +63,9 @@ public class CategoryControllerTest extends ControllerIntegrationSupport {
         mockMvc.perform(post("/api/v1/categories").content(requestJSON)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$['code']").value("400"))
-                .andExpect(jsonPath("$['status']").value(HttpStatus.BAD_REQUEST.name()))
-                .andExpect(jsonPath("$['message']").value("이름은 필수입니다."))
+                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.message").value("이름은 필수입니다."))
                 .andDo(print());
     }
 
@@ -102,9 +102,9 @@ public class CategoryControllerTest extends ControllerIntegrationSupport {
         mockMvc.perform(put("/api/v1/categories").content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$['code']").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$['status']").value(HttpStatus.BAD_REQUEST.name()))
-                .andExpect(jsonPath("$['message']").value("카테고리 아이디는 필수입니다."))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.message").value("카테고리 아이디는 필수입니다."))
                 .andDo(print());
     }
 
@@ -121,8 +121,8 @@ public class CategoryControllerTest extends ControllerIntegrationSupport {
         mockMvc.perform(put("/api/v1/categories").content(requestJSON)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$['code']").value(HttpStatus.BAD_REQUEST.value()))
-                .andExpect(jsonPath("$['status']").value(HttpStatus.BAD_REQUEST.name()))
+                .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
+                .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
                 .andExpect(jsonPath("$['message']").value("이름은 필수입니다."))
                 .andDo(print());
     }

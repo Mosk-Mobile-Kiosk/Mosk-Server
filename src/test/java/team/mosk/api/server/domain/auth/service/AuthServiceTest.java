@@ -11,6 +11,7 @@ import team.mosk.api.server.domain.auth.dto.SignInDto;
 import team.mosk.api.server.domain.store.error.StoreNotFoundException;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 import team.mosk.api.server.global.jwt.TokenProvider;
 import team.mosk.api.server.global.jwt.dto.TokenDto;
 import team.mosk.api.server.global.jwt.exception.TokenNotFoundException;
@@ -68,7 +69,7 @@ class AuthServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> authService.login(request))
                 .isInstanceOf(StoreNotFoundException.class)
-                .hasMessage("가게를 찾을 수 없습니다.");
+                .hasMessage(ErrorCode.STORE_NOT_FOUND.getMessage());
     }
 
     @DisplayName("로그인 시 비밀번호가 다르면 BadCredentialsException 발생한다.")
@@ -118,7 +119,7 @@ class AuthServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> authService.reissue(AccessToken.of(token.getAccessToken()), refreshToken))
                 .isInstanceOf(TokenNotFoundException.class)
-                .hasMessage("잘못된 JWT 서명입니다.");
+                .hasMessage(ErrorCode.TOKEN_NOT_FOUND.getMessage());
     }
 
     private Store createStore(String email, String password) {

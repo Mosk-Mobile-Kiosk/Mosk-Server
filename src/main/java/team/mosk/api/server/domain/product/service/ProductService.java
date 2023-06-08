@@ -23,6 +23,7 @@ import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -30,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.UUID;
+
+import static team.mosk.api.server.global.error.exception.ErrorCode.*;
 
 @Service
 @Transactional
@@ -61,12 +64,6 @@ public class ProductService {
         this.filePath = filePath;
     }
 
-    private static final String OWNER_MISMATCHED = "상점의 주인이 아닙니다.";
-    private static final String PRODUCT_NOT_FOUND = "상품을 찾을 수 없습니다.";
-    private static final String CATEGORY_NOT_FOUND = "카테고리를 찾을 수 없습니다.";
-    private static final String FAILED_DELETE_IMG = "이미지 삭제에 실패했습니다.";
-
-    private static final String BASE_IMG_TYPE = ".jpg";
 
     public ProductResponse create(final Product product,
                                   final String encodedImg,
@@ -105,7 +102,7 @@ public class ProductService {
 
         if(StringUtils.hasText(encodedImg) && StringUtils.hasText(imgType)) {
             ProductImg findImg = productImgRepository.findImgByProductId(findProduct.getId())
-                    .orElseThrow(() -> new ProductImgNotFoundException("IMG_NOT_FOUNDED"));
+                    .orElseThrow(() -> new ProductImgNotFoundException(PRODUCT_IMG_NOT_FOUND));
 
             final String oldPath = findImg.getPath();
 
@@ -154,7 +151,7 @@ public class ProductService {
 
     private void validateStoreOwner(final Long storeId, final Long targetId) {
         if (!storeId.equals(targetId)) {
-            throw new OwnerInfoMisMatchException(OWNER_MISMATCHED);
+            throw new OwnerInfoMisMatchException(OWNER_INFO_MISMATCHED);
         }
     }
 

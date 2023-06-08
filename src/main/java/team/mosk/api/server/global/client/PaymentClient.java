@@ -8,7 +8,8 @@ import reactor.core.publisher.Mono;
 import team.mosk.api.server.domain.order.dto.TossPaymentCancelRequest;
 import team.mosk.api.server.domain.order.dto.TossPaymentErrorResponse;
 import team.mosk.api.server.domain.order.dto.TossPaymentRequest;
-import team.mosk.api.server.domain.order.error.TossApiException;
+import team.mosk.api.server.domain.order.error.PaymentGatewayException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 @Service
 public class PaymentClient {
@@ -28,7 +29,7 @@ public class PaymentClient {
                 .onStatus(HttpStatus::isError, response -> {
                     response.bodyToMono(TossPaymentErrorResponse.class)
                             .flatMap(errorResponse -> {
-                                return Mono.error(new TossApiException(errorResponse.getMessage()));
+                                return Mono.error(new PaymentGatewayException(ErrorCode.PAYMENT_GATEWAY_DENIED_PAYMENT));
                             });
                     return null;
                 });
@@ -42,7 +43,7 @@ public class PaymentClient {
                 .onStatus(HttpStatus::isError, response -> {
                     response.bodyToMono(TossPaymentErrorResponse.class)
                             .flatMap(errorResponse -> {
-                                return Mono.error(new TossApiException(errorResponse.getMessage()));
+                                return Mono.error(new PaymentGatewayException(ErrorCode.PAYMENT_GATEWAY_DENIED_CANCEL));
                             });
                     return null;
                 });

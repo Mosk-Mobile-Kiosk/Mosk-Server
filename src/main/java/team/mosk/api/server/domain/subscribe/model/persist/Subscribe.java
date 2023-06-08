@@ -26,16 +26,12 @@ public class Subscribe extends BaseEntity {
 
     private LocalDate endDate;
 
-    private Long price;
-
-    private Long totalPrice;
-
-    public void addTotalPrice(final Long price) {
-        this.totalPrice += price;
-    }
-
     public void renewEndDate(final Long period) {
         this.endDate.plusMonths(period);
+    }
+
+    public void resetStartDate() {
+        this.startDate = LocalDate.now();
     }
 
     public static Subscribe createEntity(final Store store, final Long period, final Long price) {
@@ -45,7 +41,6 @@ public class Subscribe extends BaseEntity {
                 .store(store)
                 .startDate(now)
                 .endDate(now.plusMonths(period))
-                .price(price)
                 .build();
     }
 }

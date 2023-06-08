@@ -1,8 +1,11 @@
 package team.mosk.api.server.domain.store.error;
 
-public class QrCodeAlreadyExistsException extends RuntimeException {
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
-    public QrCodeAlreadyExistsException(String message) {
-        super(message);
+public class QrCodeAlreadyExistsException extends CombinedException {
+
+    public QrCodeAlreadyExistsException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

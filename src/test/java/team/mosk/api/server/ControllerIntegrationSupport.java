@@ -16,6 +16,8 @@ import team.mosk.api.server.domain.product.service.ProductReadService;
 import team.mosk.api.server.domain.product.service.ProductService;
 import team.mosk.api.server.domain.store.service.StoreReadService;
 import team.mosk.api.server.domain.store.service.StoreService;
+import team.mosk.api.server.domain.subscribe.service.SubscribeReadService;
+import team.mosk.api.server.domain.subscribe.service.SubscribeService;
 
 @SpringBootTest
 @ActiveProfiles("test")
@@ -57,5 +59,11 @@ public abstract class ControllerIntegrationSupport {
 
     @MockBean
     protected StoreReadService storeReadService;
+
+    @MockBean
+    protected SubscribeService subscribeService;
+
+    @MockBean
+    protected SubscribeReadService subscribeReadService;
 
 }

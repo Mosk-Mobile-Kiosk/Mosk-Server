@@ -2,7 +2,6 @@ package team.mosk.api.server.domain.order.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import team.mosk.api.server.IntegrationTestSupport;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
@@ -10,10 +9,10 @@ import team.mosk.api.server.domain.options.option.model.persist.OptionRepository
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderProductRequest;
 import team.mosk.api.server.domain.order.dto.OrderResponse;
-import team.mosk.api.server.domain.order.error.OrdeCancelDeniedException;
+import team.mosk.api.server.domain.order.error.OrderCancelDeniedException;
 import team.mosk.api.server.domain.order.error.OrderAccessDeniedException;
-import team.mosk.api.server.domain.order.error.OrderCompletedException;
-import team.mosk.api.server.domain.order.error.TossApiException;
+import team.mosk.api.server.domain.order.error.OrderUncompletedException;
+import team.mosk.api.server.domain.order.error.PaymentGatewayException;
 import team.mosk.api.server.domain.order.model.order.Order;
 import team.mosk.api.server.domain.order.model.order.OrderRepository;
 import team.mosk.api.server.domain.order.vo.OrderStatus;
@@ -22,6 +21,7 @@ import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.product.util.GivenProduct;
 import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,6 @@ import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willThrow;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_EMAIL;
 import static team.mosk.api.server.domain.auth.util.GivenAuth.GIVEN_PASSWORD;
@@ -133,11 +132,11 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         LocalDateTime now = LocalDateTime.now();
 
-        willThrow(new TossApiException("결제실패!")).given(paymentClient).paymentApproval(any());
+        willThrow(new PaymentGatewayException(ErrorCode.PAYMENT_GATEWAY_DENIED_PAYMENT)).given(paymentClient).paymentApproval(any());
 
         //when //then
         assertThatThrownBy(() -> orderService.createOrder(savedStore.getId(), request, now))
-                .isInstanceOf(TossApiException.class);
+                .isInstanceOf(PaymentGatewayException.class);
 
         Order order = orderRepository.findAll().get(0);
         assertThat(order.getTotalPrice()).isEqualTo(300);
@@ -237,7 +236,7 @@ class OrderServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> orderService.cancel(savedStore2.getId(), savedOrder.getId()))
                 .isInstanceOf(OrderAccessDeniedException.class)
-                .hasMessage("주문에 접근할 수 없습니다.");
+                .hasMessage(ErrorCode.ORDER_ACCESS_DENIED.getMessage());
     }
 
     @DisplayName("주문 상태가 CANCELED일 경우 주문을 취소할 수 없다.")
@@ -252,8 +251,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrdeCancelDeniedException.class)
-                .hasMessage("주문상태:CANCELED는 주문 취소가 불가능합니다.");
+                .isInstanceOf(OrderCancelDeniedException.class)
+                .hasMessage(ErrorCode.ORDER_CANCEL_DENIED.getMessage());
     }
 
     @DisplayName("주문 상태가 PAYMENT_FAILED 경우 주문을 취소할 수 없다.")
@@ -268,8 +267,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrdeCancelDeniedException.class)
-                .hasMessage("주문상태:PAYMENT_FAILED는 주문 취소가 불가능합니다.");
+                .isInstanceOf(OrderCancelDeniedException.class)
+                .hasMessage(ErrorCode.ORDER_CANCEL_DENIED.getMessage());
     }
 
     @DisplayName("주문 상태가 COMPLETED 경우 주문을 취소할 수 없다.")
@@ -284,8 +283,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.cancel(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrdeCancelDeniedException.class)
-                .hasMessage("주문상태:COMPLETED는 주문 취소가 불가능합니다.");
+                .isInstanceOf(OrderCancelDeniedException.class)
+                .hasMessage(ErrorCode.ORDER_CANCEL_DENIED.getMessage());
     }
 
     @DisplayName("주문처리 완료를 하기 위해서는 주문 상태가 PAYMENT_COMPLETED 상태여야 한다.")
@@ -321,7 +320,7 @@ class OrderServiceTest extends IntegrationTestSupport {
         //when //then
         assertThatThrownBy(() -> orderService.orderCompleted(savedStore2.getId(), savedOrder.getId()))
                 .isInstanceOf(OrderAccessDeniedException.class)
-                .hasMessage("주문에 접근할 수 없습니다.");
+                .hasMessage(ErrorCode.ORDER_ACCESS_DENIED.getMessage());
     }
 
     @DisplayName("주문상태가 INIT일 경우 주문을 완료할 수 없다.")
@@ -336,8 +335,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.orderCompleted(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrderCompletedException.class)
-                .hasMessage("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+                .isInstanceOf(OrderUncompletedException.class)
+                .hasMessage(ErrorCode.ORDER_UNCOMPLETED.getMessage());
     }
 
     @DisplayName("주문상태가 CANCELED일 경우 주문을 완료할 수 없다.")
@@ -352,8 +351,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.orderCompleted(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrderCompletedException.class)
-                .hasMessage("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+                .isInstanceOf(OrderUncompletedException.class)
+                .hasMessage(ErrorCode.ORDER_UNCOMPLETED.getMessage());
     }
 
     @DisplayName("주문상태가 PAYMENT_FAILED일 경우 주문을 완료할 수 없다.")
@@ -368,8 +367,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.orderCompleted(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrderCompletedException.class)
-                .hasMessage("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+                .isInstanceOf(OrderUncompletedException.class)
+                .hasMessage(ErrorCode.ORDER_UNCOMPLETED.getMessage());
     }
     
 
@@ -385,8 +384,8 @@ class OrderServiceTest extends IntegrationTestSupport {
 
         //when //then
         assertThatThrownBy(() -> orderService.orderCompleted(savedStore.getId(), savedOrder.getId()))
-                .isInstanceOf(OrderCompletedException.class)
-                .hasMessage("주문 처리를 완료하기 위해서는 주문이 결제완료 상태여야 합니다.");
+                .isInstanceOf(OrderUncompletedException.class)
+                .hasMessage(ErrorCode.ORDER_UNCOMPLETED.getMessage());
     }
 
 

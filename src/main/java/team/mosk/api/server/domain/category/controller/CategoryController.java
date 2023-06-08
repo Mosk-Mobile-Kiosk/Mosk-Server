@@ -72,4 +72,13 @@ public class CategoryController {
     public ApiResponse<CategoryResponse> findByCategoryId(@PathVariable Long categoryId) {
         return ApiResponse.ok(categoryReadService.findByCategoryId(categoryId));
     }
+
+    @GetMapping("/categories/{categoryId}")
+    @ResponseStatus(OK)
+    public ApiResponse<CategoryResponse> findByCategoryId(
+            @PathVariable Long categoryId,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails
+            ) {
+        return ApiResponse.ok(categoryReadService.findByCategoryId(categoryId, customUserDetails.getId()));
+    }
 }

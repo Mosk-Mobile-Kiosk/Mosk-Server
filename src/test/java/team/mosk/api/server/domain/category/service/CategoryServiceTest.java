@@ -17,6 +17,7 @@ import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.domain.store.model.persist.StoreRepository;
 import team.mosk.api.server.domain.store.service.StoreService;
 import team.mosk.api.server.domain.store.util.WithAuthUser;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import java.util.List;
 import java.util.Optional;
@@ -54,7 +55,7 @@ public class CategoryServiceTest extends IntegrationTestSupport {
         StoreResponse response = storeService.create(newStore);
 
         store = storeRepository.findById(response.getId()).orElseThrow(
-                () -> new StoreNotFoundException("error")
+                () -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND)
         );
     }
 

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@Builder
 public class CreateCategoryRequest {
 
     @NotBlank(message = "이름은 필수입니다.")

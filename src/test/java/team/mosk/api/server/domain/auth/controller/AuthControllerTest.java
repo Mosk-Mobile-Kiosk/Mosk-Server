@@ -112,7 +112,7 @@ class AuthControllerTest extends ControllerIntegrationSupport {
                 )
                 .andDo(print())
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.code").value("400"))
+                .andExpect(jsonPath("$.code").value(400))
                 .andExpect(jsonPath("$.status").value(BAD_REQUEST.name()))
                 .andExpect(jsonPath("$.message").value("이메일은 필수 값입니다."))
                 .andExpect(jsonPath("$.data").isEmpty());

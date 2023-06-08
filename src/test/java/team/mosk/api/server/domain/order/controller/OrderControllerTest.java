@@ -13,7 +13,6 @@ import team.mosk.api.server.domain.options.option.util.GivenOption;
 import team.mosk.api.server.domain.order.dto.CreateOrderRequest;
 import team.mosk.api.server.domain.order.dto.OrderProductRequest;
 
-import team.mosk.api.server.domain.order.error.TossApiException;
 import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
 import team.mosk.api.server.domain.product.util.GivenProduct;
@@ -21,7 +20,6 @@ import team.mosk.api.server.domain.product.util.GivenProduct;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;

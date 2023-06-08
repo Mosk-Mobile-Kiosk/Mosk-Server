@@ -1,7 +1,10 @@
 package team.mosk.api.server.domain.options.optionGroup.error;
 
-public class OptionGroupNotFoundException extends RuntimeException{
-    public OptionGroupNotFoundException(String message) {
-        super(message);
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
+
+public class OptionGroupNotFoundException extends CombinedException {
+    public OptionGroupNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

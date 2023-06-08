@@ -12,6 +12,7 @@ import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup;
 import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroupRepository;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
 import javax.transaction.Transactional;
 
@@ -23,14 +24,9 @@ public class OptionService {
 
     private final OptionGroupRepository optionGroupRepository;
     private final OptionRepository optionRepository;
-
-    private static final String OWNER_INFO_MISMATCH = "상점의 주인이 아닙니다.";
-    private static final String GROUP_NOT_FOUND = "그룹을 찾을 수 없습니다.";
-    private static final String OPTION_NOT_FOUND = "옵션을 찾을 수 없습니다.";
-
     public OptionResponse create(final Option option, final Long groupId, final Long storeId) {
         OptionGroup findGroup = optionGroupRepository.findById(groupId)
-                .orElseThrow(() -> new OptionGroupNotFoundException(GROUP_NOT_FOUND));
+                .orElseThrow(() -> new OptionGroupNotFoundException(ErrorCode.OPTION_GROUP_NOT_FOUND));
 
         validateOwnerInfo(findGroup.getProduct().getStore().getId(), storeId);
 
@@ -43,7 +39,7 @@ public class OptionService {
 
     public OptionResponse update(final UpdateOptionRequest request, final Long storeId) {
         Option findOption = optionRepository.findById(request.getOptionId())
-                .orElseThrow(() -> new OptionNotFoundException(OPTION_NOT_FOUND));
+                .orElseThrow(() -> new OptionNotFoundException(ErrorCode.OPTION_NOT_FOUND));
 
         validateOwnerInfo(findOption.getOptionGroup().getProduct().getStore().getId(), storeId);
 
@@ -53,7 +49,7 @@ public class OptionService {
 
     public void delete(final Long optionId, final Long storeId) {
         Option findOption = optionRepository.findById(optionId)
-                .orElseThrow(() -> new OptionNotFoundException(OPTION_NOT_FOUND));
+                .orElseThrow(() -> new OptionNotFoundException(ErrorCode.OPTION_NOT_FOUND));
 
         validateOwnerInfo(findOption.getOptionGroup().getProduct().getStore().getId(), storeId);
 
@@ -62,7 +58,7 @@ public class OptionService {
 
     public void validateOwnerInfo(final Long storeId, final Long targetId) {
         if(!storeId.equals(targetId)) {
-            throw new OwnerInfoMisMatchException(OWNER_INFO_MISMATCH);
+            throw new OwnerInfoMisMatchException(ErrorCode.OWNER_INFO_MISMATCHED);
         }
     }
 }

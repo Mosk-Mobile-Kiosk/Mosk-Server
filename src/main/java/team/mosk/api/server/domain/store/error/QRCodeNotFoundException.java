@@ -1,8 +1,10 @@
 package team.mosk.api.server.domain.store.error;
 
-public class QRCodeNotFoundException extends RuntimeException {
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
 
-    public QRCodeNotFoundException(String message) {
-        super(message);
+public class QRCodeNotFoundException extends CombinedException {
+    public QRCodeNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }

@@ -1,7 +1,10 @@
 package team.mosk.api.server.domain.product.error;
 
-public class ProductNotFoundException extends RuntimeException{
-    public ProductNotFoundException(String message) {
-        super(message);
+import team.mosk.api.server.global.error.exception.CombinedException;
+import team.mosk.api.server.global.error.exception.ErrorCode;
+
+public class ProductNotFoundException extends CombinedException {
+    public ProductNotFoundException(ErrorCode errorCode) {
+        super(errorCode);
     }
 }
