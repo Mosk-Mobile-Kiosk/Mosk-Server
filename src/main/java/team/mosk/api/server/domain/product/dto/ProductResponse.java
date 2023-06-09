@@ -30,10 +30,13 @@ public class ProductResponse {
 
     private String imageName;
 
+    private String encodedImg;
+
     private List<OptionGroupResponse> optionGroups;
 
+
     @Builder
-    public ProductResponse(Long id, String name, String description, Long price, Selling selling, CategoryResponse category, String imageName, List<OptionGroupResponse> optionGroups) {
+    public ProductResponse(Long id, String name, String description, Long price, Selling selling, CategoryResponse category, String imageName, String encodedImg, List<OptionGroupResponse> optionGroups) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -41,8 +44,12 @@ public class ProductResponse {
         this.selling = selling;
         this.category = category;
         this.imageName = imageName;
+        this.encodedImg = encodedImg;
         this.optionGroups = optionGroups;
     }
+
+
+
 
     public static ProductResponse of(final Product product) {
         return ProductResponse.builder()
