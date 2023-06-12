@@ -23,7 +23,7 @@ public class Option extends BaseEntity {
 
     private Long price;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "option_group_id")
     @JsonBackReference
     private OptionGroup optionGroup;

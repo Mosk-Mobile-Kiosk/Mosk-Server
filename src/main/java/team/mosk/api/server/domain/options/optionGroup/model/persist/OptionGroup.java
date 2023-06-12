@@ -23,7 +23,7 @@ public class OptionGroup extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Option> options = new ArrayList<>();
 
@@ -53,6 +53,10 @@ public class OptionGroup extends BaseEntity {
 
     public void addOption(final Option option) {
         this.options.add(option);
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
     }
 
     public void removeOption(final Option option) {
