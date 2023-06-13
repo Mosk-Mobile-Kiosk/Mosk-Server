@@ -55,5 +55,13 @@ public class StoreReadService {
     }
 
 
+    public boolean exitQRCode(Long storeId) {
+        Store store = storeRepository.findById(storeId)
+                .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
 
+        if(store.getQrCode() == null) {
+            return false;
+        }
+        return true;
+    }
 }
