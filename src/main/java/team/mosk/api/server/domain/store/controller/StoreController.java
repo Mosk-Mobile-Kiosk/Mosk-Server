@@ -71,18 +71,14 @@ public class StoreController {
         return ApiResponse.of(HttpStatus.NO_CONTENT, null);
     }
 
-    @PostMapping("/stores/qrcode")
-    public ResponseEntity<byte[]> createQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) throws InterruptedException {
-        storeService.createQRCode(customUserDetails.getId());
-        QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_PNG)
-                .body(qrCodeToByte(qrCode));
-    }
-
     @GetMapping("/stores/qrcode")
     public ResponseEntity<byte[]> getQRCode(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        if (!storeReadService.exitQRCode(customUserDetails.getId())) {
+            storeService.createQRCode(customUserDetails.getId());
+        }
+
         QRCode qrCode = storeReadService.getQRCode(customUserDetails.getId());
+
         return ResponseEntity.ok()
                .contentType(MediaType.IMAGE_PNG)
                .body(qrCodeToByte(qrCode));

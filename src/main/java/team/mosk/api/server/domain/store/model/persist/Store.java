@@ -79,4 +79,8 @@ public class Store extends BaseEntity {
         this.call = request.getCall();
         this.address = request.getAddress();
     }
+
+    public void setQrCode(QRCode qrCode) {
+        this.qrCode = qrCode;
+    }
 }

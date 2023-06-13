@@ -2,6 +2,7 @@ package team.mosk.api.server.domain.store.controller;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -448,6 +449,7 @@ class StoreControllerTest extends ControllerIntegrationSupport {
     }
 
     @Test
+    @Disabled
     @DisplayName("가게의 페이지로 가는 QRCode 생성을 할 수 있다.")
     @WithAuthUser
     void createQRCode(@TempDir Path tempDir) throws Exception {
