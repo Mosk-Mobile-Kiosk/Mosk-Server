@@ -3,6 +3,7 @@ package team.mosk.api.server.domain.options.option.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.mosk.api.server.domain.category.error.OwnerInfoMisMatchException;
 import team.mosk.api.server.domain.options.option.dto.OptionResponse;
 import team.mosk.api.server.domain.options.option.dto.UpdateOptionRequest;
@@ -13,8 +14,6 @@ import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroup
 import team.mosk.api.server.domain.options.optionGroup.model.persist.OptionGroupRepository;
 import team.mosk.api.server.domain.options.option.model.persist.OptionRepository;
 import team.mosk.api.server.global.error.exception.ErrorCode;
-
-import javax.transaction.Transactional;
 
 @Service
 @Transactional
@@ -53,7 +52,7 @@ public class OptionService {
 
         validateOwnerInfo(findOption.getOptionGroup().getProduct().getStore().getId(), storeId);
 
-        optionRepository.delete(findOption);
+        optionRepository.deleteById(optionId);
     }
 
     public void validateOwnerInfo(final Long storeId, final Long targetId) {

@@ -12,6 +12,7 @@ import team.mosk.api.server.domain.product.dto.ProductResponse;
 import team.mosk.api.server.domain.product.dto.ProductSearch;
 import team.mosk.api.server.domain.product.error.ProductImgNotFoundException;
 import team.mosk.api.server.domain.product.error.ProductNotFoundException;
+import team.mosk.api.server.domain.product.model.persist.Product;
 import team.mosk.api.server.domain.product.model.persist.ProductImg;
 import team.mosk.api.server.domain.product.model.persist.ProductImgRepository;
 import team.mosk.api.server.domain.product.model.persist.ProductRepository;
@@ -56,13 +57,10 @@ public class ProductReadService {
     }
 
     public List<ProductResponse> findByStoreId(Long storeId) {
-        return productRepository.findByStoreId(storeId).stream()
-                .map(product -> new ProductResponse(
-                        product.getId(),
-                        product.getName(),
-                        product.getDescription(),
-                        product.getPrice(),
-                        product.getSelling()))
-                .collect(Collectors.toList());
+        List<Product> products = productRepository.findByStoreId(storeId);
+
+        return products.stream()
+                .map(product -> ProductResponse.ofWithCategory(product))
+                .toList();
     }
 }

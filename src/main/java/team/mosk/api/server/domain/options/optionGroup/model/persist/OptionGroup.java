@@ -5,6 +5,7 @@ import lombok.*;
 import team.mosk.api.server.domain.options.option.model.persist.Option;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
 import team.mosk.api.server.domain.product.model.persist.Product;
+import team.mosk.api.server.domain.store.model.persist.Store;
 import team.mosk.api.server.global.common.BaseEntity;
 
 import javax.persistence.*;
@@ -22,7 +23,7 @@ public class OptionGroup extends BaseEntity {
 
     private String name;
 
-    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "optionGroup", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
     private List<Option> options = new ArrayList<>();
 
@@ -52,6 +53,10 @@ public class OptionGroup extends BaseEntity {
 
     public void addOption(final Option option) {
         this.options.add(option);
+    }
+
+    public void setOptions(List<Option> options) {
+        this.options = options;
     }
 
     public void removeOption(final Option option) {

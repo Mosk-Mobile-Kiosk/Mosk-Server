@@ -110,6 +110,7 @@ public class ProductServiceTest extends IntegrationTestSupport {
     @DisplayName("상품 수정")
     @WithAuthUser
     void update() throws Exception {
+        Category savedCategory = categoryRepository.save(GivenCategory.toEntity());
 
         Product product = GivenProduct.toEntity();
         ProductResponse productResponse = productService.create(product, encodedImg, imgType, category.getId(), store.getId());
@@ -119,6 +120,7 @@ public class ProductServiceTest extends IntegrationTestSupport {
                 .name("newName")
                 .price(30L)
                 .description("newDes")
+                .categoryId(savedCategory.getId())
                 .build();
 
         ProductResponse updateResponse = productService.update(request, encodedImg,imgType, store.getId());

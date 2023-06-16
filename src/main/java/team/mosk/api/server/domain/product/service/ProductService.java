@@ -32,6 +32,8 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.UUID;
 
+import static team.mosk.api.server.global.error.exception.ErrorCode.*;
+
 @Service
 @Transactional
 @Slf4j
@@ -70,10 +72,10 @@ public class ProductService {
                                   final Long storeId) throws Exception {
 
         Category findCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new CategoryNotFoundException(ErrorCode.CATEGORY_NOT_FOUND));
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
 
         Store findStore = storeRepository.findById(storeId)
-                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         product.initCategory(findCategory);
         product.initStore(findStore);
@@ -84,23 +86,23 @@ public class ProductService {
             //초기 이미지 입력이 존재할 경우
             saveParamImg(encodedImg, imgType, savedProduct);
 
-            return ProductResponse.of(savedProduct);
+            return ProductResponse.ofWithCategory(savedProduct);
         } else {
             initBasicImg(savedProduct);
 
-            return ProductResponse.of(savedProduct);
+            return ProductResponse.ofWithCategory(savedProduct);
         }
     }
 
     public ProductResponse update(final UpdateProductRequest request, final String encodedImg, final String imgType, final Long storeId) throws Exception {
         Product findProduct = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         validateStoreOwner(findProduct.getStore().getId(), storeId);
 
         if(StringUtils.hasText(encodedImg) && StringUtils.hasText(imgType)) {
             ProductImg findImg = productImgRepository.findImgByProductId(findProduct.getId())
-                    .orElseThrow(() -> new ProductImgNotFoundException(ErrorCode.PRODUCT_IMG_NOT_FOUND));
+                    .orElseThrow(() -> new ProductImgNotFoundException(PRODUCT_IMG_NOT_FOUND));
 
             final String oldPath = findImg.getPath();
 
@@ -114,13 +116,18 @@ public class ProductService {
             saveParamImg(encodedImg, imgType, findProduct);
         }
 
+        Category findCategory = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(() -> new CategoryNotFoundException(CATEGORY_NOT_FOUND));
+
+        findProduct.setCategory(findCategory);
         findProduct.update(request);
-        return ProductResponse.of(findProduct);
+
+        return ProductResponse.ofWithCategory(findProduct);
     }
 
     public void delete(final Long productId, final Long storeId) {
         Product findProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         validateStoreOwner(findProduct.getStore().getId(), storeId);
 
@@ -129,7 +136,7 @@ public class ProductService {
 
     public void changeSellingStatus(final SellingStatusRequest request, final Long storeId) {
         Product findProduct = productRepository.findById(request.getProductId())
-                .orElseThrow(() -> new ProductNotFoundException(ErrorCode.PRODUCT_NOT_FOUND));
+                .orElseThrow(() -> new ProductNotFoundException(PRODUCT_NOT_FOUND));
 
         validateStoreOwner(findProduct.getStore().getId(), storeId);
 
@@ -144,7 +151,7 @@ public class ProductService {
 
     private void validateStoreOwner(final Long storeId, final Long targetId) {
         if (!storeId.equals(targetId)) {
-            throw new OwnerInfoMisMatchException(ErrorCode.OWNER_INFO_MISMATCHED);
+            throw new OwnerInfoMisMatchException(OWNER_INFO_MISMATCHED);
         }
     }
 

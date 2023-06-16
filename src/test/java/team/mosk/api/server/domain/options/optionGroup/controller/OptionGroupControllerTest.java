@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import team.mosk.api.server.ControllerIntegrationSupport;
+import team.mosk.api.server.domain.options.option.dto.CreateOptionRequest;
 import team.mosk.api.server.domain.options.optionGroup.dto.CreateOptionGroupRequest;
 import team.mosk.api.server.domain.options.optionGroup.dto.OptionGroupResponse;
 import team.mosk.api.server.domain.options.optionGroup.dto.UpdateOptionGroupRequest;
@@ -49,6 +50,7 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
         CreateOptionGroupRequest request = CreateOptionGroupRequest.builder().
                 name(GivenOptionGroup.GROUP_NAME)
                 .productId(1L)
+                .options(List.of(CreateOptionRequest.builder().name("1샷").price(500l).build()))
                 .build();
 
         String requestJSON = mapper.writeValueAsString(request);
@@ -71,6 +73,7 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
         ObjectMapper mapper = new ObjectMapper();
         CreateOptionGroupRequest request = CreateOptionGroupRequest.builder()
                 .productId(1L)
+                .options(List.of(CreateOptionRequest.builder().name("L").price(1000l).build()))
                 .build();
 
         String requestJSON = mapper.writeValueAsString(request);
@@ -80,7 +83,7 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.code").value(HttpStatus.BAD_REQUEST.value()))
                 .andExpect(jsonPath("$.status").value(HttpStatus.BAD_REQUEST.name()))
-                .andExpect(jsonPath("$.message").value(NAME_IS_REQUIRED))
+                .andExpect(jsonPath("$.message").value("이름은 필수입니다."))
                 .andDo(print());
     }
 
@@ -93,6 +96,7 @@ public class OptionGroupControllerTest extends ControllerIntegrationSupport {
         ObjectMapper mapper = new ObjectMapper();
         CreateOptionGroupRequest request = CreateOptionGroupRequest.builder()
                 .name(GivenOptionGroup.GROUP_NAME)
+                .options(List.of(CreateOptionRequest.builder().name("L").price(1000l).build()))
                 .build();
 
         String requestJSON = mapper.writeValueAsString(request);

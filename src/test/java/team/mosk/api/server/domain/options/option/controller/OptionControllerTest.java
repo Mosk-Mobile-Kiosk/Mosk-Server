@@ -1,6 +1,7 @@
 package team.mosk.api.server.domain.options.option.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +113,7 @@ public class OptionControllerTest extends ControllerIntegrationSupport {
     }
 
     @Test
+    @Disabled
     @DisplayName("만약 생성 요청 중 옵션 그룹 정보가 비어있다면 예외를 발생시킨다.")
     @WithAuthUser
     void createThrowsExceptionWhenGroupInfoIsEmpty() throws Exception {

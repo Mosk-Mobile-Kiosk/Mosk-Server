@@ -72,10 +72,6 @@ public class StoreService {
     }
 
 
-    /**
-     * 빨간줄 큐알서비스로 옮겨야함
-     * @param storeId
-     */
     public void createQRCode(Long storeId) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException(ErrorCode.STORE_NOT_FOUND));
@@ -88,7 +84,9 @@ public class StoreService {
 
         qrCodeClient.callCreateQRCode(storeId, uuid);
 
-        qrCodeRepository.save(new QRCode(qrImgSavedPath + "/" + uuid, store));
+        QRCode qrCode = qrCodeRepository.save(new QRCode(qrImgSavedPath + "/" + uuid, store));
+
+        store.setQrCode(qrCode);
     }
 
     private String createUUIDFileName() {
