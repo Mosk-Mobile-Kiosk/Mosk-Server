@@ -13,3 +13,6 @@ spring:
       hibernate:
         format_sql: true
         show_sql: true
+        
+filePath: /home/ec2-user/mosk-img
+basicFilePath: classpath:img/basic.jpg
